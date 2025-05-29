@@ -4,87 +4,77 @@
   <meta charset="UTF-8">
   <title>Pirakids #171 - by ne$quik</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
-
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Cinzel', serif;
-      background-color: #0b0b0b;
-      color: #f0e6d2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      background-image: url('https://www.transparenttextures.com/patterns/dark-denim.png');
+      background-color: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
     }
 
     h1 {
-      font-size: 52px;
-      margin-top: 60px;
-      color: #d4af37;
-      text-shadow: 3px 3px 6px #000;
-      letter-spacing: 2px;
+      font-size: 36px;
+      color: gold;
+      margin-bottom: 5px;
     }
 
     h2 {
-      font-size: 18px;
-      color: #999;
+      font-size: 16px;
+      color: #aaa;
+      margin-top: 0;
       margin-bottom: 30px;
     }
 
     .container {
-      background-color: #111;
+      background-color: #1a1a1a;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-      width: 90%;
-      max-width: 600px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto;
+      box-shadow: 0 0 15px #000;
     }
 
     label {
-      font-size: 18px;
-      margin-bottom: 5px;
       display: block;
+      text-align: left;
+      margin-bottom: 5px;
+      margin-top: 15px;
     }
 
     select, input {
-      padding: 12px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #222;
-      color: #f0e6d2;
       width: 100%;
-      margin-bottom: 20px;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: none;
+      background-color: #333;
+      color: #fff;
     }
 
     button {
-      background-color: #d4af37;
-      color: #0b0b0b;
-      font-size: 18px;
-      font-weight: bold;
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: gold;
+      color: #000;
       border: none;
-      border-radius: 10px;
-      padding: 14px;
+      border-radius: 5px;
       cursor: pointer;
-      width: 100%;
-      transition: background-color 0.3s;
+      margin: 10px 5px;
     }
 
     button:hover {
-      background-color: #e6c45f;
+      background-color: #ffd700;
     }
 
     #output {
-      margin-top: 25px;
-      background-color: #1b1b1b;
-      padding: 20px;
-      border-radius: 10px;
-      font-family: monospace;
+      background-color: #222;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
       white-space: pre-wrap;
       word-break: break-word;
-      box-shadow: inset 0 0 10px #000;
+      text-align: left;
     }
   </style>
 </head>
@@ -96,34 +86,31 @@
     <label for="bandeira">Escolha a bandeira:</label>
     <select id="bandeira">
       <option value="aleatorio">Aleatório</option>
-      <option value="4">4</option> <!-- Visa -->
-      <option value="5">5</option> <!-- MasterCard -->
-      <option value="3">3</option> <!-- Amex -->
-      <option value="6">6</option> <!-- Discover -->
+      <option value="visa">Visa</option>
+      <option value="mastercard">MasterCard</option>
+      <option value="amex">Amex</option>
+      <option value="discover">Discover</option>
     </select>
 
     <label for="quantidade">Quantidade de cartões:</label>
     <input type="number" id="quantidade" min="1" max="100" value="5">
 
     <button onclick="gerarCartoes()">Gerar Cartões</button>
+    <button onclick="copiarTexto()">Copiar</button>
 
     <div id="output"></div>
   </div>
 
   <script>
     function gerarCartoes() {
-      let bandeira = document.getElementById('bandeira').value;
-      const qtd = parseInt(document.getElementById('quantidade').value);
+      const bandeira = document.getElementById('bandeira').value;
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const output = document.getElementById('output');
       let resultado = '';
 
-      for (let i = 0; i < qtd; i++) {
-        // Se for aleatório, escolhe um entre as opções
-        if (bandeira === 'aleatorio') {
-          const opcoes = ['4', '5', '3', '6'];
-          bandeira = opcoes[Math.floor(Math.random() * opcoes.length)];
-        }
-
-        let numero = bandeira;
+      for (let i = 0; i < quantidade; i++) {
+        const prefixo = escolherPrefixo(bandeira);
+        let numero = prefixo;
 
         while (numero.length < 15) {
           numero += Math.floor(Math.random() * 10);
@@ -135,7 +122,24 @@
         resultado += `${numero}\n`;
       }
 
-      document.getElementById('output').textContent = resultado;
+      output.textContent = resultado;
+    }
+
+    function escolherPrefixo(bandeira) {
+      const prefixos = {
+        visa: '4',
+        mastercard: '5',
+        amex: '3',
+        discover: '6'
+      };
+
+      if (bandeira === 'aleatorio') {
+        const chaves = Object.keys(prefixos);
+        const aleatoria = chaves[Math.floor(Math.random() * chaves.length)];
+        return prefixos[aleatoria];
+      }
+
+      return prefixos[bandeira];
     }
 
     function calcularLuhn(numeroParcial) {
@@ -152,6 +156,14 @@
       }
 
       return (10 - (soma % 10)) % 10;
+    }
+
+    function copiarTexto() {
+      const output = document.getElementById('output').textContent;
+      if (!output.trim()) return alert('Nada para copiar!');
+      navigator.clipboard.writeText(output)
+        .then(() => alert('Cartões copiados com sucesso!'))
+        .catch(() => alert('Erro ao copiar'));
     }
   </script>
 </body>
