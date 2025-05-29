@@ -9,12 +9,14 @@
 
   body {
     margin: 0;
-    background-color: #fff; /* fundo branco */
-    color: #444;
     font-family: 'Roboto', sans-serif;
+    color: #444;
   }
 
+  /* Topo branco */
   .header-white {
+    background-color: #fff;
+    color: #444;
     text-align: center;
     padding: 80px 20px 40px 20px;
     cursor: pointer;
@@ -26,21 +28,18 @@
     font-weight: 900;
     font-size: 6rem;
     margin: 0;
-    color: #444;
     letter-spacing: 2px;
     transition: color 0.3s ease;
   }
 
   h1.title:hover {
-    color: #b31217; /* vermelho escuro ao passar o mouse */
+    color: #b31217;
   }
 
   p.by-nesquik {
-    font-family: 'Roboto', sans-serif;
     font-weight: 500;
     font-size: 1.5rem;
     margin: 4px 0 10px 0;
-    color: #555;
     letter-spacing: 1px;
   }
 
@@ -53,14 +52,17 @@
     letter-spacing: 2px;
     text-shadow:
       1px 1px 2px #00000044;
-    display: none; /* começa escondido */
+    display: none;
   }
 
+  /* Container preta para o gerador */
   .container {
+    background-color: #000;
+    color: #eee;
     max-width: 900px;
     margin: 40px auto 60px;
-    padding: 0 20px;
-    color: #222;
+    padding: 30px 20px 50px 20px;
+    border-radius: 10px;
   }
 
   label {
@@ -75,9 +77,9 @@
     padding: 10px;
     font-size: 1.1rem;
     border-radius: 5px;
-    border: 1px solid #aaa;
-    background: #f9f9f9;
-    color: #222;
+    border: 1px solid #555;
+    background: #222;
+    color: #eee;
   }
 
   button {
@@ -99,15 +101,14 @@
 
   #result {
     margin-top: 30px;
-    background: #f0f0f0;
+    background: #111;
     border-radius: 8px;
     padding: 20px;
     font-family: monospace;
     font-size: 1.1rem;
     white-space: pre-wrap;
-    min-height: 100px;
-    color: #222;
-    position: relative;
+    min-height: 140px;
+    color: #eee;
   }
 
   .fixed-buttons {
@@ -120,7 +121,7 @@
   }
 
   .icon-button {
-    background: #eee;
+    background: #222;
     border: 1.5px solid #b31217;
     color: #b31217;
     border-radius: 5px;
@@ -203,6 +204,10 @@
     discover: ['6011', '65', '644', '645', '646', '647', '648', '649']
   };
 
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   function generateCard(brand) {
     let prefixArr;
     if(brand === 'random') {
@@ -216,10 +221,26 @@
 
     let number = prefix;
     while(number.length < length - 1) {
-      number += Math.floor(Math.random() * 10);
+      number += randomInt(0,9);
     }
     const checkDigit = calculateLuhn(number);
     return number + checkDigit;
+  }
+
+  function generateExpirationDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = randomInt(1,12);
+    // Ano válido: entre o ano atual e mais 5 anos
+    const expYear = randomInt(year, year + 5);
+    // Formatar MM/AA
+    const mm = month.toString().padStart(2, '0');
+    const yy = expYear.toString().slice(-2);
+    return `${mm}/${yy}`;
+  }
+
+  function generateCVV() {
+    return randomInt(100, 999);
   }
 
   const generateBtn = document.getElementById('generate');
@@ -233,11 +254,14 @@
     const brand = brandSelect.value;
     let quantity = parseInt(quantityInput.value);
     if(isNaN(quantity) || quantity < 1) quantity = 1;
-    if(quantity > 10000) quantity = 10000; // limite alto para performance
+    if(quantity > 10000) quantity = 10000;
 
     let output = '';
     for(let i=0; i < quantity; i++) {
-      output += generateCard(brand) + '\n';
+      const cardNum = generateCard(brand);
+      const expDate = generateExpirationDate();
+      const cvv = generateCVV();
+      output += `Cartão: ${cardNum}\nVencimento: ${expDate}   CVV: ${cvv}\n\n`;
     }
     resultBox.textContent = output.trim();
   });
@@ -258,7 +282,6 @@
     a.click();
     URL.revokeObjectURL(a.href);
   });
-
 </script>
 
 </body>
