@@ -9,88 +9,58 @@
 
   body {
     margin: 0;
-    background-color: #000;
-    color: #fff;
+    background-color: #fff; /* fundo branco */
+    color: #444;
     font-family: 'Roboto', sans-serif;
   }
 
-  /* FAIXA BRANCA SUPERIOR */
   .header-white {
-    position: relative;
-    background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
-    color: #444; /* cinza escuro */
-    padding: 70px 30px 50px 30px;
     text-align: center;
-    overflow: hidden;
-  }
-
-  /* Imagem da cidade cinza sutil */
-  .city-bg {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 110%;
-    height: 100%;
-    background: url('https://i.imgur.com/xRZ48qV.png') no-repeat center bottom;
-    background-size: cover;
-    opacity: 0.15; /* aumenta para ficar mais visível */
-    pointer-events: none;
+    padding: 80px 20px 40px 20px;
+    cursor: pointer;
     user-select: none;
-    z-index: 0;
-  }
-
-  .header-content {
-    position: relative;
-    z-index: 1;
   }
 
   h1.title {
     font-family: 'Anton', sans-serif;
     font-weight: 900;
-    font-size: 6rem; /* maior */
+    font-size: 6rem;
     margin: 0;
-    color: #444; /* cinza forte */
+    color: #444;
     letter-spacing: 2px;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+    transition: color 0.3s ease;
+  }
+
+  h1.title:hover {
+    color: #b31217; /* vermelho escuro ao passar o mouse */
   }
 
   p.by-nesquik {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    font-size: 1.5rem; /* maior */
-    margin: 4px 0 10px 0; /* juntinho do título */
-    color: #555; /* cinza um pouco mais claro */
+    font-size: 1.5rem;
+    margin: 4px 0 10px 0;
+    color: #555;
     letter-spacing: 1px;
   }
 
   p.mafia-quote {
     font-style: italic;
     font-weight: 700;
-    font-size: 2rem; /* maior */
-    color: #b31217; /* vermelho escuro */
-    margin-top: 40px; /* distância maior */
+    font-size: 2rem;
+    color: #b31217;
+    margin-top: 20px;
     letter-spacing: 2px;
     text-shadow:
-      1px 1px 2px #000000cc;
+      1px 1px 2px #00000044;
+    display: none; /* começa escondido */
   }
 
-  /* FAIXA PRETA INFERIOR */
-  .header-black {
-    background: #000;
-    color: #fff;
-    text-align: center;
-    padding: 18px 30px;
-    font-size: 1.6rem;
-    font-weight: 600;
-    font-family: 'Anton', sans-serif;
-    letter-spacing: 2px;
-  }
-
-  /* Container geral */
   .container {
     max-width: 900px;
     margin: 40px auto 60px;
     padding: 0 20px;
+    color: #222;
   }
 
   label {
@@ -105,9 +75,9 @@
     padding: 10px;
     font-size: 1.1rem;
     border-radius: 5px;
-    border: 1px solid #333;
-    background: #111;
-    color: #eee;
+    border: 1px solid #aaa;
+    background: #f9f9f9;
+    color: #222;
   }
 
   button {
@@ -117,7 +87,7 @@
     font-weight: 700;
     border-radius: 8px;
     border: none;
-    background: #b31217; /* vermelho */
+    background: #b31217;
     color: #fff;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -127,21 +97,19 @@
     background: #800e11;
   }
 
-  /* Resultado */
   #result {
     margin-top: 30px;
-    background: #111;
+    background: #f0f0f0;
     border-radius: 8px;
     padding: 20px;
     font-family: monospace;
     font-size: 1.1rem;
     white-space: pre-wrap;
     min-height: 100px;
-    color: #eee;
+    color: #222;
     position: relative;
   }
 
-  /* Botões fixos topo direito */
   .fixed-buttons {
     position: fixed;
     top: 15px;
@@ -152,7 +120,7 @@
   }
 
   .icon-button {
-    background: #111;
+    background: #eee;
     border: 1.5px solid #b31217;
     color: #b31217;
     border-radius: 5px;
@@ -174,16 +142,11 @@
 </head>
 <body>
 
-<div class="header-white">
-  <div class="city-bg"></div>
-  <div class="header-content">
-    <h1 class="title">Pirakids</h1>
-    <p class="by-nesquik">By Nesquik</p>
-    <p class="mafia-quote">The world is yours...</p>
-  </div>
+<div class="header-white" id="headerWhite">
+  <h1 class="title">Pirakids</h1>
+  <p class="by-nesquik">By Nesquik</p>
+  <p class="mafia-quote" id="mafiaQuote">The world is yours...</p>
 </div>
-
-<div class="header-black">Gerard</div>
 
 <div class="container">
 
@@ -197,7 +160,7 @@
   </select>
 
   <label for="quantity">Quantos cartões gerar?</label>
-  <input type="number" id="quantity" value="5" min="1" max="50" />
+  <input type="number" id="quantity" value="5" min="1" max="10000" />
 
   <button id="generate">Gerar Cartões</button>
 
@@ -206,16 +169,18 @@
 </div>
 
 <div class="fixed-buttons" title="Ações rápidas">
-  <button class="icon-button" id="copy-btn" title="Copiar para área de transferência" aria-label="Copiar">
-    📋
-  </button>
-  <button class="icon-button" id="export-btn" title="Exportar para arquivo .txt" aria-label="Exportar">
-    💾
-  </button>
+  <button class="icon-button" id="copy-btn" title="Copiar para área de transferência" aria-label="Copiar">📋</button>
+  <button class="icon-button" id="export-btn" title="Exportar para arquivo .txt" aria-label="Exportar">💾</button>
 </div>
 
 <script>
-  // Função Luhn para calcular dígito verificador
+  const headerWhite = document.getElementById('headerWhite');
+  const mafiaQuote = document.getElementById('mafiaQuote');
+
+  headerWhite.addEventListener('click', () => {
+    mafiaQuote.style.display = mafiaQuote.style.display === 'none' ? 'block' : 'none';
+  });
+
   function calculateLuhn(number) {
     let sum = 0;
     let doubleDigit = false;
@@ -231,7 +196,6 @@
     return (10 - (sum % 10)) % 10;
   }
 
-  // Prefixos por bandeira
   const brandPrefixes = {
     visa: ['4'],
     mastercard: ['51','52','53','54','55'],
@@ -239,7 +203,6 @@
     discover: ['6011', '65', '644', '645', '646', '647', '648', '649']
   };
 
-  // Gera um cartão seguindo o padrão da bandeira e algoritmo Luhn
   function generateCard(brand) {
     let prefixArr;
     if(brand === 'random') {
@@ -251,17 +214,14 @@
     const prefix = prefixArr[Math.floor(Math.random() * prefixArr.length)];
     let length = brand === 'amex' ? 15 : 16;
 
-    // Gera o número menos o último dígito
     let number = prefix;
     while(number.length < length - 1) {
       number += Math.floor(Math.random() * 10);
     }
-    // Calcula o dígito verificador com Luhn
     const checkDigit = calculateLuhn(number);
     return number + checkDigit;
   }
 
-  // Referências DOM
   const generateBtn = document.getElementById('generate');
   const resultBox = document.getElementById('result');
   const copyBtn = document.getElementById('copy-btn');
@@ -269,12 +229,11 @@
   const brandSelect = document.getElementById('card-brand');
   const quantityInput = document.getElementById('quantity');
 
-  // Gera cartões e exibe
   generateBtn.addEventListener('click', () => {
     const brand = brandSelect.value;
     let quantity = parseInt(quantityInput.value);
     if(isNaN(quantity) || quantity < 1) quantity = 1;
-    if(quantity > 50) quantity = 50;
+    if(quantity > 10000) quantity = 10000; // limite alto para performance
 
     let output = '';
     for(let i=0; i < quantity; i++) {
@@ -283,7 +242,6 @@
     resultBox.textContent = output.trim();
   });
 
-  // Copiar para área de transferência
   copyBtn.addEventListener('click', () => {
     if(resultBox.textContent.trim() === '') return alert('Nada para copiar!');
     navigator.clipboard.writeText(resultBox.textContent).then(() => {
@@ -291,7 +249,6 @@
     });
   });
 
-  // Exportar para arquivo .txt
   exportBtn.addEventListener('click', () => {
     if(resultBox.textContent.trim() === '') return alert('Nada para exportar!');
     const blob = new Blob([resultBox.textContent], {type: 'text/plain'});
