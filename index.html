@@ -3,356 +3,338 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pirakids - Gerador e Verificador</title>
+<title>Pirakids - Gerador e Verificador de Cartões</title>
 <style>
-  /* Tema vermelho/preto */
+  @import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+  /* Fonte mafiosa: Unifraktur Cook */
+
   body {
     background-color: #000;
     color: #fff;
-    font-family: monospace, monospace;
-    margin: 10px 20px 50px 20px;
-  }
-  h1 {
-    color: #f00;
-    text-align: center;
-    margin-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
     user-select: none;
   }
-  .container {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
+  header {
+    text-align: center;
+    padding: 20px 0;
+    font-family: 'Unifraktur Cook', cursive;
+    font-size: 4rem;
+    color: #e60000;
+    text-shadow: 1px 1px 5px #800000;
+    letter-spacing: 4px;
   }
-  .box {
+  main {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+  }
+  section {
+    margin-bottom: 30px;
     background: #111;
-    border: 2px solid #f00;
-    border-radius: 8px;
     padding: 15px;
-    width: 450px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    border-radius: 8px;
   }
   label {
-    margin-top: 10px;
+    display: block;
+    margin: 10px 0 6px;
   }
-  input[type="number"],
-  input[type="text"],
-  select,
-  textarea {
-    margin-top: 5px;
-    background: #222;
-    border: 1px solid #f00;
-    color: #fff;
-    padding: 6px;
-    font-family: monospace, monospace;
-    font-size: 14px;
+  select, input[type=number], textarea {
+    width: 100%;
+    padding: 8px;
+    border: none;
     border-radius: 4px;
-    resize: none;
-  }
-  input[type="number"],
-  input[type="text"],
-  select {
-    width: 100%;
-  }
-  textarea {
-    width: 100%;
-    height: 180px;
-    font-size: 13px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background: #222;
+    color: #eee;
   }
   button {
-    margin-top: 15px;
-    padding: 10px;
-    background: #f00;
+    margin-top: 10px;
+    padding: 10px 18px;
+    background-color: #e60000;
     border: none;
-    color: #fff;
+    border-radius: 5px;
+    color: white;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 5px;
-    font-family: monospace, monospace;
-    font-size: 14px;
     transition: background-color 0.3s ease;
   }
   button:hover {
-    background: #c00;
+    background-color: #b30000;
   }
-  .result {
-    margin-top: 10px;
+  pre {
     background: #222;
-    border: 1px solid #f00;
+    color: #eee;
     padding: 10px;
-    height: 150px;
+    border-radius: 6px;
+    height: 180px;
     overflow-y: auto;
+    font-family: monospace;
     white-space: pre-wrap;
-    font-size: 14px;
+    word-break: break-word;
   }
-  .btn-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  /* Layout para verificação com contador no canto */
+  .mass-check-container {
+    position: relative;
+  }
+  #mass-result {
+    margin-top: 12px;
+    max-height: 250px;
+  }
+  #card-count {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 0.85rem;
+    color: #e60000;
+    font-weight: bold;
+    user-select: none;
   }
   footer {
-    color: #f00;
-    font-weight: bold;
     text-align: center;
-    user-select: none;
-    margin-top: 30px;
-    font-family: monospace, monospace;
+    padding: 15px 0;
+    font-size: 0.9rem;
+    color: #444;
+    background-color: #111;
   }
 </style>
 </head>
 <body>
 
-<h1>Pirakids</h1>
+<header>Pirakids</header>
 
-<div class="container">
-  <!-- Gerador -->
-  <div class="box" id="generator-box">
-    <h2>Gerador de Cartões</h2>
+<main>
 
-    <label for="select-brand">Selecione a bandeira:</label>
-    <select id="select-brand">
-      <option value="random">Aleatório</option>
-      <option value="visa">Visa</option>
-      <option value="mastercard">MasterCard</option>
-      <option value="amex">American Express</option>
-      <option value="discover">Discover</option>
-      <option value="diners">Diners Club</option>
-      <option value="jcb">JCB</option>
-      <option value="elo">Elo</option>
-      <option value="hiper">Hiper</option>
-      <option value="hipercard">Hipercard</option>
-    </select>
+<section>
+  <h2>Gerador de Cartões</h2>
+  <label for="select-brand">Bandeira:</label>
+  <select id="select-brand">
+    <option value="random">Aleatório</option>
+    <option value="visa">Visa</option>
+    <option value="mastercard">Mastercard</option>
+    <option value="amex">American Express</option>
+    <option value="discover">Discover</option>
+    <option value="diners">Diners Club</option>
+    <option value="jcb">JCB</option>
+    <option value="elo">Elo</option>
+    <option value="hiper">Hiper</option>
+    <option value="hipercard">Hipercard</option>
+  </select>
 
-    <label for="input-quantity">Quantidade:</label>
-    <input type="number" id="input-quantity" min="1" value="5" />
+  <label for="input-quantity">Quantidade:</label>
+  <input type="number" id="input-quantity" min="1" value="1" />
 
-    <button id="btn-generate">Gerar Cartões</button>
+  <button id="btn-generate">Gerar</button>
 
-    <div class="btn-group">
-      <button id="btn-copy">Copiar</button>
-      <button id="btn-export">Exportar TXT</button>
-    </div>
+  <pre id="generate-result" readonly></pre>
 
-    <pre class="result" id="generate-result" readonly></pre>
+  <button id="btn-copy">Copiar</button>
+  <button id="btn-export">Exportar TXT</button>
+</section>
+
+<section>
+  <h2>Verificador em Massa</h2>
+  <label for="mass-input">Cole os cartões (num|MM/AA|CVV):</label>
+  <textarea id="mass-input" rows="8" placeholder="Exemplo: 4111111111111111|12/27|123"></textarea>
+  <button id="btn-mass-check">Verificar</button>
+  <div class="mass-check-container">
+    <pre id="mass-result" readonly></pre>
+    <div id="card-count">Verificados: 0</div>
   </div>
+  <button id="btn-copy-mass">Copiar Resultados</button>
+</section>
 
-  <!-- Verificador em Massa -->
-  <div class="box" id="mass-checker-box">
-    <h2>Verificador em Massa</h2>
-
-    <label for="mass-input">Cole os cartões aqui (um por linha):</label>
-    <textarea id="mass-input" placeholder="Exemplo:&#10;4539876543210123|12/25|123&#10;5500000000000004|05/24|456"></textarea>
-
-    <button id="btn-mass-check">Verificar Todos</button>
-
-    <div class="btn-group">
-      <button id="btn-copy-mass">Copiar Resultados</button>
-    </div>
-
-    <pre class="result" id="mass-result" readonly></pre>
-  </div>
-</div>
+</main>
 
 <footer>BY Nesquik</footer>
 
 <script>
-  // Função Luhn para validar número do cartão
-  function isValidLuhn(num) {
-    let sum = 0, alt = false;
-    for (let i = num.length - 1; i >= 0; i--) {
-      let n = parseInt(num.charAt(i), 10);
+// Função Luhn para validar cartão
+function isValidLuhn(cardNum) {
+  let sum = 0;
+  let shouldDouble = false;
+  for (let i = cardNum.length - 1; i >= 0; i--) {
+    let digit = parseInt(cardNum.charAt(i));
+    if (shouldDouble) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    sum += digit;
+    shouldDouble = !shouldDouble;
+  }
+  return sum % 10 === 0;
+}
+
+// Verifica validade MM/AA e se não expirou
+function isValidDate(dateStr) {
+  const parts = dateStr.split('/');
+  if (parts.length !== 2) return false;
+  const mm = parseInt(parts[0], 10);
+  const aa = parseInt(parts[1], 10);
+  if (isNaN(mm) || isNaN(aa) || mm < 1 || mm > 12) return false;
+  const now = new Date();
+  const currentYear = now.getFullYear() % 100;
+  const currentMonth = now.getMonth() + 1;
+  if (aa < currentYear) return false;
+  if (aa === currentYear && mm < currentMonth) return false;
+  return true;
+}
+
+// Detecta bandeira básica pelo número inicial
+function getBrandByNumber(num) {
+  if (/^4/.test(num)) return 'Visa';
+  if (/^5[1-5]/.test(num)) return 'Mastercard';
+  if (/^3[47]/.test(num)) return 'American Express';
+  if (/^6(?:011|5)/.test(num)) return 'Discover';
+  if (/^3(?:0[0-5]|[68])/.test(num)) return 'Diners Club';
+  if (/^35/.test(num)) return 'JCB';
+  if (/^4011|^4576|^5067|^5090|^6277|^6362|^6363|^6504|^6516|^6550/.test(num)) return 'Elo';
+  if (/^637(095|568|599|609)/.test(num)) return 'Hiper';
+  if (/^(606282|3841)/.test(num)) return 'Hipercard';
+  return 'Desconhecida';
+}
+
+// Gerador de cartões
+function generateCard(brand) {
+  let prefix = '', length = 16;
+  switch (brand) {
+    case 'visa': prefix = '4'; length = 16; break;
+    case 'mastercard': prefix = '5' + (Math.floor(Math.random()*5)+1); length = 16; break;
+    case 'amex': prefix = ['34','37'][Math.floor(Math.random()*2)]; length = 15; break;
+    case 'discover': prefix = '6011'; length = 16; break;
+    case 'diners': prefix = '36'; length = 14; break;
+    case 'jcb': prefix = '35'; length = 16; break;
+    case 'elo': prefix = '5067'; length = 16; break;
+    case 'hiper': prefix = '637095'; length = 16; break;
+    case 'hipercard': prefix = '606282'; length = 16; break;
+    case 'random':
+      const brands = ['visa','mastercard','amex','discover','diners','jcb','elo','hiper','hipercard'];
+      return generateCard(brands[Math.floor(Math.random()*brands.length)]);
+    default:
+      prefix = '4';
+      length = 16;
+  }
+  let num = prefix;
+  while (num.length < length - 1) {
+    num += Math.floor(Math.random()*10);
+  }
+  // Luhn digit
+  function calcCheckDigit(n) {
+    let sum = 0, alt = true;
+    for (let i = n.length - 1; i >= 0; i--) {
+      let c = parseInt(n.charAt(i), 10);
       if (alt) {
-        n *= 2;
-        if (n > 9) n -= 9;
+        c *= 2;
+        if (c > 9) c -= 9;
       }
-      sum += n;
+      sum += c;
       alt = !alt;
     }
-    return (sum % 10 === 0);
+    return (10 - (sum % 10)) % 10;
   }
+  const checkDigit = calcCheckDigit(num);
+  num += checkDigit;
+  // Validade futura 1-5 anos
+  const now = new Date();
+  const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+  const year = String(now.getFullYear() + Math.floor(Math.random() * 5) + 1).slice(2);
+  // CVV
+  const cvvLength = (brand === 'amex') ? 4 : 3;
+  let cvv = '';
+  for (let i=0; i<cvvLength; i++) cvv += Math.floor(Math.random()*10);
+  return `${num}|${month}/${year}|${cvv}`;
+}
 
-  // Validar data validade MM/AA
-  function isValidDate(str) {
-    if (!/^\d{2}\/\d{2}$/.test(str)) return false;
-    const [mm, aa] = str.split('/').map(x => parseInt(x, 10));
-    if (mm < 1 || mm > 12) return false;
-    const now = new Date();
-    const currentYear = now.getFullYear() % 100;
-    const currentMonth = now.getMonth() + 1;
-    if (aa < currentYear) return false;
-    if (aa === currentYear && mm < currentMonth) return false;
-    return true;
+// DOM elements
+const btnGenerate = document.getElementById('btn-generate');
+const resultArea = document.getElementById('generate-result');
+const selectBrand = document.getElementById('select-brand');
+const inputQuantity = document.getElementById('input-quantity');
+const btnCopy = document.getElementById('btn-copy');
+const btnExport = document.getElementById('btn-export');
+
+btnGenerate.addEventListener('click', () => {
+  const brand = selectBrand.value;
+  let qty = parseInt(inputQuantity.value);
+  if (isNaN(qty) || qty < 1) qty = 1;
+  let cards = [];
+  for(let i=0; i<qty; i++) {
+    cards.push(generateCard(brand));
   }
+  resultArea.textContent = cards.join('\n');
+});
 
-  // Detecta bandeira por prefixo e tamanho
-  function getBrandByNumber(num) {
-    const len = num.length;
-    if (/^4/.test(num) && (len === 13 || len === 16 || len === 19)) return 'Visa';
-    if (/^5[1-5]/.test(num) && len === 16) return 'MasterCard';
-    if (/^3[47]/.test(num) && len === 15) return 'American Express';
-    if (/^6(?:011|5)/.test(num) && len === 16) return 'Discover';
-    if (/^3(?:0[0-5]|[68])/.test(num) && len === 14) return 'Diners Club';
-    if (/^(?:2131|1800|35)/.test(num) && (len === 15 || len === 16)) return 'JCB';
-    if (/^4011(78|79)/.test(num)) return 'Elo';
-    if (/^(3841|60)/.test(num)) return 'Hiper';
-    if (/^606282/.test(num)) return 'Hipercard';
-    return 'Desconhecida';
+btnCopy.addEventListener('click', () => {
+  if (!resultArea.textContent) return alert('Nada para copiar!');
+  navigator.clipboard.writeText(resultArea.textContent)
+    .then(() => alert('Copiado para a área de transferência!'))
+    .catch(() => alert('Falha ao copiar.'));
+});
+
+btnExport.addEventListener('click', () => {
+  if (!resultArea.textContent) return alert('Nada para exportar!');
+  const blob = new Blob([resultArea.textContent], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'cartoes.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Verificador em massa
+const btnMassCheck = document.getElementById('btn-mass-check');
+const massInput = document.getElementById('mass-input');
+const massResult = document.getElementById('mass-result');
+const btnCopyMass = document.getElementById('btn-copy-mass');
+const cardCount = document.getElementById('card-count');
+
+btnMassCheck.addEventListener('click', () => {
+  const lines = massInput.value.trim().split('\n').filter(l => l.trim().length > 0);
+  if (lines.length === 0) {
+    massResult.textContent = 'Cole ao menos um cartão no formato num|MM/AA|CVV';
+    cardCount.textContent = 'Verificados: 0';
+    return;
   }
-
-  // Gerar cartão válido para cada bandeira
-  function generateCard(brand) {
-    let prefix = '';
-    let length = 16;
-
-    switch(brand) {
-      case 'visa': prefix = '4'; length = 16; break;
-      case 'mastercard': prefix = '5' + (Math.floor(Math.random()*5)+1); length = 16; break;
-      case 'amex': prefix = (Math.random() < 0.5) ? '34' : '37'; length = 15; break;
-      case 'discover': prefix = '6011'; length = 16; break;
-      case 'diners': prefix = '36'; length = 14; break;
-      case 'jcb': prefix = '35'; length = 16; break;
-      case 'elo': prefix = '4011'; length = 16; break;
-      case 'hiper': prefix = '3841'; length = 16; break;
-      case 'hipercard': prefix = '606282'; length = 16; break;
-      default:
-        if (Math.random() < 0.5) {
-          prefix = '4'; length = 16;
-        } else {
-          prefix = '5' + (Math.floor(Math.random()*5)+1);
-          length = 16;
-        }
-        break;
+  let output = [];
+  for (let line of lines) {
+    let parts = line.trim().split('|');
+    if (parts.length !== 3) {
+      output.push(`[Inválido] Formato errado: ${line}`);
+      continue;
     }
-
-    // Preencher com números aleatórios até length-1
-    let num = prefix;
-    while (num.length < length - 1) {
-      num += Math.floor(Math.random()*10);
+    let [num, val, cvv] = parts.map(s => s.trim());
+    if (!/^\d+$/.test(num)) {
+      output.push(`[Inválido] Número com caracteres inválidos: ${line}`);
+      continue;
     }
-
-    // Calcular dígito verificador Luhn
-    function calcCheckDigit(n) {
-      let sum = 0, alt = true;
-      for (let i = n.length - 1; i >= 0; i--) {
-        let c = parseInt(n.charAt(i), 10);
-        if (alt) {
-          c *= 2;
-          if (c > 9) c -= 9;
-        }
-        sum += c;
-        alt = !alt;
-      }
-      return (10 - (sum % 10)) % 10;
+    if (!isValidLuhn(num)) {
+      output.push(`[Inválido] Número inválido Luhn: ${line}`);
+      continue;
     }
-    const checkDigit = calcCheckDigit(num);
-    num += checkDigit;
-
-    // Gerar validade (MM/AA) futura 1 a 5 anos
-    const now = new Date();
-    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-    const year = String(now.getFullYear() + Math.floor(Math.random() * 5) + 1).slice(2);
-
-    // Gerar CVV 3 ou 4 dígitos
-    const cvvLength = (brand === 'amex') ? 4 : 3;
-    let cvv = '';
-    for (let i=0; i<cvvLength; i++) cvv += Math.floor(Math.random()*10);
-
-    return `${num}|${month}/${year}|${cvv}`;
+    if (!isValidDate(val)) {
+      output.push(`[Inválido] Validade inválida ou expirada: ${line}`);
+      continue;
+    }
+    if (!/^\d{3,4}$/.test(cvv)) {
+      output.push(`[Inválido] CVV inválido: ${line}`);
+      continue;
+    }
+    let brand = getBrandByNumber(num);
+    output.push(`[Válido] ${line} - Bandeira: ${brand}`);
   }
+  massResult.textContent = output.join('\n');
+  cardCount.textContent = `Verificados: ${lines.length}`;
+});
 
-  // Gerador - DOM
-  const btnGenerate = document.getElementById('btn-generate');
-  const resultArea = document.getElementById('generate-result');
-  const selectBrand = document.getElementById('select-brand');
-  const inputQuantity = document.getElementById('input-quantity');
-  const btnCopy = document.getElementById('btn-copy');
-  const btnExport = document.getElementById('btn-export');
-
-  btnGenerate.addEventListener('click', () => {
-    const brand = selectBrand.value;
-    let qty = parseInt(inputQuantity.value);
-    if (isNaN(qty) || qty < 1) qty = 1;
-
-    let cards = [];
-    for(let i=0; i<qty; i++) {
-      if (brand === 'random') {
-        const brands = ['visa','mastercard','amex','discover','diners','jcb','elo','hiper','hipercard'];
-        cards.push(generateCard(brands[Math.floor(Math.random()*brands.length)]));
-      } else {
-        cards.push(generateCard(brand));
-      }
-    }
-    resultArea.textContent = cards.join('\n');
-  });
-
-  btnCopy.addEventListener('click', () => {
-    if (!resultArea.textContent) return alert('Nada para copiar!');
-    navigator.clipboard.writeText(resultArea.textContent)
-      .then(() => alert('Copiado para a área de transferência!'))
-      .catch(() => alert('Falha ao copiar.'));
-  });
-
-  btnExport.addEventListener('click', () => {
-    if (!resultArea.textContent) return alert('Nada para exportar!');
-    const blob = new Blob([resultArea.textContent], {type: 'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'cartoes.txt';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  // Verificador em massa
-  const btnMassCheck = document.getElementById('btn-mass-check');
-  const massInput = document.getElementById('mass-input');
-  const massResult = document.getElementById('mass-result');
-  const btnCopyMass = document.getElementById('btn-copy-mass');
-
-  btnMassCheck.addEventListener('click', () => {
-    const lines = massInput.value.trim().split('\n').filter(l => l.trim().length > 0);
-    if (lines.length === 0) {
-      massResult.textContent = 'Cole ao menos um cartão no formato num|MM/AA|CVV';
-      return;
-    }
-    let output = [];
-    for (let line of lines) {
-      let parts = line.trim().split('|');
-      if (parts.length !== 3) {
-        output.push(`[Inválido] Formato errado: ${line}`);
-        continue;
-      }
-      let [num, val, cvv] = parts.map(s => s.trim());
-      if (!/^\d+$/.test(num)) {
-        output.push(`[Inválido] Número com caracteres inválidos: ${line}`);
-        continue;
-      }
-      if (!isValidLuhn(num)) {
-        output.push(`[Inválido] Número inválido Luhn: ${line}`);
-        continue;
-      }
-      if (!isValidDate(val)) {
-        output.push(`[Inválido] Validade inválida ou expirada: ${line}`);
-        continue;
-      }
-      if (!/^\d{3,4}$/.test(cvv)) {
-        output.push(`[Inválido] CVV inválido: ${line}`);
-        continue;
-      }
-      let brand = getBrandByNumber(num);
-      output.push(`[Válido] ${line} - Bandeira: ${brand}`);
-    }
-    massResult.textContent = output.join('\n');
-  });
-
-  btnCopyMass.addEventListener('click', () => {
-    if (!massResult.textContent) return alert('Nada para copiar!');
-    navigator.clipboard.writeText(massResult.textContent)
-      .then(() => alert('Resultados copiados!'))
-      .catch(() => alert('Falha ao copiar.'));
-  });
+btnCopyMass.addEventListener('click', () => {
+  if (!massResult.textContent) return alert('Nada para copiar!');
+  navigator.clipboard.writeText(massResult.textContent)
+    .then(() => alert('Resultados copiados!'))
+    .catch(() => alert('Falha ao copiar.'));
+});
 </script>
 
 </body>
