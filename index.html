@@ -1,284 +1,151 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pirakids - Gerador de Cartões</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto&display=swap');
-
-  body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    color: #eee;
-    background-color: #000; /* fundo preto geral */
-  }
-
-  /* Topo cinza claro, menor altura */
-  .header-white {
-    background-color: #d3d3d3; /* cinza claro */
-    color: #444;
-    text-align: center;
-    padding: 40px 20px 20px 20px; /* diminuiu a altura */
-    cursor: pointer;
-    user-select: none;
-  }
-
-  h1.title {
-    font-family: 'Anton', sans-serif;
-    font-weight: 900;
-    font-size: 5rem; /* diminuiu o tamanho do texto principal */
-    margin: 0;
-    letter-spacing: 2px;
-    transition: color 0.3s ease;
-  }
-
-  h1.title:hover {
-    color: #b31217;
-  }
-
-  p.by-nesquik {
-    font-weight: 500;
-    font-size: 1.3rem; /* menor que antes */
-    margin: 4px 0 10px 0;
-    letter-spacing: 1px;
-  }
-
-  p.mafia-quote {
-    font-style: italic;
-    font-weight: 700;
-    font-size: 1.8rem; /* um pouco menor */
-    color: #b31217;
-    margin-top: 20px;
-    letter-spacing: 2px;
-    text-shadow:
-      1px 1px 2px #00000044;
-    display: none;
-  }
-
-  /* Container preta para o gerador */
-  .container {
-    max-width: 900px;
-    margin: 40px auto 60px;
-    padding: 30px 20px 50px 20px;
-  }
-
-  label {
-    display: block;
-    margin: 15px 0 8px 0;
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
-
-  select, input[type=number] {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.1rem;
-    border-radius: 5px;
-    border: 1px solid #555;
-    background: #222;
-    color: #eee;
-  }
-
-  button {
-    margin-top: 20px;
-    padding: 12px 20px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    border-radius: 8px;
-    border: none;
-    background: #b31217;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-
-  button:hover {
-    background: #800e11;
-  }
-
-  #result {
-    margin-top: 30px;
-    background: #111;
-    border-radius: 8px;
-    padding: 20px;
-    font-family: monospace;
-    font-size: 1.1rem;
-    white-space: pre-wrap;
-    min-height: 140px;
-    color: #eee;
-  }
-
-  .fixed-buttons {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-    display: flex;
-    gap: 12px;
-    z-index: 999;
-  }
-
-  .icon-button {
-    background: #000;
-    /* sem borda */
-    color: #b31217;
-    border-radius: 5px;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-
-  .icon-button:hover {
-    background: #b31217;
-    color: #fff;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Cartões</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
+    }
+    .header {
+      background-color: #444;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 2em;
+    }
+    .top-section {
+      background-color: #ccc;
+      color: black;
+      padding: 40px 20px 20px;
+      text-align: center;
+    }
+    .top-section h1 {
+      margin: 0;
+      font-size: 3em;
+    }
+    .subtext {
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+    .main {
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      background-color: #222;
+      color: white;
+      border: none;
+      padding: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      background-color: #666;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #verificador {
+      display: none;
+      padding: 20px;
+      background-color: #111;
+    }
+  </style>
 </head>
 <body>
+  <div class="top-section" id="top">
+    <div id="pirakids" onclick="contarCliques()">Pirakids</div>
+    <div>Banesquik</div>
+    <div class="subtext">The word is yours</div>
+  </div>
 
-<div class="header-white" id="headerWhite">
-  <h1 class="title">Pirakids</h1>
-  <p class="by-nesquik">By Nesquik</p>
-  <p class="mafia-quote" id="mafiaQuote">The world is yours...</p>
-</div>
+  <div class="main">
+    <h2>Gerador de Cartões</h2>
+    <label for="quantidade">Quantidade:</label>
+    <input type="number" id="quantidade" value="10" min="1" max="1000">
+    <button onclick="gerarCartoes()">Gerar</button>
+    <button onclick="copiarCartoes()">Copiar</button>
+    <button onclick="exportarTXT()">Exportar para TXT</button>
+    <textarea id="cartoesGerados"></textarea>
+  </div>
 
-<div class="container">
+  <div id="verificador">
+    <h2>Verificador de Cartões</h2>
+    <textarea id="entradaCartoes" placeholder="Cole os cartões aqui..."></textarea>
+    <br>
+    <button onclick="verificacaoUnica()">Verificação Única</button>
+    <button onclick="verificacaoMassa()">Verificação em Massa</button>
+    <div id="resultadoVerificacao"></div>
+  </div>
 
-  <label for="card-brand">Escolha a bandeira do cartão</label>
-  <select id="card-brand">
-    <option value="random">Aleatório</option>
-    <option value="visa">Visa</option>
-    <option value="mastercard">MasterCard</option>
-    <option value="amex">Amex</option>
-    <option value="discover">Discover</option>
-  </select>
-
-  <label for="quantity">Quantos cartões gerar?</label>
-  <input type="number" id="quantity" value="5" min="1" max="10000" />
-
-  <button id="generate">Gerar Cartões</button>
-
-  <pre id="result"></pre>
-
-</div>
-
-<div class="fixed-buttons" title="Ações rápidas">
-  <button class="icon-button" id="copy-btn" title="Copiar para área de transferência" aria-label="Copiar">📋</button>
-  <button class="icon-button" id="export-btn" title="Exportar para arquivo .txt" aria-label="Exportar">💾</button>
-</div>
-
-<script>
-  const headerWhite = document.getElementById('headerWhite');
-  const mafiaQuote = document.getElementById('mafiaQuote');
-
-  headerWhite.addEventListener('click', () => {
-    mafiaQuote.style.display = mafiaQuote.style.display === 'none' ? 'block' : 'none';
-  });
-
-  function calculateLuhn(number) {
-    let sum = 0;
-    let doubleDigit = false;
-    for (let i = number.length - 1; i >= 0; i--) {
-      let digit = parseInt(number[i]);
-      if (doubleDigit) {
-        digit *= 2;
-        if (digit > 9) digit -= 9;
+  <script>
+    function gerarCartoes() {
+      const qtd = parseInt(document.getElementById('quantidade').value);
+      const output = document.getElementById('cartoesGerados');
+      let cartoes = '';
+      for (let i = 0; i < qtd; i++) {
+        const bin = '400000';
+        const numero = bin + Math.floor(Math.random() * 1e10).toString().padStart(10, '0');
+        const mes = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+        const ano = new Date().getFullYear() + Math.floor(Math.random() * 5) + 1;
+        const cvv = Math.floor(100 + Math.random() * 900);
+        cartoes += `${numero}|${mes}|${ano}|${cvv}\n`;
       }
-      sum += digit;
-      doubleDigit = !doubleDigit;
+      output.value = cartoes.trim();
     }
-    return (10 - (sum % 10)) % 10;
-  }
 
-  const brandPrefixes = {
-    visa: ['4'],
-    mastercard: ['51','52','53','54','55'],
-    amex: ['34','37'],
-    discover: ['6011', '65', '644', '645', '646', '647', '648', '649']
-  };
-
-  function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function generateCard(brand) {
-    let prefixArr;
-    if(brand === 'random') {
-      const brands = Object.keys(brandPrefixes);
-      brand = brands[Math.floor(Math.random() * brands.length)];
+    function copiarCartoes() {
+      const output = document.getElementById('cartoesGerados');
+      output.select();
+      document.execCommand('copy');
     }
-    prefixArr = brandPrefixes[brand];
 
-    const prefix = prefixArr[Math.floor(Math.random() * prefixArr.length)];
-    let length = brand === 'amex' ? 15 : 16;
-
-    let number = prefix;
-    while(number.length < length - 1) {
-      number += randomInt(0,9);
+    function exportarTXT() {
+      const text = document.getElementById('cartoesGerados').value;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'cartoes.txt';
+      link.click();
     }
-    const checkDigit = calculateLuhn(number);
-    return number + checkDigit;
-  }
 
-  function generateExpirationDate() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = randomInt(1,12);
-    const expYear = randomInt(year, year + 5);
-    const mm = month.toString().padStart(2, '0');
-    const yy = expYear.toString().slice(-2);
-    return `${mm}/${yy}`;
-  }
-
-  function generateCVV() {
-    return randomInt(100, 999);
-  }
-
-  const generateBtn = document.getElementById('generate');
-  const resultBox = document.getElementById('result');
-  const copyBtn = document.getElementById('copy-btn');
-  const exportBtn = document.getElementById('export-btn');
-  const brandSelect = document.getElementById('card-brand');
-  const quantityInput = document.getElementById('quantity');
-
-  generateBtn.addEventListener('click', () => {
-    const brand = brandSelect.value;
-    let quantity = parseInt(quantityInput.value);
-    if(isNaN(quantity) || quantity < 1) quantity = 1;
-    if(quantity > 10000) quantity = 10000;
-
-    let output = '';
-    for(let i=0; i < quantity; i++) {
-      const cardNum = generateCard(brand);
-      const expDate = generateExpirationDate();
-      const cvv = generateCVV();
-      output += `Cartão: ${cardNum}\nVencimento: ${expDate}   CVV: ${cvv}\n\n`;
+    let cliques = 0;
+    function contarCliques() {
+      cliques++;
+      if (cliques >= 5) {
+        document.getElementById('verificador').style.display = 'block';
+      }
     }
-    resultBox.textContent = output.trim();
-  });
 
-  copyBtn.addEventListener('click', () => {
-    if(resultBox.textContent.trim() === '') return alert('Nada para copiar!');
-    navigator.clipboard.writeText(resultBox.textContent).then(() => {
-      alert('Texto copiado para área de transferência!');
-    });
-  });
+    function verificarCartao(cartao) {
+      const padrao = /^\d{16}\|\d{2}\|\d{4}\|\d{3}$/;
+      if (padrao.test(cartao)) {
+        return Math.random() < 0.7 ? 'Aprovado' : 'Recusado';
+      }
+      return 'Formato inválido';
+    }
 
-  exportBtn.addEventListener('click', () => {
-    if(resultBox.textContent.trim() === '') return alert('Nada para exportar!');
-    const blob = new Blob([resultBox.textContent], {type: 'text/plain'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'cartoes.txt';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  });
-</script>
+    function verificacaoUnica() {
+      const input = document.getElementById('entradaCartoes').value.trim();
+      const resultado = verificarCartao(input);
+      document.getElementById('resultadoVerificacao').innerText = resultado;
+    }
 
+    function verificacaoMassa() {
+      const entradas = document.getElementById('entradaCartoes').value.trim().split('\n');
+      let resultados = '';
+      entradas.forEach(cartao => {
+        const res = verificarCartao(cartao);
+        resultados += `${cartao} => ${res}\n`;
+      });
+      document.getElementById('resultadoVerificacao').innerText = resultados.trim();
+    }
+  </script>
 </body>
 </html>
