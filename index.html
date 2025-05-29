@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Pirakids #171 - by ne$quik</title>
+  <title>Pirakids - by ne$quik</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -13,11 +13,13 @@
       background-size: cover;
       color: #f1f1f1;
       text-shadow: 1px 1px 2px #000;
+      height: 100vh;
+      overflow-y: auto;
     }
 
     .overlay {
       background-color: rgba(0, 0, 0, 0.85);
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -47,6 +49,7 @@
       max-width: 500px;
       margin: 30px auto;
       box-shadow: 0 0 15px #000;
+      position: relative;
     }
 
     label {
@@ -91,14 +94,29 @@
       word-break: break-word;
       text-align: left;
       font-family: monospace;
-      color: #0f0;
+      color: #fff;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .copy-icon, .download-icon {
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      filter: invert(1);
     }
   </style>
 </head>
 <body>
   <div class="overlay"></div>
 
-  <h1>Pirakids #171</h1>
+  <h1>Pirakids</h1>
   <h2>by ne$quik</h2>
 
   <div class="container">
@@ -115,9 +133,13 @@
     <input type="number" id="quantidade" min="1" max="100" value="5">
 
     <button onclick="gerarCartoes()">Gerar Cartões</button>
-    <button onclick="copiarTexto()">Copiar</button>
 
     <div id="output"></div>
+
+    <div class="actions">
+      <img src="https://icons.iconarchive.com/icons/custom-icon-design/mono-general-1/512/copy-icon.png" alt="Copiar" class="copy-icon" onclick="copiarTexto()">
+      <img src="https://icons.iconarchive.com/icons/iconsmind/outline/512/Download-2-icon.png" alt="Download" class="download-icon" onclick="baixarTxt()">
+    </div>
   </div>
 
   <script>
@@ -183,6 +205,20 @@
       navigator.clipboard.writeText(output)
         .then(() => alert('Cartões copiados com sucesso!'))
         .catch(() => alert('Erro ao copiar'));
+    }
+
+    function baixarTxt() {
+      const conteudo = document.getElementById('output').textContent;
+      if (!conteudo.trim()) return alert('Nada para exportar!');
+      const blob = new Blob([conteudo], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cartoes_gerados.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
