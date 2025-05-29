@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Cartões - Pirakids Edition</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Cinzel', serif;
+      background-color: #0e0e0e;
+      color: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background-image: url('https://www.transparenttextures.com/patterns/black-felt.png');
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-top: 60px;
+      color: #e0c097;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    .container {
+      background-color: #1a1a1a;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+      margin-top: 30px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    select, input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background-color: #333;
+      color: #fff;
+    }
+
+    button {
+      background-color: #e0c097;
+      color: #0e0e0e;
+      border: none;
+      padding: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #ffcc66;
+    }
+
+    #output {
+      margin-top: 25px;
+      background-color: #111;
+      padding: 20px;
+      border-radius: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-word;
+      box-shadow: inset 0 0 10px #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cartões da Máfia</h1>
+
+  <div class="container">
+    <label for="bandeira">Escolha a bandeira:</label>
+    <select id="bandeira">
+      <option value="4">Visa (4)</option>
+      <option value="5">MasterCard (5)</option>
+      <option value="3">Amex (3)</option>
+      <option value="6">Discover (6)</option>
+    </select>
+
+    <label for="quantidade">Quantos cartões gerar:</label>
+    <input type="number" id="quantidade" min="1" max="100" value="5">
+
+    <button onclick="gerarCartoes()">Gerar Cartões</button>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+    function gerarCartoes() {
+      const bandeira = document.getElementById('bandeira').value;
+      const qtd = parseInt(document.getElementById('quantidade').value);
+      let resultado = '';
+
+      for (let i = 0; i < qtd; i++) {
+        let numero = bandeira;
+
+        while (numero.length < 15) {
+          numero += Math.floor(Math.random() * 10);
+        }
+
+        const digito = calcularLuhn(numero);
+        numero += digito;
+
+        resultado += `${numero}\n`;
+      }
+
+      document.getElementById('output').textContent = resultado;
+    }
+
+    function calcularLuhn(numeroParcial) {
+      let soma = 0;
+      let reverso = numeroParcial.split('').reverse();
+
+      for (let i = 0; i < reverso.length; i++) {
+        let n = parseInt(reverso[i]);
+        if (i % 2 === 0) {
+          n *= 2;
+          if (n > 9) n -= 9;
+        }
+        soma += n;
+      }
+
+      return (10 - (soma % 10)) % 10;
+    }
+  </script>
+</body>
+</html>
