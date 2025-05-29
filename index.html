@@ -3,265 +3,184 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Pirakids - Gerador & Verificador</title>
+<title>Gerador e Verificador de Cartões</title>
 <style>
-  /* Reset básico */
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
   body {
-    background: #000;
-    font-family: Arial, sans-serif;
-    color: white;
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100vh;
-  }
-  /* Cabeçalho com fundo branco/cinza claro */
-  header {
-    width: 100%;
-    background: #ddd;
-    color: black;
-    padding: 30px 0;
-    text-align: center;
-  }
-  #pirakids {
-    font-weight: 900;
-    font-size: 48px;
-    cursor: pointer;
-    color: #555;
+    background-color: #000;
+    color: #fff;
+    font-family: monospace, monospace;
+    margin: 0; padding: 20px;
     user-select: none;
-    transition: color 0.3s ease;
-    font-family: 'Arial Black', Gadget, sans-serif;
   }
-  #pirakids:hover {
-    color: #d22;
+  h1 {
+    text-align: center;
+    color: red;
+    cursor: pointer;
+    user-select: none;
   }
-  #bynesquik {
-    font-weight: 600;
-    font-size: 24px;
-    margin-top: 5px;
-    font-family: Arial, sans-serif;
-  }
-  #theword {
-    margin-top: 10px;
-    font-family: "Georgia", serif;
-    font-size: 20px;
-    color: #d22;
-  }
-  #theword::after {
-    content: "...";
-  }
-
-  /* Conteúdo principal fundo preto */
-  main {
-    flex: 1;
-    width: 100%;
-    max-width: 700px;
-    background: #000;
-    padding: 20px;
+  #container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
   }
-
-  /* Blocos de seção */
-  .section {
-    width: 100%;
+  #generator, #verifier {
     background: #111;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 15px;
+    flex: 1 1 400px;
+    min-width: 350px;
   }
-
-  /* BOTÕES */
+  label {
+    display: block;
+    margin: 10px 0 5px;
+  }
+  select, input[type=number], input[type=text], textarea {
+    width: 100%;
+    background: #222;
+    border: 1px solid #444;
+    color: #fff;
+    font-family: monospace;
+    font-size: 1rem;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  textarea {
+    resize: vertical;
+    min-height: 150px;
+    font-size: 0.9rem;
+  }
   button {
-    background: #d22;
+    margin-top: 10px;
+    padding: 10px;
+    width: 100%;
+    background: red;
     border: none;
-    padding: 10px 20px;
     color: white;
     font-weight: bold;
     cursor: pointer;
     border-radius: 5px;
-    margin-top: 10px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
   }
   button:hover {
-    background: #a11;
+    background: #cc0000;
   }
-
-  /* INPUTS E SELECTS */
-  input[type="number"], select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: none;
-    font-size: 16px;
-    background: #222;
-    color: white;
-  }
-
-  /* Output texto area */
-  #gen-output, #check-output {
-    background: #222;
-    color: #eee;
-    padding: 15px;
-    border-radius: 6px;
-    font-family: monospace;
-    max-height: 200px;
-    overflow-y: auto;
+  #single-check-result {
+    margin-top: 10px;
     white-space: pre-wrap;
-  }
-
-  /* Estilos verificação única - cartão */
-  #single-checker {
     background: #222;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 0 15px #d22;
+    padding: 10px;
+    border-radius: 4px;
+    min-height: 90px;
   }
-  #single-checker label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
+  #single-card-image {
+    margin-top: 8px;
+    font-size: 1.4rem;
   }
-  #single-checker input {
-    width: 100%;
-    margin-bottom: 15px;
+  #mass-check-output {
+    margin-top: 10px;
+    white-space: pre-wrap;
+    background: #222;
+    padding: 10px;
+    border-radius: 4px;
+    min-height: 150px;
+    font-size: 0.85rem;
+    overflow-y: auto;
   }
-  #single-checker .card-image {
-    margin-top: 15px;
-    text-align: center;
-    color: #d22;
-    font-weight: bold;
-  }
-
-  /* Centralizar output e inputs do verificador em massa */
-  #mass-checker {
-    width: 100%;
-    margin-top: 20px;
-  }
-
 </style>
 </head>
 <body>
 
-<header>
-  <div id="pirakids" title="Clique 3 vezes para alternar modos">Pirakids</div>
-  <div id="bynesquik">By nesquik</div>
-  <div id="theword">The word is yours</div>
-</header>
+<h1 id="title">Pirakids</h1>
 
-<main>
-  <!-- Gerador de cartões -->
-  <section id="generator" class="section">
+<div id="container">
+
+  <section id="generator">
     <h2>Gerador de Cartões</h2>
-    <label for="card-quantity">Quantos cartões deseja gerar? (1-100)</label>
-    <input type="number" id="card-quantity" min="1" max="100" value="5" />
-    
-    <label for="card-brand">Selecione a bandeira:</label>
+    <label for="card-quantity">Quantidade (1 a 100):</label>
+    <input type="number" id="card-quantity" min="1" max="100" value="10" />
+
+    <label for="card-brand">Bandeira:</label>
     <select id="card-brand">
+      <option value="random">Aleatório</option>
       <option value="visa">Visa</option>
       <option value="mastercard">Mastercard</option>
+      <option value="amex">American Express</option>
+      <option value="discover">Discover</option>
+      <option value="elo">Elo</option>
+      <option value="diners">Diners Club</option>
+      <option value="jcb">JCB</option>
     </select>
 
-    <button id="btn-generate">Gerar Cartões</button>
+    <button id="btn-generate">Gerar</button>
 
-    <pre id="gen-output" aria-live="polite" aria-atomic="true"></pre>
+    <label for="gen-output">Cartões gerados (Número|Validade|CVV):</label>
+    <textarea id="gen-output" readonly></textarea>
   </section>
 
-  <!-- Verificador em Massa -->
-  <section id="mass-checker" class="section" style="display:none;">
-    <h2>Verificação em Massa</h2>
-    <textarea id="mass-input" rows="6" placeholder="Cole os cartões aqui, 1 por linha, formato: número|mm/aa|cvv"></textarea>
-    <button id="btn-mass-check">Verificar em Massa</button>
-    <pre id="check-output"></pre>
+  <section id="verifier">
+    <h2>Verificador de Cartões</h2>
+
+    <div style="display:flex; gap:15px; flex-wrap: wrap;">
+
+      <div style="flex:1; min-width: 180px;">
+        <h3>Verificação Única</h3>
+        <label for="single-number">Número do Cartão:</label>
+        <input type="text" id="single-number" placeholder="Apenas números" maxlength="19" />
+
+        <label for="single-validity">Validade (MM/AA):</label>
+        <input type="text" id="single-validity" placeholder="MM/AA" maxlength="5" />
+
+        <label for="single-cvv">CVV:</label>
+        <input type="text" id="single-cvv" placeholder="3 dígitos" maxlength="3" />
+
+        <button id="btn-single-check">Verificar Único</button>
+
+        <pre id="single-check-result"></pre>
+        <div id="single-card-image"></div>
+      </div>
+
+      <div style="flex:1.5; min-width: 250px;">
+        <h3>Verificação em Massa</h3>
+        <label for="mass-input">Cole os cartões (Número|MM/AA|CVV) por linha:</label>
+        <textarea id="mass-input" placeholder="Exemplo: 4111111111111111|12/25|123"></textarea>
+        <button id="btn-mass-check">Verificar em Massa</button>
+        <pre id="mass-check-output"></pre>
+      </div>
+
+    </div>
   </section>
 
-  <!-- Verificação Única -->
-  <section id="single-checker" style="display:none;">
-    <h2>Verificação Única</h2>
-    <label for="single-number">Número do Cartão</label>
-    <input type="text" id="single-number" maxlength="19" placeholder="Número do cartão" />
-    <label for="single-validity">Validade (MM/AA)</label>
-    <input type="text" id="single-validity" maxlength="5" placeholder="MM/AA" />
-    <label for="single-cvv">CVV</label>
-    <input type="text" id="single-cvv" maxlength="3" placeholder="CVV" />
-    <button id="btn-single-check">Verificar</button>
-    <div class="card-image" id="single-card-image"></div>
-    <pre id="single-check-result"></pre>
-  </section>
-</main>
+</div>
 
 <script>
-  // Controle de cliques no Pirakids para alternar seções
-  let clickCount = 0;
-  const pirakidsEl = document.getElementById('pirakids');
-  const generatorSection = document.getElementById('generator');
-  const massCheckerSection = document.getElementById('mass-checker');
-  const singleCheckerSection = document.getElementById('single-checker');
-
-  pirakidsEl.addEventListener('click', () => {
-    clickCount++;
-    if (clickCount === 3) {
-      // Alterna entre gerador -> verificador em massa -> verificador único
-      if (generatorSection.style.display !== 'none') {
-        generatorSection.style.display = 'none';
-        massCheckerSection.style.display = 'block';
-        singleCheckerSection.style.display = 'none';
-      } else if (massCheckerSection.style.display !== 'none') {
-        generatorSection.style.display = 'none';
-        massCheckerSection.style.display = 'none';
-        singleCheckerSection.style.display = 'block';
-      } else {
-        generatorSection.style.display = 'block';
-        massCheckerSection.style.display = 'none';
-        singleCheckerSection.style.display = 'none';
-      }
-      clickCount = 0;
-    }
-  });
-
-  // Mudar cor ao passar mouse
-  pirakidsEl.addEventListener('mouseenter', () => {
-    pirakidsEl.style.color = '#d22';
-  });
-  pirakidsEl.addEventListener('mouseleave', () => {
-    pirakidsEl.style.color = '#555';
-  });
-
-  // GERADOR DE CARTÕES
-
   // Função para gerar números aleatórios entre min e max (inteiros)
   function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // Função para gerar validade MM/AA (mês 01-12, ano 23-28)
+  // Geração validade MM/AA (anos próximos)
   function generateValidity() {
     const month = randomInt(1,12).toString().padStart(2,'0');
     const year = randomInt(23,28).toString();
     return `${month}/${year}`;
   }
 
-  // Função para gerar CVV 3 dígitos
-  function generateCVV() {
-    return randomInt(100,999).toString();
+  // Gerar CVV 3 dígitos
+  function generateCVV(length = 3) {
+    let cvv = '';
+    for(let i=0; i<length; i++) {
+      cvv += randomInt(0,9).toString();
+    }
+    return cvv;
   }
 
-  // Função para calcular o dígito Luhn para um número sem o último dígito
+  // Luhn digit calculation
   function calculateLuhnDigit(number) {
     const digits = number.split('').map(d => parseInt(d));
     let sum = 0;
-    // Luhn process (de trás pra frente)
     for (let i = digits.length - 1, j=0; i >= 0; i--, j++) {
       let digit = digits[i];
-      if (j % 2 === 0) { // posição par contando do fim (0-based)
+      if (j % 2 === 0) {
         digit *= 2;
         if (digit > 9) digit -= 9;
       }
@@ -271,45 +190,7 @@
     return (mod === 0) ? 0 : (10 - mod);
   }
 
-  // Função para gerar número do cartão (Visa começa com 4, Mastercard começa com 5)
-  // Gera número "realista" e válido pelo Luhn
-  function generateCardNumber(brand) {
-    let prefix = brand === 'visa' ? '4' : '5';
-    let number = prefix;
-    // Completa até 15 dígitos (sem o último)
-    while (number.length < 15) {
-      number += randomInt(0,9).toString();
-    }
-    const checkDigit = calculateLuhnDigit(number);
-    return number + checkDigit.toString();
-  }
-
-  // Evento botão gerar cartões
-  document.getElementById('btn-generate').addEventListener('click', () => {
-    const qtyInput = document.getElementById('card-quantity');
-    const qty = parseInt(qtyInput.value);
-    const brand = document.getElementById('card-brand').value;
-
-    if (isNaN(qty) || qty < 1 || qty > 100) {
-      alert('Por favor, digite uma quantidade entre 1 e 100.');
-      qtyInput.focus();
-      return;
-    }
-
-    let output = '';
-    for(let i=0; i < qty; i++) {
-      const number = generateCardNumber(brand);
-      const validity = generateValidity();
-      const cvv = generateCVV();
-      output += `${number}|${validity}|${cvv}\n`;
-    }
-    document.getElementById('gen-output').textContent = output.trim();
-  });
-
-
-  // VERIFICADOR ÚNICO
-
-  // Função para validar Luhn
+  // Função que valida o número pelo algoritmo de Luhn
   function isValidLuhn(num) {
     let sum = 0;
     let alt = false;
@@ -325,14 +206,95 @@
     return sum % 10 === 0;
   }
 
-  // Identificar bandeira pelo primeiro dígito
-  function getBrand(number) {
-    if(number.startsWith('4')) return 'Visa';
-    if(number.startsWith('5')) return 'Mastercard';
+  // Bandeiras e seus prefixos + tamanhos e cvv
+  // Cada objeto: prefixos[], tamanho total do número, tamanho cvv, nome para mostrar
+  const cardBrands = {
+    visa:       {prefixes: ['4'], length: 16, cvv: 3, name: 'Visa'},
+    mastercard: {prefixes: ['51','52','53','54','55'], length: 16, cvv: 3, name: 'Mastercard'},
+    amex:       {prefixes: ['34','37'], length: 15, cvv: 4, name: 'American Express'},
+    discover:   {prefixes: ['6011','65','644','645','646','647','648','649'], length: 16, cvv: 3, name: 'Discover'},
+    elo:        {prefixes: ['40117','431274','438935','504175','636297'], length: 16, cvv: 3, name: 'Elo'},
+    diners:     {prefixes: ['300','301','302','303','304','305','36','38'], length: 14, cvv: 3, name: 'Diners Club'},
+    jcb:        {prefixes: ['3528','3589'], length: 16, cvv: 3, name: 'JCB'}
+  };
+
+  // Função para gerar número válido para uma bandeira
+  function generateCardNumber(brandKey) {
+    let brand = cardBrands[brandKey];
+    if (!brand) {
+      // Se for "random" ou inválido, escolhe aleatoriamente uma bandeira válida
+      const keys = Object.keys(cardBrands);
+      brandKey = keys[randomInt(0, keys.length - 1)];
+      brand = cardBrands[brandKey];
+    }
+
+    // Escolhe prefixo aleatório da lista
+    const prefix = brand.prefixes[randomInt(0, brand.prefixes.length - 1)];
+    // Começa com o prefixo
+    let number = prefix;
+
+    // Completa com números aleatórios até length - 1
+    while (number.length < brand.length - 1) {
+      number += randomInt(0,9);
+    }
+
+    // Calcula dígito verificador
+    const checkDigit = calculateLuhnDigit(number);
+    return {number: number + checkDigit.toString(), brandKey: brandKey};
+  }
+
+  // Gerar validade (para Amex, pode manter igual)
+  // Gerar CVV com o tamanho correto para cada bandeira
+  function generateCard(brandKey) {
+    const cardNumData = generateCardNumber(brandKey);
+    const validity = generateValidity();
+    const cvvLength = cardBrands[cardNumData.brandKey].cvv;
+    const cvv = generateCVV(cvvLength);
+    return `${cardNumData.number}|${validity}|${cvv}`;
+  }
+
+  // Função para identificar bandeira pelo prefixo (para verificação)
+  function getBrandByNumber(number) {
+    for (const key in cardBrands) {
+      for (const prefix of cardBrands[key].prefixes) {
+        if (number.startsWith(prefix)) {
+          return cardBrands[key].name;
+        }
+      }
+    }
     return 'Desconhecida';
   }
 
-  // Evento botão verificação única
+  // Verificar validade do cartão (data)
+  function isValidDate(val) {
+    if (!val.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) return false;
+    const [mm, yy] = val.split('/');
+    const currentYear = new Date().getFullYear() % 100;
+    const currentMonth = new Date().getMonth() + 1;
+    if (parseInt(mm) < 1 || parseInt(mm) > 12) return false;
+    if (parseInt(yy) < currentYear) return false;
+    if (parseInt(yy) === currentYear && parseInt(mm) < currentMonth) return false;
+    return true;
+  }
+
+  // EVENTOS
+
+  document.getElementById('btn-generate').addEventListener('click', () => {
+    const qtyInput = document.getElementById('card-quantity');
+    let qty = parseInt(qtyInput.value);
+    if (isNaN(qty) || qty < 1) qty = 1;
+    if (qty > 100) qty = 100;
+
+    const brandSelect = document.getElementById('card-brand');
+    let brand = brandSelect.value;
+
+    let output = '';
+    for(let i=0; i < qty; i++) {
+      output += generateCard(brand) + '\n';
+    }
+    document.getElementById('gen-output').value = output.trim();
+  });
+
   document.getElementById('btn-single-check').addEventListener('click', () => {
     const num = document.getElementById('single-number').value.replace(/\D/g,'');
     const val = document.getElementById('single-validity').value.trim();
@@ -349,93 +311,76 @@
       alert('Validade deve estar no formato MM/AA.');
       return;
     }
-    if (!cvv.match(/^\d{3}$/)) {
-      alert('CVV inválido.');
+    if (!cvv.match(/^\d{3,4}$/)) {
+      alert('CVV inválido (3 ou 4 dígitos).');
       return;
     }
 
-    const brand = getBrand(num);
+    const brand = getBrandByNumber(num);
     const validLuhn = isValidLuhn(num);
-    let validityMsg = '';
-    const [mm, yy] = val.split('/');
-    // Validade simples: mês entre 1 e 12, ano >= 23 (2023)
-    const currentYear = new Date().getFullYear() % 100;
-    const currentMonth = new Date().getMonth() + 1;
+    const validDate = isValidDate(val);
 
-    let validDate = false;
-    if (parseInt(mm) >= 1 && parseInt(mm) <= 12) {
-      if (parseInt(yy) > currentYear || (parseInt(yy) === currentYear && parseInt(mm) >= currentMonth)) {
-        validDate = true;
-      }
-    }
-    validityMsg = validDate ? 'Validade dentro do prazo.' : 'Validade expirada ou inválida.';
+    let validityMsg = validDate ? 'Validade dentro do prazo.' : 'Validade expirada ou inválida.';
 
-    // Mostrar resultado
     resultEl.textContent = 
       `Bandeira: ${brand}\n` +
       `Número válido (Luhn): ${validLuhn ? 'Sim' : 'Não'}\n` +
       `Validade: ${validityMsg}\n` +
       `CVV: ${cvv}`;
 
-    // Mostrar "imagem" simbólica da bandeira
     if (brand === 'Visa') {
       imageEl.textContent = '💳 Visa';
     } else if (brand === 'Mastercard') {
       imageEl.textContent = '💳 Mastercard';
+    } else if (brand === 'American Express') {
+      imageEl.textContent = '💳 American Express';
+    } else if (brand === 'Discover') {
+      imageEl.textContent = '💳 Discover';
+    } else if (brand === 'Elo') {
+      imageEl.textContent = '💳 Elo';
+    } else if (brand === 'Diners Club') {
+      imageEl.textContent = '💳 Diners Club';
+    } else if (brand === 'JCB') {
+      imageEl.textContent = '💳 JCB';
     } else {
-      imageEl.textContent = '❓ Desconhecida';
+      imageEl.textContent = '💳 Bandeira desconhecida';
     }
   });
 
-
-  // VERIFICAÇÃO EM MASSA
-
-  // Evento botão verificar em massa
   document.getElementById('btn-mass-check').addEventListener('click', () => {
     const input = document.getElementById('mass-input').value.trim();
-    const outputEl = document.getElementById('check-output');
-
+    const output = [];
     if (!input) {
       alert('Cole os cartões para verificar.');
       return;
     }
-
     const lines = input.split('\n');
-    let result = '';
 
-    for (let i=0; i<lines.length; i++) {
-      const line = lines[i].trim();
+    for(let line of lines) {
+      line = line.trim();
       if (!line) continue;
-      const parts = line.split('|');
-      if (parts.length !== 3) {
-        result += `Linha ${i+1}: Formato inválido\n`;
+      // Espera formato: número|MM/AA|CVV
+      const parts = line.split('|').map(p => p.trim());
+      if(parts.length !== 3) {
+        output.push(`[Inválido] Formato incorreto: ${line}`);
         continue;
       }
       const [num, val, cvv] = parts;
-      const brand = getBrand(num);
-      const validLuhn = isValidLuhn(num);
-      let validityMsg = '';
-
-      // Validade simples como no único
-      const valMatch = val.match(/^(0[1-9]|1[0-2])\/\d{2}$/);
-      let validDate = false;
-      if (valMatch) {
-        const [mm, yy] = val.split('/');
-        const currentYear = new Date().getFullYear() % 100;
-        const currentMonth = new Date().getMonth() + 1;
-        if (parseInt(mm) >= 1 && parseInt(mm) <= 12) {
-          if (parseInt(yy) > currentYear || (parseInt(yy) === currentYear && parseInt(mm) >= currentMonth)) {
-            validDate = true;
-          }
-        }
+      const numClean = num.replace(/\D/g,'');
+      if(numClean.length < 13 || numClean.length > 19) {
+        output.push(`[Inválido] Número inválido: ${line}`);
+        continue;
       }
-      validityMsg = validDate ? 'Validade dentro do prazo.' : 'Validade expirada ou inválida.';
+      const brand = getBrandByNumber(numClean);
+      const validLuhn = isValidLuhn(numClean);
+      const validDate = isValidDate(val);
+      let validityMsg = validDate ? 'Validade ok' : 'Validade inválida';
 
-      result += `Linha ${i+1}: Bandeira: ${brand} | Luhn: ${validLuhn ? 'OK' : 'Inválido'} | ${validityMsg} | CVV: ${cvv}\n`;
+      output.push(`${num} | ${val} | ${cvv} -> ${brand} | Luhn: ${validLuhn ? 'Ok' : 'Inválido'} | ${validityMsg}`);
     }
-
-    outputEl.textContent = result.trim();
+    document.getElementById('mass-check-output').textContent = output.join('\n');
   });
+
 </script>
 
 </body>
