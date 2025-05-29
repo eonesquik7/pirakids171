@@ -17,9 +17,9 @@
   /* FAIXA BRANCA SUPERIOR */
   .header-white {
     position: relative;
-    background: #fff;
+    background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
     color: #444; /* cinza escuro */
-    padding: 60px 30px 40px 30px;
+    padding: 70px 30px 50px 30px;
     text-align: center;
     overflow: hidden;
   }
@@ -47,29 +47,28 @@
   h1.title {
     font-family: 'Anton', sans-serif;
     font-weight: 900;
-    font-size: 4.5rem;
+    font-size: 6rem; /* maior */
     margin: 0;
     color: #444; /* cinza forte */
     letter-spacing: 2px;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.1);
   }
 
   p.by-nesquik {
     font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 1.3rem;
-    margin: 8px 0 20px 0;
+    font-weight: 500;
+    font-size: 1.5rem; /* maior */
+    margin: 4px 0 10px 0; /* juntinho do título */
     color: #555; /* cinza um pouco mais claro */
     letter-spacing: 1px;
-    /* Aproximar do título */
-    margin-top: 5px;
   }
 
   p.mafia-quote {
     font-style: italic;
     font-weight: 700;
-    font-size: 1.8rem;
+    font-size: 2rem; /* maior */
     color: #b31217; /* vermelho escuro */
-    margin: 0;
+    margin-top: 40px; /* distância maior */
     letter-spacing: 2px;
     text-shadow:
       1px 1px 2px #000000cc;
@@ -171,8 +170,6 @@
     background: #b31217;
     color: #fff;
   }
-
-  /* Ícones simples em SVG inline */
 </style>
 </head>
 <body>
@@ -276,35 +273,35 @@
   generateBtn.addEventListener('click', () => {
     const brand = brandSelect.value;
     let quantity = parseInt(quantityInput.value);
-    if (isNaN(quantity) || quantity < 1) quantity = 1;
-    if (quantity > 50) quantity = 50;
+    if(isNaN(quantity) || quantity < 1) quantity = 1;
+    if(quantity > 50) quantity = 50;
 
-    let cards = [];
-    for(let i=0; i<quantity; i++) {
-      cards.push(generateCard(brand));
+    let output = '';
+    for(let i=0; i < quantity; i++) {
+      output += generateCard(brand) + '\n';
     }
-    resultBox.textContent = cards.join('\n');
+    resultBox.textContent = output.trim();
   });
 
-  // Copiar para clipboard
+  // Copiar para área de transferência
   copyBtn.addEventListener('click', () => {
-    if(resultBox.textContent.trim() === '') return alert('Gere os cartões primeiro.');
+    if(resultBox.textContent.trim() === '') return alert('Nada para copiar!');
     navigator.clipboard.writeText(resultBox.textContent).then(() => {
-      alert('Cartões copiados para área de transferência!');
+      alert('Texto copiado para área de transferência!');
     });
   });
 
-  // Exportar para txt
+  // Exportar para arquivo .txt
   exportBtn.addEventListener('click', () => {
-    if(resultBox.textContent.trim() === '') return alert('Gere os cartões primeiro.');
+    if(resultBox.textContent.trim() === '') return alert('Nada para exportar!');
     const blob = new Blob([resultBox.textContent], {type: 'text/plain'});
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'cartoes_pirakids.txt';
+    a.href = URL.createObjectURL(blob);
+    a.download = 'cartoes.txt';
     a.click();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(a.href);
   });
+
 </script>
 
 </body>
