@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pirakids - The World is Yours</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pirakids - Card Generator</title>
   <style>
     * {
       margin: 0;
@@ -12,78 +13,66 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #000;
       color: #fff;
       overflow-x: hidden;
     }
 
     header {
-      background-color: #111;
-      padding: 40px 0 60px;
+      background-color: #fff;
+      color: #333;
+      padding: 50px 20px;
       text-align: center;
       position: relative;
     }
 
     header h1 {
-      font-size: 64px;
-      font-weight: 900;
-      color: #ccc;
-    }
-
-    header h2 {
-      font-size: 28px;
-      font-weight: 300;
-      margin-top: 10px;
-      color: #aaa;
+      font-size: 48px;
+      font-weight: bold;
+      color: #333;
+      letter-spacing: 2px;
     }
 
     header p {
-      font-size: 32px;
-      color: red;
-      margin-top: 25px;
-      font-style: italic;
+      font-size: 18px;
+      color: #666;
+      margin-top: 10px;
     }
 
-    .content {
+    header .slogan {
+      color: red;
+      font-size: 24px;
+      margin-top: 15px;
+    }
+
+    main {
       background-color: #111;
-      padding: 60px 20px;
+      padding: 40px 20px;
       text-align: center;
     }
 
-    .content h3 {
-      font-size: 32px;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    select,
-    input[type="number"] {
-      padding: 12px;
-      font-size: 16px;
+    select, input, button {
+      padding: 10px;
       margin: 10px;
-      border-radius: 8px;
+      font-size: 16px;
+      border-radius: 5px;
       border: none;
     }
 
     button {
-      padding: 14px 26px;
-      font-size: 16px;
-      margin-top: 20px;
-      border: none;
-      border-radius: 8px;
       background-color: red;
       color: white;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background-color 0.3s;
     }
 
     button:hover {
       background-color: darkred;
     }
 
-    .card-container {
-      margin-top: 40px;
+    .cards {
+      margin-top: 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -92,133 +81,125 @@
 
     .card {
       background-color: #222;
-      padding: 14px 20px;
+      color: #0f0;
+      padding: 10px 20px;
       border-radius: 8px;
-      font-family: monospace;
-      font-size: 20px;
-      width: 320px;
-      text-align: center;
-      border: 1px solid #555;
+      font-size: 18px;
+      width: fit-content;
     }
 
-    .fixed-buttons {
+    .actions {
       position: fixed;
       top: 10px;
       right: 20px;
       display: flex;
-      gap: 12px;
+      gap: 15px;
     }
 
-    .fixed-buttons img {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
+    .actions button {
+      background-color: transparent;
+      color: white;
+      border: 1px solid #fff;
+      padding: 8px;
+      border-radius: 5px;
     }
 
-    .weapon-left, .weapon-right {
-      position: fixed;
-      top: 200px;
-      width: 80px;
-      opacity: 0.15;
+    .actions button:hover {
+      background-color: white;
+      color: black;
     }
-
-    .weapon-left {
-      left: 0;
-      transform: rotate(-15deg);
-    }
-
-    .weapon-right {
-      right: 0;
-      transform: rotate(15deg);
-    }
-
   </style>
 </head>
+
 <body>
   <header>
-    <h1>Pirakids</h1>
-    <h2>By Nesquik</h2>
-    <p>The world is yours...</p>
+    <h1 style="font-size: 64px; color: #444;">Pirakids</h1>
+    <p style="font-size: 20px; color: #888;">By Nesquik</p>
+    <div class="slogan">The World is Yours...</div>
   </header>
-
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Silhouette_AK47.svg/2048px-Silhouette_AK47.svg.png" alt="arma esquerda" class="weapon-left">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Silhouette_AK47.svg/2048px-Silhouette_AK47.svg.png" alt="arma direita" class="weapon-right">
-
-  <div class="fixed-buttons">
-    <img src="https://cdn-icons-png.flaticon.com/512/60/60990.png" alt="Copiar" title="Copiar" onclick="copiarCartoes()">
-    <img src="https://cdn-icons-png.flaticon.com/512/60/60525.png" alt="Exportar" title="Exportar" onclick="exportarCartoes()">
-  </div>
-
-  <div class="content">
-    <h3>Gerador de Cartões</h3>
-    <select id="bandeira">
-      <option value="aleatorio">Aleatório</option>
-      <option value="4">Visa</option>
-      <option value="5">MasterCard</option>
-      <option value="3">Amex</option>
-      <option value="6">Discover</option>
-    </select>
-    <input type="number" id="quantidade" placeholder="Quantidade" min="1" max="50">
-    <br>
-    <button onclick="gerarCartoes()">Gerar</button>
-    <div class="card-container" id="cartoes"></div>
+  <main>
+    <div class="controls">
+      <select id="bandeira">
+        <option value="aleatorio">Aleatório</option>
+        <option value="4">Visa</option>
+        <option value="5">MasterCard</option>
+        <option value="3">Amex</option>
+        <option value="6">Discover</option>
+      </select>
+      <input type="number" id="quantidade" placeholder="Quantidade" min="1" value="1">
+      <button onclick="gerarCartoes()">Gerar</button>
+    </div>
+    <div class="cards" id="cards"></div>
+  </main>
+  <div class="actions">
+    <button onclick="copiarCartoes()">📋</button>
+    <button onclick="exportarTxt()">.txt</button>
   </div>
 
   <script>
-    function luhnCheck(numero) {
+    function gerarCartoes() {
+      const bandeira = document.getElementById('bandeira').value;
+      const quantidade = parseInt(document.getElementById('quantidade').value);
+      const cardsDiv = document.getElementById('cards');
+      cardsDiv.innerHTML = '';
+
+      for (let i = 0; i < quantidade; i++) {
+        const card = gerarNumero(bandeira);
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerText = card;
+        cardsDiv.appendChild(div);
+      }
+    }
+
+    function gerarNumero(prefixo) {
+      let numero = '';
+      if (prefixo === 'aleatorio') {
+        const prefixos = ['4', '5', '3', '6'];
+        numero = prefixos[Math.floor(Math.random() * prefixos.length)];
+      } else {
+        numero = prefixo;
+      }
+      while (numero.length < 15) {
+        numero += Math.floor(Math.random() * 10);
+      }
+      numero += calcularLuhn(numero);
+      return numero;
+    }
+
+    function calcularLuhn(numero) {
       let soma = 0;
-      let alternar = false;
+      let alt = true;
       for (let i = numero.length - 1; i >= 0; i--) {
         let n = parseInt(numero.charAt(i));
-        if (alternar) {
+        if (alt) {
           n *= 2;
           if (n > 9) n -= 9;
         }
         soma += n;
-        alternar = !alternar;
+        alt = !alt;
       }
-      return soma % 10 === 0;
-    }
-
-    function gerarNumero(base) {
-      while (base.length < 15) {
-        base += Math.floor(Math.random() * 10);
-      }
-      for (let i = 0; i < 10; i++) {
-        let tentativa = base + i;
-        if (luhnCheck(tentativa)) return tentativa;
-      }
-      return base + '0';
-    }
-
-    function gerarCartoes() {
-      const container = document.getElementById('cartoes');
-      container.innerHTML = '';
-      const quantidade = parseInt(document.getElementById('quantidade').value) || 1;
-      let prefixo = document.getElementById('bandeira').value;
-      for (let i = 0; i < quantidade; i++) {
-        let inicio = prefixo === 'aleatorio' ? [3, 4, 5, 6][Math.floor(Math.random() * 4)].toString() : prefixo;
-        let numero = gerarNumero(inicio);
-        let div = document.createElement('div');
-        div.className = 'card';
-        div.textContent = numero;
-        container.appendChild(div);
-      }
+      return (10 - (soma % 10)) % 10;
     }
 
     function copiarCartoes() {
-      const cartoes = Array.from(document.querySelectorAll('.card')).map(c => c.textContent).join('\n');
-      navigator.clipboard.writeText(cartoes).then(() => alert('Cartões copiados!'));
+      const cards = document.querySelectorAll('.card');
+      const texto = Array.from(cards).map(card => card.innerText).join('\n');
+      navigator.clipboard.writeText(texto);
+      alert('Cartões copiados!');
     }
 
-    function exportarCartoes() {
-      const cartoes = Array.from(document.querySelectorAll('.card')).map(c => c.textContent).join('\n');
-      const blob = new Blob([cartoes], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'cartoes.txt';
-      link.click();
+    function exportarTxt() {
+      const cards = document.querySelectorAll('.card');
+      const texto = Array.from(cards).map(card => card.innerText).join('\n');
+      const blob = new Blob([texto], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cartoes.txt';
+      a.click();
     }
   </script>
 </body>
+
 </html>
