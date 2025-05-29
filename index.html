@@ -6,313 +6,276 @@
 <title>Gerador e Verificador de Cartões</title>
 <style>
   body {
-    background-color: #000;
+    background: #000;
     color: #fff;
     font-family: monospace, monospace;
-    margin: 0; padding: 20px;
-    user-select: none;
+    margin: 20px;
   }
-  h1 {
+  h2 {
+    color: #f00;
+    margin-bottom: 10px;
     text-align: center;
-    color: red;
-    cursor: pointer;
-    user-select: none;
   }
-  #container {
+  .container {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
+    justify-content: center;
   }
-  #generator, #verifier {
+  .box {
     background: #111;
-    border: 1px solid #555;
-    border-radius: 6px;
+    border: 2px solid #f00;
+    border-radius: 8px;
     padding: 15px;
-    flex: 1 1 400px;
-    min-width: 350px;
+    width: 400px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
   label {
-    display: block;
-    margin: 10px 0 5px;
+    margin-top: 10px;
   }
-  select, input[type=number], input[type=text], textarea {
-    width: 100%;
+  input[type="number"],
+  select,
+  textarea {
+    margin-top: 5px;
     background: #222;
-    border: 1px solid #444;
+    border: 1px solid #f00;
     color: #fff;
-    font-family: monospace;
-    font-size: 1rem;
-    padding: 8px;
+    padding: 6px;
+    font-family: monospace, monospace;
+    font-size: 14px;
     border-radius: 4px;
+    resize: none;
+  }
+  input[type="number"] {
+    width: 100%;
   }
   textarea {
-    resize: vertical;
-    min-height: 150px;
-    font-size: 0.9rem;
+    width: 100%;
+    height: 150px;
+    font-size: 13px;
   }
   button {
-    margin-top: 10px;
+    margin-top: 15px;
     padding: 10px;
-    width: 100%;
-    background: red;
+    background: #f00;
     border: none;
-    color: white;
+    color: #fff;
     font-weight: bold;
     cursor: pointer;
     border-radius: 5px;
+    font-family: monospace, monospace;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
   button:hover {
-    background: #cc0000;
+    background: #c00;
   }
-  #single-check-result {
-    margin-top: 10px;
-    white-space: pre-wrap;
+  .result {
+    margin-top: 15px;
     background: #222;
+    border: 1px solid #f00;
     padding: 10px;
-    border-radius: 4px;
-    min-height: 90px;
-  }
-  #single-card-image {
-    margin-top: 8px;
-    font-size: 1.4rem;
-  }
-  #mass-check-output {
-    margin-top: 10px;
-    white-space: pre-wrap;
-    background: #222;
-    padding: 10px;
-    border-radius: 4px;
-    min-height: 150px;
-    font-size: 0.85rem;
+    height: 150px;
     overflow-y: auto;
+    white-space: pre-wrap;
+    font-size: 14px;
   }
 </style>
 </head>
 <body>
 
-<h1 id="title">Pirakids</h1>
-
-<div id="container">
-
-  <section id="generator">
+<div class="container">
+  <!-- Gerador de cartões -->
+  <div class="box" id="generator-box">
     <h2>Gerador de Cartões</h2>
-    <label for="card-quantity">Quantidade (1 a 100):</label>
-    <input type="number" id="card-quantity" min="1" max="100" value="10" />
 
-    <label for="card-brand">Bandeira:</label>
-    <select id="card-brand">
+    <label for="select-brand">Selecione a bandeira:</label>
+    <select id="select-brand">
       <option value="random">Aleatório</option>
       <option value="visa">Visa</option>
-      <option value="mastercard">Mastercard</option>
+      <option value="mastercard">MasterCard</option>
       <option value="amex">American Express</option>
       <option value="discover">Discover</option>
-      <option value="elo">Elo</option>
       <option value="diners">Diners Club</option>
       <option value="jcb">JCB</option>
+      <option value="elo">Elo</option>
+      <option value="hiper">Hiper</option>
+      <option value="hipercard">Hipercard</option>
     </select>
 
-    <button id="btn-generate">Gerar</button>
+    <label for="input-quantity">Quantidade:</label>
+    <input type="number" id="input-quantity" min="1" max="50" value="5" />
 
-    <label for="gen-output">Cartões gerados (Número|Validade|CVV):</label>
-    <textarea id="gen-output" readonly></textarea>
-  </section>
+    <button id="btn-generate">Gerar Cartões</button>
 
-  <section id="verifier">
-    <h2>Verificador de Cartões</h2>
+    <pre class="result" id="generate-result"></pre>
+  </div>
 
-    <div style="display:flex; gap:15px; flex-wrap: wrap;">
+  <!-- Verificador de cartões -->
+  <div class="box" id="checker-box">
+    <h2>Verificador de Cartão Único</h2>
 
-      <div style="flex:1; min-width: 180px;">
-        <h3>Verificação Única</h3>
-        <label for="single-number">Número do Cartão:</label>
-        <input type="text" id="single-number" placeholder="Apenas números" maxlength="19" />
+    <label for="single-number">Número do cartão:</label>
+    <input type="number" id="single-number" placeholder="Número (somente dígitos)" />
 
-        <label for="single-validity">Validade (MM/AA):</label>
-        <input type="text" id="single-validity" placeholder="MM/AA" maxlength="5" />
+    <label for="single-validity">Validade (MM/AA):</label>
+    <input type="text" id="single-validity" placeholder="Ex: 12/25" maxlength="5" />
 
-        <label for="single-cvv">CVV:</label>
-        <input type="text" id="single-cvv" placeholder="3 dígitos" maxlength="3" />
+    <label for="single-cvv">CVV:</label>
+    <input type="number" id="single-cvv" placeholder="CVV" />
 
-        <button id="btn-single-check">Verificar Único</button>
+    <button id="btn-check">Verificar</button>
 
-        <pre id="single-check-result"></pre>
-        <div id="single-card-image"></div>
-      </div>
+    <pre class="result" id="single-check-result"></pre>
+  </div>
+</div>
 
-      <div style="flex:1.5; min-width: 250px;">
-        <h3>Verificação em Massa</h3>
-        <label for="mass-input">Cole os cartões (Número|MM/AA|CVV) por linha:</label>
-        <textarea id="mass-input" placeholder="Exemplo: 4111111111111111|12/25|123"></textarea>
-        <button id="btn-mass-check">Verificar em Massa</button>
-        <pre id="mass-check-output"></pre>
-      </div>
+<!-- Verificador em massa -->
+<div class="container" style="margin-top:30px; justify-content:center;">
+  <div class="box" style="width: 850px;">
+    <h2>Verificador de Cartões em Massa</h2>
 
-    </div>
-  </section>
+    <label for="mass-input">Cole os cartões (formato: número|MM/AA|CVV) — um por linha:</label>
+    <textarea id="mass-input" placeholder="Exemplo: 4111111111111111|12/25|123"></textarea>
 
+    <button id="btn-mass-check">Verificar em Massa</button>
+
+    <pre class="result" id="mass-check-output"></pre>
+  </div>
 </div>
 
 <script>
-  // Função para gerar números aleatórios entre min e max (inteiros)
-  function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  // Geração validade MM/AA (anos próximos)
-  function generateValidity() {
-    const month = randomInt(1,12).toString().padStart(2,'0');
-    const year = randomInt(23,28).toString();
-    return `${month}/${year}`;
-  }
-
-  // Gerar CVV 3 dígitos
-  function generateCVV(length = 3) {
-    let cvv = '';
-    for(let i=0; i<length; i++) {
-      cvv += randomInt(0,9).toString();
-    }
-    return cvv;
-  }
-
-  // Luhn digit calculation
-  function calculateLuhnDigit(number) {
-    const digits = number.split('').map(d => parseInt(d));
-    let sum = 0;
-    for (let i = digits.length - 1, j=0; i >= 0; i--, j++) {
-      let digit = digits[i];
-      if (j % 2 === 0) {
-        digit *= 2;
-        if (digit > 9) digit -= 9;
-      }
-      sum += digit;
-    }
-    const mod = sum % 10;
-    return (mod === 0) ? 0 : (10 - mod);
-  }
-
-  // Função que valida o número pelo algoritmo de Luhn
+  // Função Luhn
   function isValidLuhn(num) {
-    let sum = 0;
-    let alt = false;
-    for(let i = num.length - 1; i >= 0; i--) {
-      let digit = parseInt(num.charAt(i));
+    let sum = 0, alt = false;
+    for (let i = num.length - 1; i >= 0; i--) {
+      let n = parseInt(num.charAt(i), 10);
       if (alt) {
-        digit *= 2;
-        if(digit > 9) digit -= 9;
+        n *= 2;
+        if (n > 9) n -= 9;
       }
-      sum += digit;
+      sum += n;
       alt = !alt;
     }
-    return sum % 10 === 0;
+    return (sum % 10 === 0);
   }
 
-  // Bandeiras e seus prefixos + tamanhos e cvv
-  // Cada objeto: prefixos[], tamanho total do número, tamanho cvv, nome para mostrar
-  const cardBrands = {
-    visa:       {prefixes: ['4'], length: 16, cvv: 3, name: 'Visa'},
-    mastercard: {prefixes: ['51','52','53','54','55'], length: 16, cvv: 3, name: 'Mastercard'},
-    amex:       {prefixes: ['34','37'], length: 15, cvv: 4, name: 'American Express'},
-    discover:   {prefixes: ['6011','65','644','645','646','647','648','649'], length: 16, cvv: 3, name: 'Discover'},
-    elo:        {prefixes: ['40117','431274','438935','504175','636297'], length: 16, cvv: 3, name: 'Elo'},
-    diners:     {prefixes: ['300','301','302','303','304','305','36','38'], length: 14, cvv: 3, name: 'Diners Club'},
-    jcb:        {prefixes: ['3528','3589'], length: 16, cvv: 3, name: 'JCB'}
-  };
-
-  // Função para gerar número válido para uma bandeira
-  function generateCardNumber(brandKey) {
-    let brand = cardBrands[brandKey];
-    if (!brand) {
-      // Se for "random" ou inválido, escolhe aleatoriamente uma bandeira válida
-      const keys = Object.keys(cardBrands);
-      brandKey = keys[randomInt(0, keys.length - 1)];
-      brand = cardBrands[brandKey];
-    }
-
-    // Escolhe prefixo aleatório da lista
-    const prefix = brand.prefixes[randomInt(0, brand.prefixes.length - 1)];
-    // Começa com o prefixo
-    let number = prefix;
-
-    // Completa com números aleatórios até length - 1
-    while (number.length < brand.length - 1) {
-      number += randomInt(0,9);
-    }
-
-    // Calcula dígito verificador
-    const checkDigit = calculateLuhnDigit(number);
-    return {number: number + checkDigit.toString(), brandKey: brandKey};
+  // Validar data validade MM/AA
+  function isValidDate(str) {
+    if (!/^\d{2}\/\d{2}$/.test(str)) return false;
+    const [mm, aa] = str.split('/').map(x => parseInt(x, 10));
+    if (mm < 1 || mm > 12) return false;
+    const currentYear = new Date().getFullYear() % 100;
+    return aa >= currentYear;
   }
 
-  // Gerar validade (para Amex, pode manter igual)
-  // Gerar CVV com o tamanho correto para cada bandeira
-  function generateCard(brandKey) {
-    const cardNumData = generateCardNumber(brandKey);
-    const validity = generateValidity();
-    const cvvLength = cardBrands[cardNumData.brandKey].cvv;
-    const cvv = generateCVV(cvvLength);
-    return `${cardNumData.number}|${validity}|${cvv}`;
-  }
-
-  // Função para identificar bandeira pelo prefixo (para verificação)
-  function getBrandByNumber(number) {
-    for (const key in cardBrands) {
-      for (const prefix of cardBrands[key].prefixes) {
-        if (number.startsWith(prefix)) {
-          return cardBrands[key].name;
-        }
-      }
-    }
+  // Detecta bandeira por prefixo e tamanho
+  function getBrandByNumber(num) {
+    const len = num.length;
+    if (/^4/.test(num) && (len === 13 || len === 16 || len === 19)) return 'Visa';
+    if (/^5[1-5]/.test(num) && len === 16) return 'MasterCard';
+    if (/^3[47]/.test(num) && len === 15) return 'American Express';
+    if (/^6(?:011|5)/.test(num) && len === 16) return 'Discover';
+    if (/^3(?:0[0-5]|[68])/.test(num) && len === 14) return 'Diners Club';
+    if (/^(?:2131|1800|35)/.test(num) && (len === 15 || len === 16)) return 'JCB';
+    if (/^4011(78|79)/.test(num)) return 'Elo';
+    if (/^(3841|60)/.test(num)) return 'Hiper';
+    if (/^606282/.test(num)) return 'Hipercard';
     return 'Desconhecida';
   }
 
-  // Verificar validade do cartão (data)
-  function isValidDate(val) {
-    if (!val.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) return false;
-    const [mm, yy] = val.split('/');
-    const currentYear = new Date().getFullYear() % 100;
-    const currentMonth = new Date().getMonth() + 1;
-    if (parseInt(mm) < 1 || parseInt(mm) > 12) return false;
-    if (parseInt(yy) < currentYear) return false;
-    if (parseInt(yy) === currentYear && parseInt(mm) < currentMonth) return false;
-    return true;
+  // Gerar cartão válido para cada bandeira
+  function generateCard(brand) {
+    let prefix = '';
+    let length = 16;
+
+    switch(brand) {
+      case 'visa': prefix = '4'; length = 16; break;
+      case 'mastercard': prefix = '5' + (Math.floor(Math.random()*5)+1); length = 16; break;
+      case 'amex': prefix = (Math.random() < 0.5) ? '34' : '37'; length = 15; break;
+      case 'discover': prefix = '6011'; length = 16; break;
+      case 'diners': prefix = '36'; length = 14; break;
+      case 'jcb': prefix = '35'; length = 16; break;
+      case 'elo': prefix = '4011'; length = 16; break;
+      case 'hiper': prefix = '3841'; length = 16; break;
+      case 'hipercard': prefix = '606282'; length = 16; break;
+      default:
+        // aleatório entre visa e mastercard para random
+        if (Math.random() < 0.5) {
+          prefix = '4'; length = 16;
+        } else {
+          prefix = '5' + (Math.floor(Math.random()*5)+1); length = 16;
+        }
+    }
+
+    let number = prefix;
+    while (number.length < length - 1) {
+      number += Math.floor(Math.random() * 10);
+    }
+
+    // Calcular dígito verificador
+    function calcCheckDigit(num) {
+      let sum = 0;
+      let alt = true;
+      for (let i = num.length - 1; i >= 0; i--) {
+        let n = parseInt(num.charAt(i), 10);
+        if (alt) {
+          n *= 2;
+          if (n > 9) n -= 9;
+        }
+        sum += n;
+        alt = !alt;
+      }
+      let check = (10 - (sum % 10)) % 10;
+      return check;
+    }
+
+    number += calcCheckDigit(number);
+
+    // Gerar validade e CVV
+    const now = new Date();
+    const month = ('0' + (Math.floor(Math.random()*12) + 1)).slice(-2);
+    const year = (now.getFullYear() + Math.floor(Math.random()*5) + 1).toString().slice(-2);
+    let cvvLength = (brand === 'amex') ? 4 : 3;
+    let cvv = '';
+    for (let i = 0; i < cvvLength; i++) {
+      cvv += Math.floor(Math.random() * 10);
+    }
+
+    return `${number}|${month}/${year}|${cvv}`;
   }
 
-  // EVENTOS
+  // Eventos e lógica
 
   document.getElementById('btn-generate').addEventListener('click', () => {
-    const qtyInput = document.getElementById('card-quantity');
-    let qty = parseInt(qtyInput.value);
-    if (isNaN(qty) || qty < 1) qty = 1;
-    if (qty > 100) qty = 100;
-
-    const brandSelect = document.getElementById('card-brand');
-    let brand = brandSelect.value;
-
-    let output = '';
-    for(let i=0; i < qty; i++) {
-      output += generateCard(brand) + '\n';
+    const brand = document.getElementById('select-brand').value;
+    const qty = parseInt(document.getElementById('input-quantity').value, 10);
+    if (qty < 1 || qty > 50) {
+      alert('Quantidade deve ser entre 1 e 50.');
+      return;
     }
-    document.getElementById('gen-output').value = output.trim();
+    let results = [];
+    for (let i = 0; i < qty; i++) {
+      results.push(generateCard(brand));
+    }
+    document.getElementById('generate-result').textContent = results.join('\n');
   });
 
-  document.getElementById('btn-single-check').addEventListener('click', () => {
-    const num = document.getElementById('single-number').value.replace(/\D/g,'');
+  document.getElementById('btn-check').addEventListener('click', () => {
+    const num = document.getElementById('single-number').value.trim();
     const val = document.getElementById('single-validity').value.trim();
     const cvv = document.getElementById('single-cvv').value.trim();
-
     const resultEl = document.getElementById('single-check-result');
-    const imageEl = document.getElementById('single-card-image');
 
-    if (!num || num.length < 13 || num.length > 19) {
-      alert('Número do cartão inválido.');
+    if (!num || !val || !cvv) {
+      resultEl.textContent = 'Preencha todos os campos.';
       return;
     }
-    if (!val.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) {
-      alert('Validade deve estar no formato MM/AA.');
-      return;
-    }
-    if (!cvv.match(/^\d{3,4}$/)) {
-      alert('CVV inválido (3 ou 4 dígitos).');
+
+    if (!/^\d+$/.test(num)) {
+      resultEl.textContent = 'Número do cartão inválido (apenas dígitos).';
       return;
     }
 
@@ -320,31 +283,8 @@
     const validLuhn = isValidLuhn(num);
     const validDate = isValidDate(val);
 
-    let validityMsg = validDate ? 'Validade dentro do prazo.' : 'Validade expirada ou inválida.';
-
-    resultEl.textContent = 
-      `Bandeira: ${brand}\n` +
-      `Número válido (Luhn): ${validLuhn ? 'Sim' : 'Não'}\n` +
-      `Validade: ${validityMsg}\n` +
-      `CVV: ${cvv}`;
-
-    if (brand === 'Visa') {
-      imageEl.textContent = '💳 Visa';
-    } else if (brand === 'Mastercard') {
-      imageEl.textContent = '💳 Mastercard';
-    } else if (brand === 'American Express') {
-      imageEl.textContent = '💳 American Express';
-    } else if (brand === 'Discover') {
-      imageEl.textContent = '💳 Discover';
-    } else if (brand === 'Elo') {
-      imageEl.textContent = '💳 Elo';
-    } else if (brand === 'Diners Club') {
-      imageEl.textContent = '💳 Diners Club';
-    } else if (brand === 'JCB') {
-      imageEl.textContent = '💳 JCB';
-    } else {
-      imageEl.textContent = '💳 Bandeira desconhecida';
-    }
+    let message = `Bandeira: ${brand}\nValidade: ${validDate ? 'Ok' : 'Inválida'}\nLuhn: ${validLuhn ? 'Válido' : 'Inválido'}`;
+    resultEl.textContent = message;
   });
 
   document.getElementById('btn-mass-check').addEventListener('click', () => {
@@ -380,7 +320,6 @@
     }
     document.getElementById('mass-check-output').textContent = output.join('\n');
   });
-
 </script>
 
 </body>
