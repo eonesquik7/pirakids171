@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Gerador e Verificador de Cartões</title>
+<title>Pirakids - Gerador e Verificador</title>
 <style>
+  /* Tema vermelho, preto e branco */
   body {
-    background: #000;
+    background-color: #000;
     color: #fff;
     font-family: monospace, monospace;
     margin: 20px;
@@ -36,6 +37,7 @@
     margin-top: 10px;
   }
   input[type="number"],
+  input[type="text"],
   select,
   textarea {
     margin-top: 5px;
@@ -48,7 +50,8 @@
     border-radius: 4px;
     resize: none;
   }
-  input[type="number"] {
+  input[type="number"],
+  input[type="text"] {
     width: 100%;
   }
   textarea {
@@ -82,12 +85,17 @@
     white-space: pre-wrap;
     font-size: 14px;
   }
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Gerador de cartões -->
+  <!-- Gerador -->
   <div class="box" id="generator-box">
     <h2>Gerador de Cartões</h2>
 
@@ -106,25 +114,30 @@
     </select>
 
     <label for="input-quantity">Quantidade:</label>
-    <input type="number" id="input-quantity" min="1" max="50" value="5" />
+    <input type="number" id="input-quantity" min="1" value="5" />
 
     <button id="btn-generate">Gerar Cartões</button>
+
+    <div class="btn-group">
+      <button id="btn-copy">Copiar</button>
+      <button id="btn-export">Exportar TXT</button>
+    </div>
 
     <pre class="result" id="generate-result"></pre>
   </div>
 
-  <!-- Verificador de cartões -->
+  <!-- Verificador Único -->
   <div class="box" id="checker-box">
     <h2>Verificador de Cartão Único</h2>
 
     <label for="single-number">Número do cartão:</label>
-    <input type="number" id="single-number" placeholder="Número (somente dígitos)" />
+    <input type="text" id="single-number" placeholder="Número (somente dígitos)" />
 
     <label for="single-validity">Validade (MM/AA):</label>
     <input type="text" id="single-validity" placeholder="Ex: 12/25" maxlength="5" />
 
     <label for="single-cvv">CVV:</label>
-    <input type="number" id="single-cvv" placeholder="CVV" />
+    <input type="text" id="single-cvv" placeholder="CVV" />
 
     <button id="btn-check">Verificar</button>
 
@@ -132,22 +145,8 @@
   </div>
 </div>
 
-<!-- Verificador em massa -->
-<div class="container" style="margin-top:30px; justify-content:center;">
-  <div class="box" style="width: 850px;">
-    <h2>Verificador de Cartões em Massa</h2>
-
-    <label for="mass-input">Cole os cartões (formato: número|MM/AA|CVV) — um por linha:</label>
-    <textarea id="mass-input" placeholder="Exemplo: 4111111111111111|12/25|123"></textarea>
-
-    <button id="btn-mass-check">Verificar em Massa</button>
-
-    <pre class="result" id="mass-check-output"></pre>
-  </div>
-</div>
-
 <script>
-  // Função Luhn
+  // Função Luhn para validar número do cartão
   function isValidLuhn(num) {
     let sum = 0, alt = false;
     for (let i = num.length - 1; i >= 0; i--) {
@@ -202,7 +201,6 @@
       case 'hiper': prefix = '3841'; length = 16; break;
       case 'hipercard': prefix = '606282'; length = 16; break;
       default:
-        // aleatório entre visa e mastercard para random
         if (Math.random() < 0.5) {
           prefix = '4'; length = 16;
         } else {
@@ -215,7 +213,7 @@
       number += Math.floor(Math.random() * 10);
     }
 
-    // Calcular dígito verificador
+    // Calcular dígito verificador (Luhn)
     function calcCheckDigit(num) {
       let sum = 0;
       let alt = true;
@@ -228,97 +226,121 @@
         sum += n;
         alt = !alt;
       }
-      let check = (10 - (sum % 10)) % 10;
-      return check;
+      return (10 - (sum % 10)) % 10;
     }
 
-    number += calcCheckDigit(number);
+    const checkDigit = calcCheckDigit(number);
+    number += checkDigit;
 
-    // Gerar validade e CVV
+    // Gerar validade (futuro, tema vermelho/preto)
     const now = new Date();
-    const month = ('0' + (Math.floor(Math.random()*12) + 1)).slice(-2);
-    const year = (now.getFullYear() + Math.floor(Math.random()*5) + 1).toString().slice(-2);
-    let cvvLength = (brand === 'amex') ? 4 : 3;
+    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+    const year = String(now.getFullYear() + Math.floor(Math.random() * 5) + 1).slice(2);
+
+    // Gerar CVV
+    const cvvLength = (brand === 'amex') ? 4 : 3;
     let cvv = '';
-    for (let i = 0; i < cvvLength; i++) {
-      cvv += Math.floor(Math.random() * 10);
-    }
+    for (let i=0; i<cvvLength; i++) cvv += Math.floor(Math.random() * 10);
 
     return `${number}|${month}/${year}|${cvv}`;
   }
 
-  // Eventos e lógica
+  // Botões e inputs
+  const btnGenerate = document.getElementById('btn-generate');
+  const resultArea = document.getElementById('generate-result');
+  const selectBrand = document.getElementById('select-brand');
+  const inputQuantity = document.getElementById('input-quantity');
+  const btnCopy = document.getElementById('btn-copy');
+  const btnExport = document.getElementById('btn-export');
 
-  document.getElementById('btn-generate').addEventListener('click', () => {
-    const brand = document.getElementById('select-brand').value;
-    const qty = parseInt(document.getElementById('input-quantity').value, 10);
-    if (qty < 1 || qty > 50) {
-      alert('Quantidade deve ser entre 1 e 50.');
-      return;
+  btnGenerate.addEventListener('click', () => {
+    const brand = selectBrand.value;
+    let qty = parseInt(inputQuantity.value);
+    if (isNaN(qty) || qty < 1) qty = 1;
+
+    let cards = [];
+    for (let i=0; i < qty; i++) {
+      if (brand === 'random') {
+        const brands = ['visa','mastercard','amex','discover','diners','jcb','elo','hiper','hipercard'];
+        cards.push(generateCard(brands[Math.floor(Math.random()*brands.length)]));
+      } else {
+        cards.push(generateCard(brand));
+      }
     }
-    let results = [];
-    for (let i = 0; i < qty; i++) {
-      results.push(generateCard(brand));
-    }
-    document.getElementById('generate-result').textContent = results.join('\n');
+
+    resultArea.textContent = cards.join('\n');
   });
 
-  document.getElementById('btn-check').addEventListener('click', () => {
-    const num = document.getElementById('single-number').value.trim();
-    const val = document.getElementById('single-validity').value.trim();
-    const cvv = document.getElementById('single-cvv').value.trim();
-    const resultEl = document.getElementById('single-check-result');
+  btnCopy.addEventListener('click', () => {
+    if (!resultArea.textContent) return alert('Nada para copiar!');
+    navigator.clipboard.writeText(resultArea.textContent)
+      .then(() => alert('Copiado para a área de transferência!'))
+      .catch(() => alert('Falha ao copiar.'));
+  });
 
-    if (!num || !val || !cvv) {
-      resultEl.textContent = 'Preencha todos os campos.';
-      return;
-    }
+  btnExport.addEventListener('click', () => {
+    if (!resultArea.textContent) return alert('Nada para exportar!');
+    const blob = new Blob([resultArea.textContent], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cartoes.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Verificador único
+  const btnCheck = document.getElementById('btn-check');
+  const singleNumber = document.getElementById('single-number');
+  const singleValidity = document.getElementById('single-validity');
+  const singleCVV = document.getElementById('single-cvv');
+  const singleCheckResult = document.getElementById('single-check-result');
+
+  btnCheck.addEventListener('click', () => {
+    const num = singleNumber.value.trim();
+    const val = singleValidity.value.trim();
+    const cvv = singleCVV.value.trim();
 
     if (!/^\d+$/.test(num)) {
-      resultEl.textContent = 'Número do cartão inválido (apenas dígitos).';
+      singleCheckResult.textContent = 'Número inválido: deve conter somente dígitos.';
+      return;
+    }
+    if (!isValidLuhn(num)) {
+      singleCheckResult.textContent = 'Número inválido segundo Luhn.';
+      return;
+    }
+    if (!isValidDate(val)) {
+      singleCheckResult.textContent = 'Validade inválida ou expirada.';
+      return;
+    }
+    if (!/^\d{3,4}$/.test(cvv)) {
+      singleCheckResult.textContent = 'CVV inválido.';
       return;
     }
 
     const brand = getBrandByNumber(num);
-    const validLuhn = isValidLuhn(num);
-    const validDate = isValidDate(val);
 
-    let message = `Bandeira: ${brand}\nValidade: ${validDate ? 'Ok' : 'Inválida'}\nLuhn: ${validLuhn ? 'Válido' : 'Inválido'}`;
-    resultEl.textContent = message;
-  });
+    singleCheckResult.innerHTML =
+      `Número: ${num}\n` +
+      `Bandeira detectada: ${brand}\n` +
+      `Validade: %c${val}%c\n` +
+      `CVV: ${cvv}\n` +
+      `Status: %cVálido%c`;
 
-  document.getElementById('btn-mass-check').addEventListener('click', () => {
-    const input = document.getElementById('mass-input').value.trim();
-    const output = [];
-    if (!input) {
-      alert('Cole os cartões para verificar.');
-      return;
-    }
-    const lines = input.split('\n');
+    // Como innerHTML não suporta styling para texto puro, usar styling via console:
+    // Como alternativa simples, só colocamos cores em todo texto:
+    // Aqui colocamos a validade com fundo vermelho e texto branco, para destacar
 
-    for(let line of lines) {
-      line = line.trim();
-      if (!line) continue;
-      // Espera formato: número|MM/AA|CVV
-      const parts = line.split('|').map(p => p.trim());
-      if(parts.length !== 3) {
-        output.push(`[Inválido] Formato incorreto: ${line}`);
-        continue;
-      }
-      const [num, val, cvv] = parts;
-      const numClean = num.replace(/\D/g,'');
-      if(numClean.length < 13 || numClean.length > 19) {
-        output.push(`[Inválido] Número inválido: ${line}`);
-        continue;
-      }
-      const brand = getBrandByNumber(numClean);
-      const validLuhn = isValidLuhn(numClean);
-      const validDate = isValidDate(val);
-      let validityMsg = validDate ? 'Validade ok' : 'Validade inválida';
+    // Para destacar visualmente a validade no resultado, vamos colocar o resultado com linhas coloridas:
+    // Como não podemos usar style no <pre> facilmente, vamos usar spans e innerHTML com escapes:
 
-      output.push(`${num} | ${val} | ${cvv} -> ${brand} | Luhn: ${validLuhn ? 'Ok' : 'Inválido'} | ${validityMsg}`);
-    }
-    document.getElementById('mass-check-output').textContent = output.join('\n');
+    singleCheckResult.innerHTML = `
+      Número: ${num}<br>
+      Bandeira detectada: ${brand}<br>
+      Validade: <span style="background-color:#f00; color:#fff; padding:2px 5px; border-radius:3px;">${val}</span><br>
+      CVV: ${cvv}<br>
+      Status: <span style="color:#0f0; font-weight:bold;">Válido</span>
+    `;
   });
 </script>
 
