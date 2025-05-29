@@ -1,205 +1,311 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pirakids - Card Generator</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pirakids - Gerador de Cartões</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Roboto&display=swap');
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #000;
-      color: #fff;
-      overflow-x: hidden;
-    }
+  body {
+    margin: 0;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+  }
 
-    header {
-      background-color: #fff;
-      color: #333;
-      padding: 50px 20px;
-      text-align: center;
-      position: relative;
-    }
+  /* FAIXA BRANCA SUPERIOR */
+  .header-white {
+    position: relative;
+    background: #fff;
+    color: #444; /* cinza escuro */
+    padding: 60px 30px 40px 30px;
+    text-align: center;
+    overflow: hidden;
+  }
 
-    header h1 {
-      font-size: 48px;
-      font-weight: bold;
-      color: #333;
-      letter-spacing: 2px;
-    }
+  /* Imagem da cidade cinza sutil */
+  .city-bg {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 110%;
+    height: 100%;
+    background: url('https://i.imgur.com/xRZ48qV.png') no-repeat center bottom;
+    background-size: cover;
+    opacity: 0.15; /* aumenta para ficar mais visível */
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
 
-    header p {
-      font-size: 18px;
-      color: #666;
-      margin-top: 10px;
-    }
+  .header-content {
+    position: relative;
+    z-index: 1;
+  }
 
-    header .slogan {
-      color: red;
-      font-size: 24px;
-      margin-top: 15px;
-    }
+  h1.title {
+    font-family: 'Anton', sans-serif;
+    font-weight: 900;
+    font-size: 4.5rem;
+    margin: 0;
+    color: #444; /* cinza forte */
+    letter-spacing: 2px;
+  }
 
-    main {
-      background-color: #111;
-      padding: 40px 20px;
-      text-align: center;
-    }
+  p.by-nesquik {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 1.3rem;
+    margin: 8px 0 20px 0;
+    color: #555; /* cinza um pouco mais claro */
+    letter-spacing: 1px;
+    /* Aproximar do título */
+    margin-top: 5px;
+  }
 
-    select, input, button {
-      padding: 10px;
-      margin: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: none;
-    }
+  p.mafia-quote {
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #b31217; /* vermelho escuro */
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow:
+      1px 1px 2px #000000cc;
+  }
 
-    button {
-      background-color: red;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+  /* FAIXA PRETA INFERIOR */
+  .header-black {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 18px 30px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-family: 'Anton', sans-serif;
+    letter-spacing: 2px;
+  }
 
-    button:hover {
-      background-color: darkred;
-    }
+  /* Container geral */
+  .container {
+    max-width: 900px;
+    margin: 40px auto 60px;
+    padding: 0 20px;
+  }
 
-    .cards {
-      margin-top: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
+  label {
+    display: block;
+    margin: 15px 0 8px 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
 
-    .card {
-      background-color: #222;
-      color: #0f0;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 18px;
-      width: fit-content;
-    }
+  select, input[type=number] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    border: 1px solid #333;
+    background: #111;
+    color: #eee;
+  }
 
-    .actions {
-      position: fixed;
-      top: 10px;
-      right: 20px;
-      display: flex;
-      gap: 15px;
-    }
+  button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: 8px;
+    border: none;
+    background: #b31217; /* vermelho */
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
 
-    .actions button {
-      background-color: transparent;
-      color: white;
-      border: 1px solid #fff;
-      padding: 8px;
-      border-radius: 5px;
-    }
+  button:hover {
+    background: #800e11;
+  }
 
-    .actions button:hover {
-      background-color: white;
-      color: black;
-    }
-  </style>
+  /* Resultado */
+  #result {
+    margin-top: 30px;
+    background: #111;
+    border-radius: 8px;
+    padding: 20px;
+    font-family: monospace;
+    font-size: 1.1rem;
+    white-space: pre-wrap;
+    min-height: 100px;
+    color: #eee;
+    position: relative;
+  }
+
+  /* Botões fixos topo direito */
+  .fixed-buttons {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    display: flex;
+    gap: 12px;
+    z-index: 999;
+  }
+
+  .icon-button {
+    background: #111;
+    border: 1.5px solid #b31217;
+    color: #b31217;
+    border-radius: 5px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .icon-button:hover {
+    background: #b31217;
+    color: #fff;
+  }
+
+  /* Ícones simples em SVG inline */
+</style>
 </head>
-
 <body>
-  <header>
-    <h1 style="font-size: 64px; color: #444;">Pirakids</h1>
-    <p style="font-size: 20px; color: #888;">By Nesquik</p>
-    <div class="slogan">The World is Yours...</div>
-  </header>
-  <main>
-    <div class="controls">
-      <select id="bandeira">
-        <option value="aleatorio">Aleatório</option>
-        <option value="4">Visa</option>
-        <option value="5">MasterCard</option>
-        <option value="3">Amex</option>
-        <option value="6">Discover</option>
-      </select>
-      <input type="number" id="quantidade" placeholder="Quantidade" min="1" value="1">
-      <button onclick="gerarCartoes()">Gerar</button>
-    </div>
-    <div class="cards" id="cards"></div>
-  </main>
-  <div class="actions">
-    <button onclick="copiarCartoes()">📋</button>
-    <button onclick="exportarTxt()">.txt</button>
+
+<div class="header-white">
+  <div class="city-bg"></div>
+  <div class="header-content">
+    <h1 class="title">Pirakids</h1>
+    <p class="by-nesquik">By Nesquik</p>
+    <p class="mafia-quote">The world is yours...</p>
   </div>
+</div>
 
-  <script>
-    function gerarCartoes() {
-      const bandeira = document.getElementById('bandeira').value;
-      const quantidade = parseInt(document.getElementById('quantidade').value);
-      const cardsDiv = document.getElementById('cards');
-      cardsDiv.innerHTML = '';
+<div class="header-black">Gerard</div>
 
-      for (let i = 0; i < quantidade; i++) {
-        const card = gerarNumero(bandeira);
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerText = card;
-        cardsDiv.appendChild(div);
+<div class="container">
+
+  <label for="card-brand">Escolha a bandeira do cartão</label>
+  <select id="card-brand">
+    <option value="random">Aleatório</option>
+    <option value="visa">Visa</option>
+    <option value="mastercard">MasterCard</option>
+    <option value="amex">Amex</option>
+    <option value="discover">Discover</option>
+  </select>
+
+  <label for="quantity">Quantos cartões gerar?</label>
+  <input type="number" id="quantity" value="5" min="1" max="50" />
+
+  <button id="generate">Gerar Cartões</button>
+
+  <pre id="result"></pre>
+
+</div>
+
+<div class="fixed-buttons" title="Ações rápidas">
+  <button class="icon-button" id="copy-btn" title="Copiar para área de transferência" aria-label="Copiar">
+    📋
+  </button>
+  <button class="icon-button" id="export-btn" title="Exportar para arquivo .txt" aria-label="Exportar">
+    💾
+  </button>
+</div>
+
+<script>
+  // Função Luhn para calcular dígito verificador
+  function calculateLuhn(number) {
+    let sum = 0;
+    let doubleDigit = false;
+    for (let i = number.length - 1; i >= 0; i--) {
+      let digit = parseInt(number[i]);
+      if (doubleDigit) {
+        digit *= 2;
+        if (digit > 9) digit -= 9;
       }
+      sum += digit;
+      doubleDigit = !doubleDigit;
     }
+    return (10 - (sum % 10)) % 10;
+  }
 
-    function gerarNumero(prefixo) {
-      let numero = '';
-      if (prefixo === 'aleatorio') {
-        const prefixos = ['4', '5', '3', '6'];
-        numero = prefixos[Math.floor(Math.random() * prefixos.length)];
-      } else {
-        numero = prefixo;
-      }
-      while (numero.length < 15) {
-        numero += Math.floor(Math.random() * 10);
-      }
-      numero += calcularLuhn(numero);
-      return numero;
-    }
+  // Prefixos por bandeira
+  const brandPrefixes = {
+    visa: ['4'],
+    mastercard: ['51','52','53','54','55'],
+    amex: ['34','37'],
+    discover: ['6011', '65', '644', '645', '646', '647', '648', '649']
+  };
 
-    function calcularLuhn(numero) {
-      let soma = 0;
-      let alt = true;
-      for (let i = numero.length - 1; i >= 0; i--) {
-        let n = parseInt(numero.charAt(i));
-        if (alt) {
-          n *= 2;
-          if (n > 9) n -= 9;
-        }
-        soma += n;
-        alt = !alt;
-      }
-      return (10 - (soma % 10)) % 10;
+  // Gera um cartão seguindo o padrão da bandeira e algoritmo Luhn
+  function generateCard(brand) {
+    let prefixArr;
+    if(brand === 'random') {
+      const brands = Object.keys(brandPrefixes);
+      brand = brands[Math.floor(Math.random() * brands.length)];
     }
+    prefixArr = brandPrefixes[brand];
 
-    function copiarCartoes() {
-      const cards = document.querySelectorAll('.card');
-      const texto = Array.from(cards).map(card => card.innerText).join('\n');
-      navigator.clipboard.writeText(texto);
-      alert('Cartões copiados!');
-    }
+    const prefix = prefixArr[Math.floor(Math.random() * prefixArr.length)];
+    let length = brand === 'amex' ? 15 : 16;
 
-    function exportarTxt() {
-      const cards = document.querySelectorAll('.card');
-      const texto = Array.from(cards).map(card => card.innerText).join('\n');
-      const blob = new Blob([texto], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'cartoes.txt';
-      a.click();
+    // Gera o número menos o último dígito
+    let number = prefix;
+    while(number.length < length - 1) {
+      number += Math.floor(Math.random() * 10);
     }
-  </script>
+    // Calcula o dígito verificador com Luhn
+    const checkDigit = calculateLuhn(number);
+    return number + checkDigit;
+  }
+
+  // Referências DOM
+  const generateBtn = document.getElementById('generate');
+  const resultBox = document.getElementById('result');
+  const copyBtn = document.getElementById('copy-btn');
+  const exportBtn = document.getElementById('export-btn');
+  const brandSelect = document.getElementById('card-brand');
+  const quantityInput = document.getElementById('quantity');
+
+  // Gera cartões e exibe
+  generateBtn.addEventListener('click', () => {
+    const brand = brandSelect.value;
+    let quantity = parseInt(quantityInput.value);
+    if (isNaN(quantity) || quantity < 1) quantity = 1;
+    if (quantity > 50) quantity = 50;
+
+    let cards = [];
+    for(let i=0; i<quantity; i++) {
+      cards.push(generateCard(brand));
+    }
+    resultBox.textContent = cards.join('\n');
+  });
+
+  // Copiar para clipboard
+  copyBtn.addEventListener('click', () => {
+    if(resultBox.textContent.trim() === '') return alert('Gere os cartões primeiro.');
+    navigator.clipboard.writeText(resultBox.textContent).then(() => {
+      alert('Cartões copiados para área de transferência!');
+    });
+  });
+
+  // Exportar para txt
+  exportBtn.addEventListener('click', () => {
+    if(resultBox.textContent.trim() === '') return alert('Gere os cartões primeiro.');
+    const blob = new Blob([resultBox.textContent], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cartoes_pirakids.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>
+
 </body>
-
 </html>
