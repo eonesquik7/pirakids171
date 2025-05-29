@@ -1,132 +1,122 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
-  <title>Pirakids - by ne$quik</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pirakids - Gerador de Cartões</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Cinzel', serif;
-      background: url('https://cdn.pixabay.com/photo/2017/03/27/13/54/mafia-2178652_1280.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #f1f1f1;
-      text-shadow: 1px 1px 2px #000;
-      height: 100vh;
-      overflow-y: auto;
+      font-family: 'Georgia', serif;
+      background: linear-gradient(to bottom right, #000, #111);
+      color: #fff;
     }
 
-    .overlay {
-      background-color: rgba(0, 0, 0, 0.85);
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    h1 {
-      font-size: 48px;
-      color: gold;
-      margin-bottom: 5px;
+    header {
+      background-color: #000;
+      color: #e60000;
       text-align: center;
-      margin-top: 30px;
-    }
-
-    h2 {
-      font-size: 18px;
-      color: #aaa;
-      margin-top: 0;
-      text-align: center;
+      padding: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
     }
 
     .container {
-      background-color: rgba(0, 0, 0, 0.8);
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 30px auto;
-      box-shadow: 0 0 15px #000;
-      position: relative;
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
     }
 
-    label {
+    label,
+    select,
+    input,
+    button {
       display: block;
-      text-align: left;
-      margin-bottom: 5px;
-      margin-top: 15px;
+      width: 100%;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
     }
 
-    select, input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      border-radius: 5px;
-      border: none;
-      background-color: #222;
+    select,
+    input {
+      padding: 0.5rem;
+      background-color: #111;
       color: #fff;
+      border: 1px solid #e60000;
     }
 
     button {
-      padding: 12px 20px;
-      font-size: 16px;
-      background-color: gold;
-      color: #000;
+      background-color: #e60000;
+      color: #fff;
       border: none;
-      border-radius: 5px;
+      padding: 0.75rem;
       cursor: pointer;
-      margin: 10px 5px;
+      font-weight: bold;
+      transition: background 0.3s;
     }
 
     button:hover {
-      background-color: #ffd700;
+      background-color: #b30000;
     }
 
-    #output {
-      background-color: #111;
-      padding: 15px;
-      margin-top: 20px;
+    .card {
+      background-color: #222;
+      border: 1px solid #e60000;
+      padding: 1rem;
+      margin-bottom: 1rem;
       border-radius: 8px;
-      white-space: pre-wrap;
-      word-break: break-word;
-      text-align: left;
-      font-family: monospace;
+      font-size: 1.2rem;
       color: #fff;
+      position: relative;
     }
 
-    .actions {
+    .card-container {
+      margin-top: 2rem;
+    }
+
+    .fixed-buttons {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
       display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 1rem;
     }
 
-    .copy-icon, .download-icon {
+    .icon-button {
+      background: none;
+      border: none;
       cursor: pointer;
-      width: 24px;
-      height: 24px;
       filter: invert(1);
+      width: 32px;
+      height: 32px;
+    }
+
+    .icon-button:hover {
+      opacity: 0.8;
     }
   </style>
 </head>
+
 <body>
-  <div class="overlay"></div>
-
-  <h1>Pirakids</h1>
-  <h2>by ne$quik</h2>
-
+  <header>Pirakids</header>
+  <div class="fixed-buttons">
+    <button class="icon-button" onclick="copiarCartoes()" title="Copiar">
+      <img src="https://cdn-icons-png.flaticon.com/512/60/60990.png" alt="Copiar" width="24" height="24">
+    </button>
+    <button class="icon-button" onclick="exportarTxt()" title="Exportar .txt">
+      <img src="https://cdn-icons-png.flaticon.com/512/709/709592.png" alt="Exportar" width="24" height="24">
+    </button>
+  </div>
   <div class="container">
     <label for="bandeira">Escolha a bandeira:</label>
     <select id="bandeira">
-      <option value="aleatorio">Aleatório</option>
-      <option value="visa">Visa</option>
-      <option value="mastercard">MasterCard</option>
-      <option value="amex">Amex</option>
-      <option value="discover">Discover</option>
+      <option value="random">Aleatório</option>
+      <option value="4">Visa</option>
+      <option value="5">MasterCard</option>
+      <option value="3">American Express</option>
+      <option value="6">Discover</option>
     </select>
 
     <label for="quantidade">Quantidade de cartões:</label>
@@ -134,92 +124,64 @@
 
     <button onclick="gerarCartoes()">Gerar Cartões</button>
 
-    <div id="output"></div>
-
-    <div class="actions">
-      <img src="https://icons.iconarchive.com/icons/custom-icon-design/mono-general-1/512/copy-icon.png" alt="Copiar" class="copy-icon" onclick="copiarTexto()">
-      <img src="https://icons.iconarchive.com/icons/iconsmind/outline/512/Download-2-icon.png" alt="Download" class="download-icon" onclick="baixarTxt()">
-    </div>
+    <div id="resultado" class="card-container"></div>
   </div>
 
   <script>
     function gerarCartoes() {
       const bandeira = document.getElementById('bandeira').value;
       const quantidade = parseInt(document.getElementById('quantidade').value);
-      const output = document.getElementById('output');
-      let resultado = '';
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML = '';
 
       for (let i = 0; i < quantidade; i++) {
-        const prefixo = escolherPrefixo(bandeira);
-        let numero = prefixo;
+        const inicio = bandeira === 'random' ? ['4', '5', '3', '6'][Math.floor(Math.random() * 4)] : bandeira;
+        let numero = inicio;
 
         while (numero.length < 15) {
           numero += Math.floor(Math.random() * 10);
         }
 
-        const digito = calcularLuhn(numero);
-        numero += digito;
-
-        resultado += `${numero}\n`;
+        numero += calcularLuhn(numero);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = numero;
+        resultado.appendChild(card);
       }
-
-      output.textContent = resultado;
     }
 
-    function escolherPrefixo(bandeira) {
-      const prefixos = {
-        visa: '4',
-        mastercard: '5',
-        amex: '3',
-        discover: '6'
-      };
-
-      if (bandeira === 'aleatorio') {
-        const chaves = Object.keys(prefixos);
-        const aleatoria = chaves[Math.floor(Math.random() * chaves.length)];
-        return prefixos[aleatoria];
-      }
-
-      return prefixos[bandeira];
-    }
-
-    function calcularLuhn(numeroParcial) {
+    function calcularLuhn(numero) {
       let soma = 0;
-      let reverso = numeroParcial.split('').reverse();
-
-      for (let i = 0; i < reverso.length; i++) {
-        let n = parseInt(reverso[i]);
-        if (i % 2 === 0) {
+      let alternar = true;
+      for (let i = numero.length - 1; i >= 0; i--) {
+        let n = parseInt(numero[i]);
+        if (alternar) {
           n *= 2;
           if (n > 9) n -= 9;
         }
         soma += n;
+        alternar = !alternar;
       }
-
       return (10 - (soma % 10)) % 10;
     }
 
-    function copiarTexto() {
-      const output = document.getElementById('output').textContent;
-      if (!output.trim()) return alert('Nada para copiar!');
-      navigator.clipboard.writeText(output)
-        .then(() => alert('Cartões copiados com sucesso!'))
-        .catch(() => alert('Erro ao copiar'));
+    function copiarCartoes() {
+      const cards = document.querySelectorAll('.card');
+      const textos = Array.from(cards).map(c => c.textContent).join('\n');
+      navigator.clipboard.writeText(textos);
+      alert('Cartões copiados!');
     }
 
-    function baixarTxt() {
-      const conteudo = document.getElementById('output').textContent;
-      if (!conteudo.trim()) return alert('Nada para exportar!');
-      const blob = new Blob([conteudo], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'cartoes_gerados.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+    function exportarTxt() {
+      const cards = document.querySelectorAll('.card');
+      const textos = Array.from(cards).map(c => c.textContent).join('\n');
+      const blob = new Blob([textos], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'cartoes.txt';
+      link.click();
     }
   </script>
 </body>
+
 </html>
