@@ -10,7 +10,8 @@
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    color: #444;
+    color: #eee;
+    background-color: #000; /* fundo preto geral */
   }
 
   /* Topo branco */
@@ -57,12 +58,9 @@
 
   /* Container preta para o gerador */
   .container {
-    background-color: #000;
-    color: #eee;
     max-width: 900px;
     margin: 40px auto 60px;
     padding: 30px 20px 50px 20px;
-    border-radius: 10px;
   }
 
   label {
@@ -121,8 +119,8 @@
   }
 
   .icon-button {
-    background: #222;
-    border: 1.5px solid #b31217;
+    background: #000;
+    /* sem borda */
     color: #b31217;
     border-radius: 5px;
     width: 36px;
@@ -231,9 +229,7 @@
     const now = new Date();
     const year = now.getFullYear();
     const month = randomInt(1,12);
-    // Ano válido: entre o ano atual e mais 5 anos
     const expYear = randomInt(year, year + 5);
-    // Formatar MM/AA
     const mm = month.toString().padStart(2, '0');
     const yy = expYear.toString().slice(-2);
     return `${mm}/${yy}`;
