@@ -1,150 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gerador de Cartões</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;700&family=Orbitron:wght@700&family=Montserrat:wght@600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background-color: black;
       color: white;
     }
     .header {
+      background-color: #888;
+      text-align: center;
+      padding: 30px 20px;
+    }
+    .title {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 60px;
+      font-weight: 900;
+      color: #333;
+      margin: 0;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .title:hover {
+      color: red;
+    }
+    .subtitle {
+      font-size: 40px;
+      color: #333;
+      margin: 5px 0 0 0;
+    }
+    .tagline {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 24px;
+      color: red;
+      margin-top: 10px;
+    }
+    .container {
+      background-color: black;
+      padding: 40px 20px;
+      min-height: 100vh;
+    }
+    .result, .verifier {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #222;
+      border-radius: 10px;
+    }
+    button {
       background-color: #444;
       color: white;
-      padding: 20px;
-      text-align: center;
-      font-size: 2em;
-    }
-    .top-section {
-      background-color: #ccc;
-      color: black;
-      padding: 40px 20px 20px;
-      text-align: center;
-    }
-    .top-section h1 {
-      margin: 0;
-      font-size: 3em;
-    }
-    .subtext {
-      margin-top: 10px;
-      font-size: 1.2em;
-    }
-    .main {
-      padding: 20px;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px 5px 0 0;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
     textarea {
       width: 100%;
-      height: 200px;
-      background-color: #222;
-      color: white;
-      border: none;
-      padding: 10px;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      background-color: #666;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #verificador {
-      display: none;
-      padding: 20px;
+      height: 150px;
+      margin-top: 10px;
       background-color: #111;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      resize: none;
     }
   </style>
 </head>
 <body>
-  <div class="top-section" id="top">
-    <div id="pirakids" onclick="contarCliques()">Pirakids</div>
-    <div>Banesquik</div>
-    <div class="subtext">The word is yours</div>
+  <div class="header">
+    <h1 class="title" id="title">Pirakids</h1>
+    <h2 class="subtitle">By Nesquik</h2>
+    <p class="tagline">The word is yours...</p>
   </div>
+  <div class="container">
+    <button onclick="generateCards()">Gerar Cartões</button>
+    <button onclick="copyCards()">Copiar</button>
+    <button onclick="exportCards()">Exportar TXT</button>
 
-  <div class="main">
-    <h2>Gerador de Cartões</h2>
-    <label for="quantidade">Quantidade:</label>
-    <input type="number" id="quantidade" value="10" min="1" max="1000">
-    <button onclick="gerarCartoes()">Gerar</button>
-    <button onclick="copiarCartoes()">Copiar</button>
-    <button onclick="exportarTXT()">Exportar para TXT</button>
-    <textarea id="cartoesGerados"></textarea>
-  </div>
+    <div class="result">
+      <h3>Cartões Gerados</h3>
+      <textarea id="cardOutput"></textarea>
+    </div>
 
-  <div id="verificador">
-    <h2>Verificador de Cartões</h2>
-    <textarea id="entradaCartoes" placeholder="Cole os cartões aqui..."></textarea>
-    <br>
-    <button onclick="verificacaoUnica()">Verificação Única</button>
-    <button onclick="verificacaoMassa()">Verificação em Massa</button>
-    <div id="resultadoVerificacao"></div>
+    <div id="verifier" class="verifier" style="display: none;">
+      <h3>Verificador de Cartões</h3>
+      <button onclick="toggleMode('single')">Verificação Única</button>
+      <button onclick="toggleMode('mass')">Verificação em Massa</button>
+      <textarea id="verifyInput"></textarea>
+      <button onclick="verifyCards()">Verificar</button>
+      <div id="verifyResult"></div>
+    </div>
   </div>
 
   <script>
-    function gerarCartoes() {
-      const qtd = parseInt(document.getElementById('quantidade').value);
-      const output = document.getElementById('cartoesGerados');
-      let cartoes = '';
-      for (let i = 0; i < qtd; i++) {
-        const bin = '400000';
-        const numero = bin + Math.floor(Math.random() * 1e10).toString().padStart(10, '0');
-        const mes = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-        const ano = new Date().getFullYear() + Math.floor(Math.random() * 5) + 1;
-        const cvv = Math.floor(100 + Math.random() * 900);
-        cartoes += `${numero}|${mes}|${ano}|${cvv}\n`;
+    const title = document.getElementById("title");
+    const verifier = document.getElementById("verifier");
+    let clickCount = 0;
+    let verifyMode = 'single';
+
+    title.addEventListener("click", () => {
+      clickCount++;
+      if (clickCount === 1) {
+        verifier.style.display = "block";
       }
-      output.value = cartoes.trim();
+    });
+
+    function generateCards() {
+      let output = "";
+      for (let i = 0; i < 10; i++) {
+        const card = generateCard();
+        output += `${card}\n`;
+      }
+      document.getElementById("cardOutput").value = output.trim();
     }
 
-    function copiarCartoes() {
-      const output = document.getElementById('cartoesGerados');
+    function generateCard() {
+      const bin = "400000";
+      const number = bin + Math.floor(100000000 + Math.random() * 900000000).toString();
+      const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+      const year = String(Math.floor(Math.random() * 5) + 25);
+      const cvv = Math.floor(100 + Math.random() * 900);
+      return `${number}|${month}|${year}|${cvv}`;
+    }
+
+    function copyCards() {
+      const output = document.getElementById("cardOutput");
       output.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
     }
 
-    function exportarTXT() {
-      const text = document.getElementById('cartoesGerados').value;
-      const blob = new Blob([text], { type: 'text/plain' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'cartoes.txt';
-      link.click();
+    function exportCards() {
+      const text = document.getElementById("cardOutput").value;
+      const blob = new Blob([text], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "cartoes.txt";
+      a.click();
     }
 
-    let cliques = 0;
-    function contarCliques() {
-      cliques++;
-      if (cliques >= 5) {
-        document.getElementById('verificador').style.display = 'block';
-      }
+    function toggleMode(mode) {
+      verifyMode = mode;
     }
 
-    function verificarCartao(cartao) {
-      const padrao = /^\d{16}\|\d{2}\|\d{4}\|\d{3}$/;
-      if (padrao.test(cartao)) {
-        return Math.random() < 0.7 ? 'Aprovado' : 'Recusado';
-      }
-      return 'Formato inválido';
-    }
-
-    function verificacaoUnica() {
-      const input = document.getElementById('entradaCartoes').value.trim();
-      const resultado = verificarCartao(input);
-      document.getElementById('resultadoVerificacao').innerText = resultado;
-    }
-
-    function verificacaoMassa() {
-      const entradas = document.getElementById('entradaCartoes').value.trim().split('\n');
-      let resultados = '';
-      entradas.forEach(cartao => {
-        const res = verificarCartao(cartao);
-        resultados += `${cartao} => ${res}\n`;
+    function verifyCards() {
+      const input = document.getElementById("verifyInput").value.trim().split("\n");
+      let result = "";
+      const cards = verifyMode === 'mass' ? input : input.slice(0, 1);
+      cards.forEach(card => {
+        if (/^\d{16}\|\d{2}\|\d{2}\|\d{3}$/.test(card)) {
+          result += `${card} - APROVADO\n`;
+        } else {
+          result += `${card} - REPROVADO\n`;
+        }
       });
-      document.getElementById('resultadoVerificacao').innerText = resultados.trim();
+      document.getElementById("verifyResult").innerText = result.trim();
     }
   </script>
 </body>
