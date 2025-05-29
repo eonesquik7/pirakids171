@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pirakids</title>
   <style>
     * {
@@ -18,30 +18,18 @@
     }
 
     .top-section {
-      background-image: url('https://img.freepik.com/vetores-premium/uma-bela-e-serena-paisagem-urbana-com-um-horizonte-brilhante-e-nuvens-macias-e-fofas-acima_230920-4115.jpg');
+      background: url('https://img.freepik.com/vetores-premium/uma-bela-e-serena-paisagem-urbana-com-um-horizonte-brilhante-e-nuvens-macias-e-fofas-acima_230920-4115.jpg') no-repeat center bottom;
       background-size: cover;
-      background-position: bottom;
-      background-repeat: no-repeat;
       height: 300px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      position: relative;
-    }
-
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.8);
-      z-index: 0;
     }
 
     .top-content {
-      position: relative;
-      z-index: 1;
       text-align: center;
-      color: #333;
+      color: #444;
     }
 
     .top-content h1 {
@@ -65,7 +53,6 @@
     }
 
     .main {
-      background-color: #111;
       padding: 40px 20px;
       text-align: center;
     }
@@ -76,12 +63,47 @@
       color: white;
     }
 
-    /* Adicione aqui o conteúdo principal depois (como os geradores, inputs, etc.) */
+    .generator {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    select, input[type=number], button {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+      font-size: 16px;
+    }
+
+    .card-output {
+      background: #111;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 10px;
+      text-align: left;
+      color: #fff;
+      white-space: pre-wrap;
+      font-family: monospace;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .actions button {
+      width: 48%;
+    }
   </style>
 </head>
 <body>
   <div class="top-section">
-    <div class="overlay"></div>
     <div class="top-content">
       <h1>Pirakids</h1>
       <p>By Nesquik</p>
@@ -91,7 +113,75 @@
 
   <div class="main">
     <h2>Gerador</h2>
-    <!-- Conteúdo do gerador de cartões vem aqui -->
+    <div class="generator">
+      <label for="bandeira">Bandeira:</label>
+      <select id="bandeira">
+        <option value="random">Aleatório</option>
+        <option value="4">Visa</option>
+        <option value="5">MasterCard</option>
+        <option value="3">Amex</option>
+        <option value="6">Discover</option>
+      </select>
+      <label for="quantidade">Quantidade:</label>
+      <input type="number" id="quantidade" min="1" max="50" value="1">
+      <button onclick="gerarCartoes()">Gerar Cartões</button>
+      <div class="card-output" id="resultado"></div>
+      <div class="actions">
+        <button onclick="copiarTexto()">Copiar</button>
+        <button onclick="exportarTxt()">Exportar .TXT</button>
+      </div>
+    </div>
   </div>
+
+  <script>
+    function gerarCartoes() {
+      const bandeira = document.getElementById('bandeira').value;
+      const qtd = parseInt(document.getElementById('quantidade').value);
+      let res = '';
+      for (let i = 0; i < qtd; i++) {
+        let prefixo = bandeira === 'random' ? String(Math.floor(Math.random() * 9) + 1) : bandeira;
+        let num = prefixo;
+        while (num.length < 15) {
+          num += Math.floor(Math.random() * 10);
+        }
+        num += gerarDigitoLuhn(num);
+        res += num + '\n';
+      }
+      document.getElementById('resultado').textContent = res;
+    }
+
+    function gerarDigitoLuhn(numero) {
+      let soma = 0;
+      let alterna = true;
+      for (let i = numero.length - 1; i >= 0; i--) {
+        let n = parseInt(numero[i]);
+        if (alterna) {
+          n *= 2;
+          if (n > 9) n -= 9;
+        }
+        soma += n;
+        alterna = !alterna;
+      }
+      return (10 - (soma % 10)) % 10;
+    }
+
+    function copiarTexto() {
+      const texto = document.getElementById('resultado').textContent;
+      navigator.clipboard.writeText(texto).then(() => {
+        alert('Copiado!');
+      });
+    }
+
+    function exportarTxt() {
+      const texto = document.getElementById('resultado').textContent;
+      const blob = new Blob([texto], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'cartoes.txt';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
 </body>
 </html>
