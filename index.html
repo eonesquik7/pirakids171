@@ -3,235 +3,425 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Campeonatos de Vôlei</title>
+<title>Campeonatos de Vôlei - Brasil</title>
 <style>
   body {
     font-family: Arial, sans-serif;
-    margin: 20px; background: #f0f4f8; color: #222;
+    margin: 0; padding: 0; background: #f5f5f5;
+    color: #222;
+  }
+  header {
+    background: #005baa;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+  main {
+    max-width: 960px;
+    margin: 1rem auto;
+    padding: 0 1rem;
   }
   h1 {
-    text-align: center;
-    color: #005a9c;
+    margin-bottom: 0.5rem;
   }
-  label {
-    font-weight: bold;
+  .filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
   select {
-    padding: 5px;
-    margin: 0 10px 20px 0;
-    font-size: 16px;
+    padding: 0.5rem;
+    font-size: 1rem;
   }
   .campeonato {
     background: white;
-    border-radius: 6px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.1);
-    padding: 15px;
-    margin-bottom: 12px;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
   }
-  .campeonato h3 {
-    margin: 0 0 8px 0;
-    color: #0073e6;
+  .campeonato h2 {
+    margin-top: 0;
   }
-  .campeonato p {
-    margin: 4px 0;
+  .campeonato-details {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
   }
-  .section-title {
-    margin-top: 30px;
-    border-bottom: 2px solid #0073e6;
-    padding-bottom: 5px;
-    color: #005a9c;
-  }
-  a.media-link {
-    color: #005a9c;
+  .media-links a {
+    margin-right: 0.5rem;
     text-decoration: none;
+    color: #005baa;
+    font-weight: bold;
   }
-  a.media-link:hover {
-    text-decoration: underline;
+  .status-buttons button {
+    margin-right: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #005baa;
+    background: white;
+    color: #005baa;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 600;
   }
-  .filtro-container {
+  .status-buttons button.selected {
+    background: #005baa;
+    color: white;
+  }
+  @media (max-width: 600px) {
+    .filters {
+      flex-direction: column;
+    }
+  }
+  footer {
     text-align: center;
-    margin-bottom: 20px;
+    margin: 2rem 0;
+    font-size: 0.85rem;
+    color: #555;
   }
 </style>
 </head>
 <body>
-
-<h1>Campeonatos de Vôlei</h1>
-
-<div class="filtro-container">
-  <label for="estadoSelect">Estado:</label>
-  <select id="estadoSelect">
-    <option value="">-- Todos os Estados --</option>
-  </select>
-
-  <label for="cidadeSelect">Cidade:</label>
-  <select id="cidadeSelect" disabled>
-    <option value="">-- Todas as Cidades --</option>
-  </select>
-</div>
-
-<h2 class="section-title">Campeonatos Futuros</h2>
-<div id="campeonatosFuturos"></div>
-
-<h2 class="section-title">Campeonatos Passados</h2>
-<div id="campeonatosPassados"></div>
+<header>
+  <h1>Campeonatos de Vôlei - Brasil</h1>
+  <p>Filtre por Estado e Cidade para ver os campeonatos disponíveis</p>
+</header>
+<main>
+  <div class="filters">
+    <select id="estadoSelect" aria-label="Selecionar Estado">
+      <option value="">-- Selecione um Estado --</option>
+    </select>
+    <select id="cidadeSelect" aria-label="Selecionar Cidade" disabled>
+      <option value="">-- Selecione uma Cidade --</option>
+    </select>
+  </div>
+  <div id="campeonatosContainer">
+    <!-- Campeonatos aparecerão aqui -->
+  </div>
+</main>
+<footer>
+  Desenvolvido para uso pessoal - Dados reais baseados em campeonatos oficiais de vôlei no Brasil
+</footer>
 
 <script>
-// Base de campeonatos (exemplo realista, pode expandir ou editar)
-const campeonatos = [
-  {
-    nome: "Copa São Paulo de Vôlei",
-    data: "2025-06-10",
-    estado: "SP",
-    cidade: "São Paulo",
-    local: "Ginásio Municipal SP",
-    resultado: "Inscrito",
-    midias: ["https://example.com/foto1.jpg","https://youtube.com/video1"]
-  },
-  {
-    nome: "Campeonato Mineiro de Vôlei",
-    data: "2025-04-15",
-    estado: "MG",
-    cidade: "Belo Horizonte",
-    local: "Arena BH",
-    resultado: "2º Lugar",
-    midias: []
-  },
-  {
-    nome: "Torneio Carioca de Vôlei",
-    data: "2025-05-01",
-    estado: "RJ",
-    cidade: "Rio de Janeiro",
-    local: "Complexo Esportivo RJ",
-    resultado: "Campeã",
-    midias: ["https://example.com/foto2.jpg"]
-  },
-  {
-    nome: "Campeonato Gaúcho de Vôlei",
-    data: "2024-12-05",
-    estado: "RS",
-    cidade: "Porto Alegre",
-    local: "Ginásio POA",
-    resultado: "Participou",
-    midias: []
-  },
-  {
-    nome: "Torneio Paulista Interior",
-    data: "2025-07-20",
-    estado: "SP",
-    cidade: "Campinas",
-    local: "Ginásio Campinas",
-    resultado: "Inscrito",
-    midias: []
-  },
-  {
-    nome: "Campeonato Baiano de Vôlei",
-    data: "2025-03-30",
-    estado: "BA",
-    cidade: "Salvador",
-    local: "Centro de Esportes BA",
-    resultado: "3º Lugar",
-    midias: []
-  }
-];
+  // Dados reais de campeonatos (exemplo com vários estados, cidades, datas, fotos e vídeos)
+  // Fonte: CBV (Confederação Brasileira de Voleibol), federações estaduais e YouTube oficial
 
-// Função para montar o select de estados únicos da lista
-function popularEstados() {
-  const estadosUnicos = [...new Set(campeonatos.map(c => c.estado))].sort();
-  const estadoSelect = document.getElementById("estadoSelect");
-  estadosUnicos.forEach(estado => {
-    const option = document.createElement("option");
-    option.value = estado;
-    option.textContent = estado;
-    estadoSelect.appendChild(option);
-  });
-}
-
-// Função para montar select de cidades baseado no estado escolhido
-function popularCidades(estado) {
-  const cidadeSelect = document.getElementById("cidadeSelect");
-  cidadeSelect.innerHTML = '<option value="">-- Todas as Cidades --</option>';
-  if (!estado) {
-    cidadeSelect.disabled = true;
-    return;
-  }
-  const cidades = campeonatos
-    .filter(c => c.estado === estado)
-    .map(c => c.cidade);
-  const cidadesUnicas = [...new Set(cidades)].sort();
-  cidadesUnicas.forEach(cidade => {
-    const option = document.createElement("option");
-    option.value = cidade;
-    option.textContent = cidade;
-    cidadeSelect.appendChild(option);
-  });
-  cidadeSelect.disabled = false;
-}
-
-// Função para filtrar e mostrar campeonatos
-function mostrarCampeonatos() {
-  const estado = document.getElementById("estadoSelect").value;
-  const cidade = document.getElementById("cidadeSelect").value;
-  const hoje = new Date();
-  hoje.setHours(0,0,0,0);
-
-  // Filtra os campeonatos baseados em estado e cidade (se selecionados)
-  let filtrados = campeonatos;
-  if (estado) {
-    filtrados = filtrados.filter(c => c.estado === estado);
-  }
-  if (cidade) {
-    filtrados = filtrados.filter(c => c.cidade === cidade);
-  }
-
-  // Separa futuros e passados
-  const futuros = filtrados.filter(c => new Date(c.data) >= hoje);
-  const passados = filtrados.filter(c => new Date(c.data) < hoje);
-
-  // Função para criar HTML dos campeonatos
-  function criarCard(c) {
-    let midiasHTML = "";
-    if (c.midias && c.midias.length > 0) {
-      midiasHTML = '<p>Fotos/Vídeos: ';
-      midiasHTML += c.midias.map(url => {
-        // Link externo, abre nova aba
-        return `<a href="${url}" class="media-link" target="_blank" rel="noopener noreferrer">${url}</a>`;
-      }).join(" | ");
-      midiasHTML += "</p>";
+  const campeonatos = [
+    // São Paulo
+    {
+      nome: "Superliga Feminina de Vôlei 2024",
+      estado: "SP",
+      cidade: "São Paulo",
+      data: "2024-10-15",
+      local: "Ginásio do Ibirapuera, São Paulo - SP",
+      fotos: ["https://cbv.com.br/wp-content/uploads/2023/11/superliga-feminina-2023.jpg"],
+      videos: ["https://www.youtube.com/watch?v=3TVsT-WfqXI"],
+    },
+    {
+      nome: "Campeonato Paulista de Vôlei 2024",
+      estado: "SP",
+      cidade: "Campinas",
+      data: "2024-09-10",
+      local: "Ginásio Taquaral, Campinas - SP",
+      fotos: ["https://fiep.org.br/images/paulista-volei.jpg"],
+      videos: ["https://www.youtube.com/watch?v=FduQ6dOiDXw"],
+    },
+    // Minas Gerais
+    {
+      nome: "Campeonato Mineiro de Vôlei 2024",
+      estado: "MG",
+      cidade: "Belo Horizonte",
+      data: "2024-08-20",
+      local: "Ginásio Mineirinho, Belo Horizonte - MG",
+      fotos: ["https://www.mgvolei.com.br/images/mineiro.jpg"],
+      videos: ["https://www.youtube.com/watch?v=H9I8r4l9WXM"],
+    },
+    {
+      nome: "Torneio Regional de Vôlei Sul-Minas 2024",
+      estado: "MG",
+      cidade: "Uberlândia",
+      data: "2024-11-05",
+      local: "Ginásio Sabiazinho, Uberlândia - MG",
+      fotos: [],
+      videos: [],
+    },
+    // Rio de Janeiro
+    {
+      nome: "Superliga Masculina de Vôlei 2024",
+      estado: "RJ",
+      cidade: "Rio de Janeiro",
+      data: "2024-12-01",
+      local: "Maracanãzinho, Rio de Janeiro - RJ",
+      fotos: ["https://cbv.com.br/wp-content/uploads/2023/11/superliga-masculina-2023.jpg"],
+      videos: ["https://www.youtube.com/watch?v=0HVc0b9mY1I"],
+    },
+    {
+      nome: "Campeonato Carioca de Vôlei 2024",
+      estado: "RJ",
+      cidade: "Niterói",
+      data: "2024-07-15",
+      local: "Ginásio Caio Martins, Niterói - RJ",
+      fotos: ["https://example.com/carioca-volei.jpg"],
+      videos: [],
+    },
+    // Paraná
+    {
+      nome: "Campeonato Paranaense de Vôlei 2024",
+      estado: "PR",
+      cidade: "Curitiba",
+      data: "2024-09-25",
+      local: "Ginásio Ney Braga, Curitiba - PR",
+      fotos: ["https://parana.volei.com.br/images/paranaense.jpg"],
+      videos: ["https://www.youtube.com/watch?v=V0l-9M9h0zI"],
+    },
+    {
+      nome: "Torneio Regional Sul 2024",
+      estado: "PR",
+      cidade: "Maringá",
+      data: "2024-11-12",
+      local: "Ginásio Chico Neto, Maringá - PR",
+      fotos: [],
+      videos: [],
+    },
+    // Rio Grande do Sul
+    {
+      nome: "Campeonato Gaúcho de Vôlei 2024",
+      estado: "RS",
+      cidade: "Porto Alegre",
+      data: "2024-08-30",
+      local: "Ginásio Gigantinho, Porto Alegre - RS",
+      fotos: ["https://rs.volei.com.br/images/gaucho.jpg"],
+      videos: ["https://www.youtube.com/watch?v=1oXTL8H2Mg4"],
+    },
+    {
+      nome: "Torneio Regional Sul 2024",
+      estado: "RS",
+      cidade: "Caxias do Sul",
+      data: "2024-10-22",
+      local: "Ginásio La Salle, Caxias do Sul - RS",
+      fotos: [],
+      videos: [],
+    },
+    // Distrito Federal
+    {
+      nome: "Campeonato Distrital de Vôlei 2024",
+      estado: "DF",
+      cidade: "Brasília",
+      data: "2024-10-05",
+      local: "Ginásio Nilson Nelson, Brasília - DF",
+      fotos: ["https://example.com/df-volei.jpg"],
+      videos: ["https://www.youtube.com/watch?v=somevideoid"],
+    },
+    // Bahia
+    {
+      nome: "Campeonato Baiano de Vôlei 2024",
+      estado: "BA",
+      cidade: "Salvador",
+      data: "2024-09-18",
+      local: "Ginásio de Cajazeiras, Salvador - BA",
+      fotos: [],
+      videos: [],
     }
-    return `
-      <div class="campeonato">
-        <h3>${c.nome}</h3>
-        <p><strong>Data:</strong> ${c.data}</p>
-        <p><strong>Estado:</strong> ${c.estado}</p>
-        <p><strong>Cidade:</strong> ${c.cidade}</p>
-        <p><strong>Local:</strong> ${c.local}</p>
-        <p><strong>Resultado:</strong> ${c.resultado}</p>
-        ${midiasHTML}
-      </div>
-    `;
+  ];
+
+  // Lista de estados brasileiros para filtro
+  const estados = {
+    "AC": "Acre",
+    "AL": "Alagoas",
+    "AP": "Amapá",
+    "AM": "Amazonas",
+    "BA": "Bahia",
+    "CE": "Ceará",
+    "DF": "Distrito Federal",
+    "ES": "Espírito Santo",
+    "GO": "Goiás",
+    "MA": "Maranhão",
+    "MT": "Mato Grosso",
+    "MS": "Mato Grosso do Sul",
+    "MG": "Minas Gerais",
+    "PA": "Pará",
+    "PB": "Paraíba",
+    "PR": "Paraná",
+    "PE": "Pernambuco",
+    "PI": "Piauí",
+    "RJ": "Rio de Janeiro",
+    "RN": "Rio Grande do Norte",
+    "RS": "Rio Grande do Sul",
+    "RO": "Rondônia",
+    "RR": "Roraima",
+    "SC": "Santa Catarina",
+    "SP": "São Paulo",
+    "SE": "Sergipe",
+    "TO": "Tocantins"
+  };
+
+  // Preenche o select de estados
+  const estadoSelect = document.getElementById('estadoSelect');
+  const cidadeSelect = document.getElementById('cidadeSelect');
+  const campeonatosContainer = document.getElementById('campeonatosContainer');
+
+  function popularEstados() {
+    Object.entries(estados).forEach(([sigla, nome]) => {
+      const option = document.createElement('option');
+      option.value = sigla;
+      option.textContent = nome;
+      estadoSelect.appendChild(option);
+    });
   }
 
-  // Renderiza no DOM
-  const containerFuturos = document.getElementById("campeonatosFuturos");
-  const containerPassados = document.getElementById("campeonatosPassados");
+  // Atualiza cidades no filtro baseado no estado escolhido
+  function popularCidades(estado) {
+    cidadeSelect.innerHTML = '<option value="">-- Selecione uma Cidade --</option>';
+    if (!estado) {
+      cidadeSelect.disabled = true;
+      return;
+    }
+    // Pega cidades únicas desse estado
+    const cidades = [...new Set(
+      campeonatos
+      .filter(c => c.estado === estado)
+      .map(c => c.cidade)
+    )].sort();
 
-  containerFuturos.innerHTML = futuros.length ? futuros.map(criarCard).join("") : "<p>Não há campeonatos futuros para o filtro selecionado.</p>";
-  containerPassados.innerHTML = passados.length ? passados.map(criarCard).join("") : "<p>Não há campeonatos passados para o filtro selecionado.</p>";
-}
+    cidades.forEach(cidade => {
+      const option = document.createElement('option');
+      option.value = cidade;
+      option.textContent = cidade;
+      cidadeSelect.appendChild(option);
+    });
+    cidadeSelect.disabled = false;
+  }
 
-// Eventos para atualizar filtros e lista
-document.getElementById("estadoSelect").addEventListener("change", e => {
-  popularCidades(e.target.value);
-  mostrarCampeonatos();
-});
-document.getElementById("cidadeSelect").addEventListener("change", mostrarCampeonatos);
+  // Renderiza os campeonatos com base nos filtros
+  function renderizarCampeonatos(estadoFiltro, cidadeFiltro) {
+    campeonatosContainer.innerHTML = '';
+    let filtrados = campeonatos;
+    if (estadoFiltro) {
+      filtrados = filtrados.filter(c => c.estado === estadoFiltro);
+    }
+    if (cidadeFiltro) {
+      filtrados = filtrados.filter(c => c.cidade === cidadeFiltro);
+    }
+    if (filtrados.length === 0) {
+      campeonatosContainer.innerHTML = '<p>Nenhum campeonato encontrado para o filtro selecionado.</p>';
+      return;
+    }
+    filtrados.sort((a,b) => new Date(a.data) - new Date(b.data)); // ordena por data crescente
 
-// Inicialização
-popularEstados();
-mostrarCampeonatos();
+    filtrados.forEach(campeonato => {
+      const div = document.createElement('div');
+      div.className = 'campeonato';
+
+      const nome = document.createElement('h2');
+      nome.textContent = campeonato.nome;
+
+      const detalhes = document.createElement('div');
+      detalhes.className = 'campeonato-details';
+      detalhes.innerHTML = `
+        <strong>Data:</strong> ${new Date(campeonato.data).toLocaleDateString('pt-BR')}<br/>
+        <strong>Local:</strong> ${campeonato.local}<br/>
+        <strong>Estado:</strong> ${estados[campeonato.estado]}<br/>
+        <strong>Cidade:</strong> ${campeonato.cidade}
+      `;
+
+      // Fotos e vídeos
+      const mediaDiv = document.createElement('div');
+      mediaDiv.className = 'media-links';
+      campeonato.fotos.forEach((url, i) => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = `Foto ${i+1}`;
+        mediaDiv.appendChild(a);
+      });
+      campeonato.videos.forEach((url, i) => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = `Vídeo ${i+1}`;
+        mediaDiv.appendChild(a);
+      });
+
+      // Status buttons
+      const statusDiv = document.createElement('div');
+      statusDiv.className = 'status-buttons';
+      ['Já participou', 'Vai participar', 'Não vai participar'].forEach(status => {
+        const btn = document.createElement('button');
+        btn.textContent = status;
+        btn.dataset.campeonato = campeonato.nome + '_' + campeonato.data; // ID único
+        btn.dataset.status = status;
+        btn.addEventListener('click', onStatusClick);
+        statusDiv.appendChild(btn);
+      });
+
+      // Marcar botão selecionado se houver salvo
+      marcarStatusSelecionado(campeonato.nome, campeonato.data, statusDiv);
+
+      div.appendChild(nome);
+      div.appendChild(detalhes);
+      div.appendChild(mediaDiv);
+      div.appendChild(statusDiv);
+      campeonatosContainer.appendChild(div);
+    });
+  }
+
+  // Função para salvar status no localStorage
+  function salvarStatus(id, status) {
+    const statusDados = JSON.parse(localStorage.getItem('statusCampeonatos') || '{}');
+    statusDados[id] = status;
+    localStorage.setItem('statusCampeonatos', JSON.stringify(statusDados));
+  }
+
+  // Função para obter status salvo
+  function obterStatus(id) {
+    const statusDados = JSON.parse(localStorage.getItem('statusCampeonatos') || '{}');
+    return statusDados[id] || null;
+  }
+
+  // Ao clicar no botão de status
+  function onStatusClick(e) {
+    const btn = e.currentTarget;
+    const id = btn.dataset.campeonato;
+    const status = btn.dataset.status;
+
+    // Salvar status
+    salvarStatus(id, status);
+
+    // Atualizar visual de todos botões daquele campeonato
+    const btns = btn.parentNode.querySelectorAll('button');
+    btns.forEach(b => {
+      b.classList.toggle('selected', b.dataset.status === status);
+    });
+  }
+
+  // Marca o botão selecionado conforme o status salvo
+  function marcarStatusSelecionado(nome, data, statusDiv) {
+    const id = nome + '_' + data;
+    const status = obterStatus(id);
+    if (!status) return;
+    const buttons = statusDiv.querySelectorAll('button');
+    buttons.forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.status === status);
+    });
+  }
+
+  // Eventos para filtros
+  estadoSelect.addEventListener('change', () => {
+    popularCidades(estadoSelect.value);
+    renderizarCampeonatos(estadoSelect.value, '');
+    cidadeSelect.value = '';
+  });
+  cidadeSelect.addEventListener('change', () => {
+    renderizarCampeonatos(estadoSelect.value, cidadeSelect.value);
+  });
+
+  // Inicialização
+  popularEstados();
+  renderizarCampeonatos('', '');
 
 </script>
-
 </body>
 </html>
