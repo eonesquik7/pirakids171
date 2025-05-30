@@ -1,778 +1,173 @@
 <!DOCTYPE html>
-<html lang="pt-BR" >
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gerador & Validador Nitro Discord Ultra Premium - By Nesquik</title>
-
-  <!-- Fonte Poppins Google Fonts -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <style>
-    /* === RESET & BASE === */
-    *, *::before, *::after {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
-    html, body {
-      height: 100%;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0b0713 0%, #2d0a3b 70%, #1c0630 100%);
-      color: #eee;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 1rem 1.5rem 2rem;
-      overflow-y: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      user-select: none;
-      min-height: 100vh;
-      scroll-behavior: smooth;
-    }
-
-    /* === VARIÁVEIS CSS === */
-    :root {
-      --color-primary: #ff4db8;
-      --color-primary-light: #ff7bcb;
-      --color-primary-dark: #b8007d;
-      --color-bg: rgba(255 255 255 / 0.07);
-      --color-bg-hover: rgba(255 255 255 / 0.12);
-      --color-valid: #00ff94;
-      --color-invalid: #ff4d4d;
-      --color-toast-bg: rgba(20,20,30,0.95);
-      --color-toast-success: #00ff94;
-      --color-toast-error: #ff4d4d;
-      --font-weight-regular: 300;
-      --font-weight-medium: 500;
-      --font-weight-bold: 700;
-      --border-radius: 14px;
-      --transition-fast: 0.22s ease-in-out;
-      --transition-smooth: 0.42s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    /* === LAYOUT CONTAINER === */
-    #container {
-      width: 100%;
-      max-width: 760px;
-      background: var(--color-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: var(--border-radius);
-      padding: 2rem 3rem 3rem;
-      box-shadow: 0 0 30px var(--color-primary);
-      user-select: text;
-    }
-
-    /* === TITULO PRINCIPAL === */
-    h1 {
-      font-weight: var(--font-weight-bold);
-      font-size: 2.6rem;
-      color: var(--color-primary);
-      text-shadow: 0 0 14px var(--color-primary);
-      margin-bottom: 1.3rem;
-      text-align: center;
-      user-select: text;
-    }
-
-    /* === FORMULARIO === */
-    label {
-      display: block;
-      font-weight: var(--font-weight-medium);
-      color: var(--color-primary-light);
-      margin-bottom: 0.6rem;
-      font-size: 1.2rem;
-      user-select: text;
-    }
-
-    input[type=number] {
-      width: 100%;
-      padding: 0.8rem 1.3rem;
-      font-size: 1.15rem;
-      border-radius: var(--border-radius);
-      border: none;
-      background: var(--color-bg);
-      color: #fff;
-      outline-offset: 3px;
-      outline-color: transparent;
-      transition: outline-color var(--transition-fast);
-      font-weight: var(--font-weight-regular);
-      user-select: text;
-      font-family: 'Poppins', monospace;
-    }
-    input[type=number]:focus {
-      outline-color: var(--color-primary);
-      background: var(--color-bg-hover);
-    }
-    input[type=number]::-webkit-inner-spin-button,
-    input[type=number]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    /* === BOTOES === */
-    #buttons {
-      margin-top: 1.7rem;
-      margin-bottom: 2rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    button {
-      flex: 1 1 140px;
-      padding: 0.85rem 1.6rem;
-      font-weight: var(--font-weight-bold);
-      font-size: 1.1rem;
-      border: none;
-      border-radius: var(--border-radius);
-      background: var(--color-primary);
-      color: #fff;
-      box-shadow: 0 0 10px var(--color-primary);
-      cursor: pointer;
-      user-select: none;
-      transition: background-color var(--transition-fast), box-shadow var(--transition-fast), transform 0.15s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      position: relative;
-      overflow: hidden;
-    }
-    button:hover:not(:disabled) {
-      background: var(--color-primary-light);
-      box-shadow: 0 0 25px var(--color-primary-light);
-      transform: scale(1.04);
-    }
-    button:disabled {
-      background: #602055cc;
-      box-shadow: none;
-      cursor: not-allowed;
-      color: #a075a7cc;
-      transform: none;
-    }
-    button:focus-visible {
-      outline-offset: 4px;
-      outline: 2px solid var(--color-primary-light);
-    }
-
-    /* Ícones nos botões */
-    .icon {
-      width: 1.3rem;
-      height: 1.3rem;
-      fill: currentColor;
-      display: inline-block;
-      vertical-align: middle;
-    }
-
-    /* === CONTAINER DE LINKS === */
-    #links {
-      background: var(--color-bg);
-      max-height: 420px;
-      overflow-y: auto;
-      padding: 1rem 1.3rem;
-      border-radius: var(--border-radius);
-      box-shadow: inset 0 0 15px var(--color-primary);
-      font-family: monospace;
-      font-size: 0.9rem;
-      line-height: 1.38rem;
-      user-select: text;
-      transition: background-color var(--transition-fast);
-    }
-
-    /* Link individual */
-    .link {
-      padding: 0.25rem 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      user-select: text;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: default;
-      transition: color var(--transition-fast);
-    }
-    .link.valid {
-      color: var(--color-valid);
-      font-weight: var(--font-weight-bold);
-      text-shadow: 0 0 7px var(--color-valid);
-    }
-    .link.invalid {
-      color: var(--color-invalid);
-      opacity: 0.6;
-      font-style: italic;
-      text-decoration: line-through;
-    }
-
-    /* === LOADING SKELETON === */
-    .loading-skeleton {
-      background: linear-gradient(
-        90deg,
-        rgba(255,255,255,0.12) 25%,
-        rgba(255,255,255,0.25) 50%,
-        rgba(255,255,255,0.12) 75%
-      );
-      background-size: 200% 100%;
-      animation: loadingShimmer 1.7s infinite;
-      border-radius: var(--border-radius);
-      height: 1.2rem;
-      width: 100%;
-      margin: 0.12rem 0;
-    }
-    @keyframes loadingShimmer {
-      0% { background-position: 200% 0 }
-      100% { background-position: -200% 0 }
-    }
-
-    /* === TOASTS (NOTIFICAÇÕES) === */
-    #toast-container {
-      position: fixed;
-      bottom: 1.8rem;
-      right: 1.8rem;
-      max-width: 320px;
-      z-index: 10000;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      pointer-events: none;
-    }
-    .toast {
-      pointer-events: auto;
-      padding: 0.75rem 1rem;
-      border-radius: var(--border-radius);
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.95rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      opacity: 0;
-      transform: translateX(100%);
-      animation: toastIn 0.3s forwards;
-      user-select: none;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      box-sizing: border-box;
-    }
-    .toast.success {
-      background-color: var(--color-toast-success);
-      box-shadow: 0 0 20px var(--color-toast-success);
-    }
-    .toast.error {
-      background-color: var(--color-toast-error);
-      box-shadow: 0 0 20px var(--color-toast-error);
-    }
-    @keyframes toastIn {
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-    @keyframes toastOut {
-      to {
-        opacity: 0;
-        transform: translateX(100%);
-      }
-    }
-
-    /* === FILTROS E PAGINAÇÃO === */
-    #filters {
-      margin: 1rem 0 1.5rem;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    #filters button {
-      flex: 1 1 120px;
-      font-weight: var(--font-weight-medium);
-      font-size: 1rem;
-      background: var(--color-bg);
-      border: 2px solid var(--color-primary);
-      color: var(--color-primary);
-      box-shadow: none;
-      cursor: pointer;
-      text-transform: none;
-      user-select: none;
-      transition: background-color var(--transition-fast), color var(--transition-fast);
-      border-radius: var(--border-radius);
-      padding: 0.65rem 1rem;
-    }
-    #filters button.active,
-    #filters button:hover {
-      background: var(--color-primary);
-      color: #fff;
-      box-shadow: 0 0 15px var(--color-primary);
-      transform: scale(1.05);
-    }
-    #filters button:focus-visible {
-      outline-offset: 4px;
-      outline: 3px solid var(--color-primary-light);
-    }
-
-    #pagination {
-      margin-top: 0.25rem;
-      display: flex;
-      justify-content: center;
-      gap: 0.9rem;
-      flex-wrap: wrap;
-      user-select: none;
-    }
-    #pagination button {
-      min-width: 38px;
-      background: var(--color-bg);
-      border: 2px solid var(--color-primary);
-      color: var(--color-primary);
-      font-weight: var(--font-weight-bold);
-      font-size: 1rem;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      transition: background-color var(--transition-fast), color var(--transition-fast);
-      user-select: none;
-      padding: 0.3rem 0.7rem;
-    }
-    #pagination button:hover {
-      background: var(--color-primary);
-      color: #fff;
-      box-shadow: 0 0 10px var(--color-primary);
-      transform: scale(1.1);
-    }
-    #pagination button:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-    #pagination button:focus-visible {
-      outline-offset: 4px;
-      outline: 3px solid var(--color-primary-light);
-    }
-
-    /* === FOOTER === */
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: var(--font-weight-medium);
-      color: var(--color-primary-light);
-      text-shadow: 0 0 8px var(--color-primary);
-      user-select: none;
-    }
-    footer a {
-      color: var(--color-primary-light);
-      text-decoration: none;
-      font-weight: var(--font-weight-bold);
-      transition: color 0.3s ease;
-    }
-    footer a:hover, footer a:focus-visible {
-      color: var(--color-primary);
-      text-decoration: underline;
-    }
-
-    /* === DARK MODE TOGGLE === */
-    #dark-toggle {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: var(--color-primary);
-      border: none;
-      padding: 0.5rem 0.8rem;
-      font-weight: var(--font-weight-bold);
-      font-size: 1rem;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      color: white;
-      user-select: none;
-      box-shadow: 0 0 14px var(--color-primary);
-      transition: background-color 0.3s ease;
-      z-index: 9999;
-    }
-    #dark-toggle:hover {
-      background: var(--color-primary-light);
-      box-shadow: 0 0 22px var(--color-primary-light);
-    }
-
-    /* === SCROLLBAR PERSONALIZADO === */
-    #links::-webkit-scrollbar {
-      width: 8px;
-    }
-    #links::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    #links::-webkit-scrollbar-thumb {
-      background: var(--color-primary);
-      border-radius: var(--border-radius);
-      transition: background-color 0.3s ease;
-    }
-    #links::-webkit-scrollbar-thumb:hover {
-      background: var(--color-primary-light);
-    }
-
-    /* === ACESSIBILIDADE === */
-    .sr-only {
-      position: absolute !important;
-      width: 1px; height: 1px;
-      padding: 0; margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      border: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Vôlei - Dashboard Pessoal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            padding: 14px 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        .card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .card h3 {
+            margin: 10px 0;
+        }
+        .card p {
+            color: #555;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .filters {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .filters select {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
-  <button id="dark-toggle" aria-pressed="false" aria-label="Alternar modo escuro">🌙 Dark Mode</button>
-  <main id="container" role="main" aria-labelledby="page-title">
-    <h1 id="page-title">Gerador &amp; Validador Nitro Discord Ultra Premium</h1>
 
-    <label for="quantity" id="quantity-label">Quantos links deseja gerar? (1 a 5000)</label>
-    <input
-      id="quantity"
-      type="number"
-      min="1"
-      max="5000"
-      value="1000"
-      aria-describedby="quantity-desc"
-      aria-required="true"
-      autocomplete="off"
-      inputmode="numeric"
-      pattern="[0-9]*"
-    />
-    <div id="quantity-desc" class="sr-only">Insira um número de 1 a 5000 para gerar links do Discord Nitro.</div>
+<header>
+    <h1>Meu Vôlei - Dashboard Pessoal</h1>
+</header>
 
-    <div id="buttons" role="group" aria-label="Controles de gerador e validador">
-      <button id="generate" aria-live="polite" aria-label="Gerar links Discord Nitro">
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13h14v-2H5v2z"/></svg> Gerar
-      </button>
-      <button id="validate" aria-live="polite" aria-label="Validar links gerados" disabled>
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.2l-3.5-3.5L4 14l5 5 12-12-1.5-1.5L9 16.2z"/></svg> Validar
-      </button>
-      <button id="copy" aria-live="polite" aria-label="Copiar links válidos" disabled>
-        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zM19 5H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Copiar Válidos
-      </button>
+<nav>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#campeonatos">Campeonatos</a>
+    <a href="#diario">Diário & Rotina</a>
+    <a href="#estatisticas">Estatísticas</a>
+    <a href="#configuracoes">Configurações</a>
+</nav>
+
+<div class="filters">
+    <select id="estadoFiltro">
+        <option value="">Selecione o Estado</option>
+        <option value="MG">Minas Gerais</option>
+        <option value="SP">São Paulo</option>
+        <option value="RJ">Rio de Janeiro</option>
+    </select>
+    <select id="cidadeFiltro">
+        <option value="">Selecione a Cidade</option>
+        <option value="Belo Horizonte">Belo Horizonte</option>
+        <option value="Uberlândia">Uberlândia</option>
+        <option value="São Paulo">São Paulo</option>
+    </select>
+    <button onclick="filtrarCampeonatos()">Filtrar</button>
+</div>
+
+<div class="container" id="campeonatos">
+    <div class="card">
+        <img src="https://via.placeholder.com/300x200" alt="Campeonato 1">
+        <h3>Campeonato Estadual - MG</h3>
+        <p>Data: 15/06/2025</p>
+        <p>Local: Belo Horizonte</p>
+        <p>Categoria: Feminino</p>
     </div>
-
-    <div id="filters" role="group" aria-label="Filtros de links">
-      <button data-filter="all" class="active" aria-pressed="true" aria-label="Mostrar todos os links">Todos</button>
-      <button data-filter="valid" aria-pressed="false" aria-label="Mostrar apenas links válidos">Válidos</button>
-      <button data-filter="gift" aria-pressed="false" aria-label="Mostrar apenas links de presente">Presentes</button>
-      <button data-filter="invalid" aria-pressed="false" aria-label="Mostrar apenas links inválidos">Inválidos</button>
+    <div class="card">
+        <img src="https://via.placeholder.com/300x200" alt="Campeonato 2">
+        <h3>Campeonato Nacional</h3>
+        <p>Data: 20/07/2025</p>
+        <p>Local: São Paulo</p>
+        <p>Categoria: Masculino</p>
     </div>
-
-    <div id="links" tabindex="0" aria-live="polite" aria-atomic="true" role="list" aria-label="Lista de links gerados">
-      <!-- Links serão inseridos aqui -->
+    <div class="card">
+        <img src="https://via.placeholder.com/300x200" alt="Campeonato 3">
+        <h3>Campeonato Internacional</h3>
+        <p>Data: 10/08/2025</p>
+        <p>Local: Rio de Janeiro</p>
+        <p>Categoria: Feminino</p>
     </div>
+</div>
 
-    <div id="pagination" role="navigation" aria-label="Navegação por páginas">
-      <!-- Botões de página serão inseridos aqui -->
-    </div>
-  </main>
-
-  <footer>
-    By <a href="https://github.com/nesquik" target="_blank" rel="noopener noreferrer">Nesquik</a>
-  </footer>
+<footer>
+    <p>&copy; 2025 Meu Vôlei - Todos os direitos reservados</p>
+</footer>
 
 <script>
-(() => {
-  'use strict';
+    const campeonatos = [
+        { nome: "Campeonato Estadual - MG", estado: "MG", cidade: "Belo Horizonte", data: "2025-06-15", categoria: "Feminino", imagem: "https://via.placeholder.com/300x200" },
+        { nome: "Campeonato Nacional", estado: "SP", cidade: "São Paulo", data: "2025-07-20", categoria: "Masculino", imagem: "https://via.placeholder.com/300x200" },
+        { nome: "Campeonato Internacional", estado: "RJ", cidade: "Rio de Janeiro", data: "2025-08-10", categoria: "Feminino", imagem: "https://via.placeholder.com/300x200" }
+    ];
 
-  // === CONSTANTES E CONFIGURAÇÕES ===
-  const MAX_LINKS = 5000;
-  const LINKS_PER_PAGE = 50;
-  const API_DELAY = 120; // milissegundos entre requisições para evitar rate limit
+    function filtrarCampeonatos() {
+        const estadoFiltro = document.getElementById('estadoFiltro').value;
+        const cidadeFiltro = document.getElementById('cidadeFiltro').value;
+        const container = document.getElementById('campeonatos');
+        container.innerHTML = '';
 
-  // === ELEMENTOS DOM ===
-  const quantityInput = document.getElementById('quantity');
-  const generateBtn = document.getElementById('generate');
-  const validateBtn = document.getElementById('validate');
-  const copyBtn = document.getElementById('copy');
-  const linksContainer = document.getElementById('links');
-  const filters = document.getElementById('filters');
-  const pagination = document.getElementById('pagination');
-  const darkToggle = document.getElementById('dark-toggle');
+        const campeonatosFiltrados = campeonatos.filter(campeonato => {
+            return (!estadoFiltro || campeonato.estado === estadoFiltro) && (!cidadeFiltro || campeonato.cidade === cidadeFiltro);
+        });
 
-  // === ESTADOS ===
-  let allLinks = [];
-  let validLinks = new Set();
-  let invalidLinks = new Set();
-  let giftLinks = new Set();
-  let currentPage = 1;
-  let currentFilter = 'all';
-  let isValidating = false;
-
-  // === UTILITÁRIOS ===
-  function createLink(code) {
-    return `https://discord.gift/${code}`;
-  }
-
-  function generateRandomCode(length = 16) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+        campeonatosFiltrados.forEach(campeonato => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <img src="${campeonato.imagem}" alt="${campeonato.nome}">
+                <h3>${campeonato.nome}</h3>
+                <p>Data: ${campeonato.data}</p>
+                <p>Local: ${campeonato.cidade}</p>
+                <p>Categoria: ${campeonato.categoria}</p>
+            `;
+            container.appendChild(card);
+        });
     }
-    return result;
-  }
-
-  function isGiftCode(code) {
-    // Define gift codes como códigos com mais de 16 caracteres (Nitro Boosts, etc)
-    return code.length > 16;
-  }
-
-  // === GERAR LINKS ===
-  function generateLinks(quantity) {
-    allLinks = [];
-    validLinks.clear();
-    invalidLinks.clear();
-    giftLinks.clear();
-    currentPage = 1;
-    currentFilter = 'all';
-    updateFilterButtons();
-
-    for (let i = 0; i < quantity; i++) {
-      let codeLength = 16;
-      // 10% chance de gerar um gift code mais longo (exemplo)
-      if (Math.random() < 0.1) codeLength = 24 + Math.floor(Math.random() * 8);
-      const code = generateRandomCode(codeLength);
-      allLinks.push({
-        code,
-        url: createLink(code),
-        status: 'unknown', // unknown, valid, invalid
-        isGift: isGiftCode(code),
-      });
-      if (isGiftCode(code)) giftLinks.add(code);
-    }
-
-    renderLinks();
-    validateBtn.disabled = false;
-    copyBtn.disabled = true;
-  }
-
-  // === RENDERIZAÇÃO ===
-  function renderLinks() {
-    linksContainer.innerHTML = '';
-    const filteredLinks = allLinks.filter(link => {
-      if (currentFilter === 'valid') return link.status === 'valid';
-      if (currentFilter === 'invalid') return link.status === 'invalid';
-      if (currentFilter === 'gift') return link.isGift;
-      return true; // all
-    });
-
-    // Paginação
-    const totalPages = Math.ceil(filteredLinks.length / LINKS_PER_PAGE);
-    if (currentPage > totalPages) currentPage = totalPages || 1;
-
-    const startIdx = (currentPage - 1) * LINKS_PER_PAGE;
-    const pageLinks = filteredLinks.slice(startIdx, startIdx + LINKS_PER_PAGE);
-
-    pageLinks.forEach(link => {
-      const linkElem = document.createElement('a');
-      linkElem.href = link.url;
-      linkElem.target = '_blank';
-      linkElem.rel = 'noopener noreferrer';
-      linkElem.textContent = link.url;
-
-      linkElem.classList.add('link-item');
-      if (link.status === 'valid') linkElem.classList.add('valid');
-      else if (link.status === 'invalid') linkElem.classList.add('invalid');
-      else linkElem.classList.add('unknown');
-      if (link.isGift) linkElem.classList.add('gift');
-
-      linkElem.setAttribute('role', 'listitem');
-      linksContainer.appendChild(linkElem);
-    });
-
-    renderPagination(totalPages);
-  }
-
-  // === RENDERIZAÇÃO DE PAGINAÇÃO ===
-  function renderPagination(totalPages) {
-    pagination.innerHTML = '';
-    if (totalPages <= 1) return;
-
-    // Botão anterior
-    const prevBtn = document.createElement('button');
-    prevBtn.textContent = '‹';
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.addEventListener('click', () => {
-      currentPage--;
-      renderLinks();
-    });
-    pagination.appendChild(prevBtn);
-
-    // Botões numéricos (limitando para até 7 botões)
-    const maxButtons = 7;
-    let startPage = Math.max(1, currentPage - 3);
-    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-    if (endPage - startPage < maxButtons - 1) {
-      startPage = Math.max(1, endPage - maxButtons + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      const pageBtn = document.createElement('button');
-      pageBtn.textContent = i;
-      pageBtn.disabled = i === currentPage;
-      if (i === currentPage) pageBtn.setAttribute('aria-current', 'page');
-      pageBtn.addEventListener('click', () => {
-        currentPage = i;
-        renderLinks();
-      });
-      pagination.appendChild(pageBtn);
-    }
-
-    // Botão próximo
-    const nextBtn = document.createElement('button');
-    nextBtn.textContent = '›';
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.addEventListener('click', () => {
-      currentPage++;
-      renderLinks();
-    });
-    pagination.appendChild(nextBtn);
-  }
-
-  // === FILTROS ===
-  function updateFilterButtons() {
-    Array.from(filters.children).forEach(button => {
-      button.classList.toggle('active', button.dataset.filter === currentFilter);
-      button.setAttribute('aria-pressed', button.dataset.filter === currentFilter ? 'true' : 'false');
-    });
-  }
-
-  filters.addEventListener('click', e => {
-    if (e.target.tagName === 'BUTTON') {
-      currentFilter = e.target.dataset.filter;
-      currentPage = 1;
-      updateFilterButtons();
-      renderLinks();
-    }
-  });
-
-  // === VALIDAR LINKS (SIMULADO) ===
-  async function validateLinks() {
-    if (isValidating) return;
-    isValidating = true;
-    validateBtn.disabled = true;
-    generateBtn.disabled = true;
-    copyBtn.disabled = true;
-    showToast('Validação iniciada. Aguarde...', 'success');
-
-    for (let i = 0; i < allLinks.length; i++) {
-      // Simulando chamada API com delay
-      await new Promise(res => setTimeout(res, API_DELAY));
-
-      // Simulação: 0.5% chance de ser válido, 4.5% chance de inválido, resto desconhecido
-      const rand = Math.random();
-      if (rand < 0.005) {
-        allLinks[i].status = 'valid';
-        validLinks.add(allLinks[i].code);
-        invalidLinks.delete(allLinks[i].code);
-      } else if (rand < 0.05) {
-        allLinks[i].status = 'invalid';
-        invalidLinks.add(allLinks[i].code);
-        validLinks.delete(allLinks[i].code);
-      } else {
-        allLinks[i].status = 'unknown';
-        validLinks.delete(allLinks[i].code);
-        invalidLinks.delete(allLinks[i].code);
-      }
-
-      if ((i + 1) % LINKS_PER_PAGE === 0 || i === allLinks.length - 1) {
-        renderLinks();
-      }
-    }
-
-    isValidating = false;
-    validateBtn.disabled = false;
-    generateBtn.disabled = false;
-    copyBtn.disabled = validLinks.size === 0;
-    showToast('Validação concluída!', 'success');
-  }
-
-  // === COPIAR LINKS VÁLIDOS ===
-  copyBtn.addEventListener('click', () => {
-    if (validLinks.size === 0) return;
-    const text = allLinks.filter(l => l.status === 'valid').map(l => l.url).join('\n');
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('Links válidos copiados para a área de transferência.', 'success');
-    }).catch(() => {
-      showToast('Erro ao copiar links.', 'error');
-    });
-  });
-
-  // === BOTÕES PRINCIPAIS ===
-  generateBtn.addEventListener('click', () => {
-    const qty = Number(quantityInput.value);
-    if (isNaN(qty) || qty < 1 || qty > MAX_LINKS) {
-      showToast(`Insira um número entre 1 e ${MAX_LINKS}.`, 'error');
-      return;
-    }
-    generateLinks(qty);
-  });
-
-  validateBtn.addEventListener('click', () => {
-    validateLinks();
-  });
-
-  // === DARK MODE ===
-  function applyDarkMode(enabled) {
-    if (enabled) {
-      document.documentElement.style.setProperty('--color-bg', '#121212');
-      document.documentElement.style.setProperty('--color-primary', '#BB86FC');
-      document.documentElement.style.setProperty('--color-primary-light', '#EFB7FF');
-      document.documentElement.style.setProperty('--color-toast-success', '#03DAC6');
-      document.documentElement.style.setProperty('--color-toast-error', '#CF6679');
-      darkToggle.textContent = '☀️ Light Mode';
-      darkToggle.setAttribute('aria-pressed', 'true');
-    } else {
-      document.documentElement.style.setProperty('--color-bg', '#fff');
-      document.documentElement.style.setProperty('--color-primary', '#5865F2');
-      document.documentElement.style.setProperty('--color-primary-light', '#9CA3FF');
-      document.documentElement.style.setProperty('--color-toast-success', '#28a745');
-      document.documentElement.style.setProperty('--color-toast-error', '#dc3545');
-      darkToggle.textContent = '🌙 Dark Mode';
-      darkToggle.setAttribute('aria-pressed', 'false');
-    }
-  }
-
-  // Salvar e carregar preferência do modo escuro no localStorage
-  function loadDarkModePreference() {
-    const pref = localStorage.getItem('darkMode');
-    if (pref === 'true') {
-      applyDarkMode(true);
-    } else {
-      applyDarkMode(false);
-    }
-  }
-  loadDarkModePreference();
-
-  darkToggle.addEventListener('click', () => {
-    const isDark = darkToggle.getAttribute('aria-pressed') === 'true';
-    applyDarkMode(!isDark);
-    localStorage.setItem('darkMode', !isDark);
-  });
-
-  // === TOASTS ===
-  const toastContainer = document.createElement('div');
-  toastContainer.id = 'toast-container';
-  document.body.appendChild(toastContainer);
-
-  function showToast(message, type = 'success', duration = 3000) {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    toastContainer.appendChild(toast);
-
-    setTimeout(() => {
-      toast.style.animation = 'toastOut 0.3s forwards';
-      toast.addEventListener('animationend', () => toast.remove());
-    }, duration);
-  }
-
-})();
 </script>
+
 </body>
 </html>
