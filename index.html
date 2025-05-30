@@ -1,154 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pirakids - Verificador</title>
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>ICHK - Nitro Verifier</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
-      background-color: black;
+      background: linear-gradient(135deg, #ff99cc, #cc66ff);
       color: white;
-      font-family: 'Special Elite', monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 40px;
+      backdrop-filter: blur(6px);
     }
+
     h1 {
-      font-size: 48px;
-      color: white;
-      margin: 20px 0 0;
+      font-size: 3em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
     }
-    h2 {
-      font-size: 20px;
-      color: white;
-      margin: 0 0 10px;
-    }
-    .highlight {
-      color: red;
-      font-style: italic;
-    }
-    .container {
-      display: flex;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .box {
-      background-color: #111;
-      padding: 20px;
-      border: 1px solid #444;
-      border-radius: 10px;
-      width: 400px;
-    }
-    textarea, input, select {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background-color: #222;
-      color: white;
-      border: 1px solid #555;
-      border-radius: 5px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: red;
-      color: white;
-      border: none;
-      border-radius: 5px;
+
+    .button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid white;
+      border-radius: 12px;
+      padding: 12px 20px;
+      margin: 10px;
       cursor: pointer;
+      transition: 0.3s;
       font-weight: bold;
     }
-    button:hover {
-      background-color: darkred;
+
+    .button:hover {
+      background: rgba(255, 255, 255, 0.3);
     }
-    .counter {
-      margin-top: 10px;
-      text-align: center;
+
+    .link {
+      margin: 8px auto;
+      padding: 10px;
+      max-width: 500px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      word-break: break-all;
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    }
+
+    .valid {
+      background-color: rgba(0, 255, 100, 0.2);
+      border-left: 4px solid #00ff80;
+    }
+
+    .invalid {
+      background-color: rgba(255, 0, 0, 0.2);
+      border-left: 4px solid #ff5050;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #fff;
+      text-shadow: 0 0 5px #000;
+    }
+
+    footer b {
+      color: #ffccff;
     }
   </style>
 </head>
 <body>
-  <h1>Pirakids</h1>
-  <h2>By Nesquik <span class="highlight">...the word is yours</span></h2>
+  <h1>ICHK Nitro Verifier</h1>
+  <button class="button" onclick="gerarLinks()">Gerar Links Fakes</button>
+  <button class="button" onclick="validarLinks()">Validar</button>
 
-  <div class="container">
-    <div class="box">
-      <h3>Gerador de Cartões</h3>
-      <label for="bandeira">Bandeira:</label>
-      <select id="bandeira">
-        <option value="Visa">Visa</option>
-        <option value="MasterCard">MasterCard</option>
-        <option value="Amex">Amex</option>
-        <option value="Discover">Discover</option>
-        <option value="Aleatorio">Aleatório</option>
-      </select>
-      <label for="quantidade">Quantidade:</label>
-      <input type="number" id="quantidade" placeholder="Quantos cartões?">
-      <button onclick="gerarCartoes()">Gerar</button>
-      <textarea id="resultadoGerador" rows="10" placeholder="Cartões gerados..." readonly></textarea>
-      <button onclick="copiarTexto('resultadoGerador')">Copiar</button>
-      <button onclick="exportarTXT('resultadoGerador')">Exportar TXT</button>
-    </div>
+  <div id="links"></div>
 
-    <div class="box">
-      <h3>Verificador em Massa</h3>
-      <textarea id="entradaMassa" rows="10" placeholder="Cole aqui os cartões..."></textarea>
-      <button onclick="verificarMassa()">Verificar</button>
-      <textarea id="saidaMassa" rows="10" placeholder="Resultado..." readonly></textarea>
-      <div class="counter">Verificados: <span id="contador">0</span></div>
-    </div>
-  </div>
+  <footer>
+    Criado com 💖 por <b>By Nesquik</b> com cifrão.
+  </footer>
 
   <script>
-    function gerarCartoes() {
-      const bandeira = document.getElementById("bandeira").value;
-      const qtd = parseInt(document.getElementById("quantidade").value);
-      let resultado = "";
-      for (let i = 0; i < qtd; i++) {
-        const bin = bandeira === "Visa" ? "4" : bandeira === "MasterCard" ? "5" : bandeira === "Amex" ? "34" : bandeira === "Discover" ? "6011" : Math.floor(Math.random() * 9).toString();
-        const num = bin + Math.random().toString().slice(2, 17 - bin.length);
-        const cvv = Math.floor(100 + Math.random() * 900);
-        const mes = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
-        const ano = String(26 + Math.floor(Math.random() * 5));
-        resultado += `${num}|${mes}|${ano}|${cvv}\n`;
+    function gerarLinks() {
+      const linksContainer = document.getElementById("links");
+      linksContainer.innerHTML = "";
+
+      for (let i = 0; i < 10; i++) {
+        const fake = Math.random().toString(36).substring(2, 18);
+        const div = document.createElement("div");
+        div.className = "link";
+        div.textContent = `https://discord.gift/${fake}`;
+        linksContainer.appendChild(div);
       }
-      document.getElementById("resultadoGerador").value = resultado.trim();
     }
 
-    function copiarTexto(id) {
-      const el = document.getElementById(id);
-      el.select();
-      document.execCommand("copy");
-    }
+    async function validarLinks() {
+      const links = Array.from(document.querySelectorAll('.link')).map(el => el.textContent);
 
-    function exportarTXT(id) {
-      const el = document.getElementById(id);
-      const blob = new Blob([el.value], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "cartoes.txt";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function verificarMassa() {
-      const entrada = document.getElementById("entradaMassa").value.trim().split("\n");
-      let saida = "";
-      entrada.forEach((linha, idx) => {
-        if (linha.match(/\d{13,16}\|\d{2}\|\d{2}\|\d{3}/)) {
-          saida += `${linha} --> Válido\n`;
-        } else {
-          saida += `${linha} --> Inválido\n`;
-        }
-        document.getElementById("contador").innerText = idx + 1;
+      const res = await fetch("http://localhost:3000/validar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ links })
       });
-      document.getElementById("saidaMassa").value = saida.trim();
+
+      const data = await res.json();
+      const linksContainer = document.getElementById("links");
+      linksContainer.innerHTML = "";
+
+      data.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "link " + (item.valido ? "valid" : "invalid");
+        div.textContent = item.link;
+        linksContainer.appendChild(div);
+      });
     }
   </script>
 </body>
