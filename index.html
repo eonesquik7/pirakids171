@@ -2,92 +2,113 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>ICHK - Nitro Verifier</title>
+  <title>ICHK Nitro Verifier</title>
   <style>
     body {
-      background: linear-gradient(135deg, #ff99cc, #cc66ff);
-      color: white;
+      background: #000000;
+      color: #fff;
       font-family: 'Segoe UI', sans-serif;
       text-align: center;
       padding: 40px;
-      backdrop-filter: blur(6px);
     }
 
     h1 {
       font-size: 3em;
       margin-bottom: 20px;
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      color: #ff66cc;
+      text-shadow: 0 0 10px #ff66cc88;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+    }
+
+    .input-number {
+      padding: 10px;
+      width: 80px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      text-align: center;
     }
 
     .button {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid white;
+      background: #1a1a1a;
+      border: 1px solid #ff66cc;
       border-radius: 12px;
       padding: 12px 20px;
       margin: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      color: #ff66cc;
       font-weight: bold;
+      transition: 0.3s;
     }
 
     .button:hover {
-      background: rgba(255, 255, 255, 0.3);
+      background: #2a2a2a;
     }
 
     .link {
       margin: 8px auto;
       padding: 10px;
-      max-width: 500px;
-      background: rgba(255,255,255,0.1);
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
       word-break: break-all;
-      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+      box-shadow: 0 0 8px rgba(255, 105, 180, 0.3);
     }
 
     .valid {
-      background-color: rgba(0, 255, 100, 0.2);
+      background-color: rgba(0, 255, 100, 0.1);
       border-left: 4px solid #00ff80;
     }
 
     .invalid {
-      background-color: rgba(255, 0, 0, 0.2);
+      background-color: rgba(255, 0, 0, 0.1);
       border-left: 4px solid #ff5050;
     }
 
     footer {
       margin-top: 40px;
       font-size: 0.9em;
-      color: #fff;
-      text-shadow: 0 0 5px #000;
+      color: #888;
     }
 
     footer b {
-      color: #ffccff;
+      color: #ff66cc;
     }
   </style>
 </head>
 <body>
   <h1>ICHK Nitro Verifier</h1>
-  <button class="button" onclick="gerarLinks()">Gerar Links Fakes</button>
-  <button class="button" onclick="validarLinks()">Validar</button>
+
+  <div class="controls">
+    <input id="qtd" type="number" min="1" placeholder="Qtd" class="input-number" />
+    <button class="button" onclick="gerarLinks()">Gerar</button>
+    <button class="button" onclick="validarLinks()">Validar</button>
+    <button class="button" onclick="copiarValidos()">Copiar Válidos</button>
+  </div>
 
   <div id="links"></div>
 
   <footer>
-    Criado com 💖 por <b>By Nesquik</b> com cifrão.
+    Criado por <b>By Nesquik</b>
   </footer>
 
   <script>
     function gerarLinks() {
-      const linksContainer = document.getElementById("links");
-      linksContainer.innerHTML = "";
+      const qtd = parseInt(document.getElementById("qtd").value) || 10;
+      const container = document.getElementById("links");
+      container.innerHTML = "";
 
-      for (let i = 0; i < 10; i++) {
-        const fake = Math.random().toString(36).substring(2, 18);
+      for (let i = 0; i < qtd; i++) {
+        const isPresente = Math.random() > 0.5;
+        const code = Math.random().toString(36).substring(2) + (isPresente ? Math.random().toString(36).substring(2) : "");
+        const link = `https://discord.gift/${code}`;
         const div = document.createElement("div");
         div.className = "link";
-        div.textContent = `https://discord.gift/${fake}`;
-        linksContainer.appendChild(div);
+        div.textContent = link;
+        container.appendChild(div);
       }
     }
 
@@ -101,15 +122,26 @@
       });
 
       const data = await res.json();
-      const linksContainer = document.getElementById("links");
-      linksContainer.innerHTML = "";
+      const container = document.getElementById("links");
+      container.innerHTML = "";
 
       data.forEach(item => {
         const div = document.createElement("div");
         div.className = "link " + (item.valido ? "valid" : "invalid");
         div.textContent = item.link;
-        linksContainer.appendChild(div);
+        container.appendChild(div);
       });
+    }
+
+    function copiarValidos() {
+      const validos = Array.from(document.querySelectorAll('.link.valid')).map(div => div.textContent);
+      const area = document.createElement('textarea');
+      area.value = validos.join('\n');
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      document.body.removeChild(area);
+      alert("Links válidos copiados!");
     }
   </script>
 </body>
