@@ -4,91 +4,193 @@
   <meta charset="UTF-8" />
   <title>fuck by nesquik, the real devil</title>
   <style>
-    body {
+    /* Fundo preto */
+    body, html {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1a0000, #330000);
-      color: white;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #ff2b2b;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px;
-      backdrop-filter: blur(10px);
-      min-height: 100vh;
+      justify-content: center;
+      user-select: none;
     }
 
-    h1 {
-      color: #ff3333;
-      font-size: 32px;
-      margin-bottom: 20px;
-      text-shadow: 0 0 15px #ff0000;
+    /* Bolhas vermelhas animadas no fundo */
+    .bubbles {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
     }
 
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      background: rgba(255, 43, 43, 0.7);
+      border-radius: 50%;
+      animation: rise 10s linear infinite;
+      filter: drop-shadow(0 0 6px #ff2b2b);
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    /* Texto fixo central */
+    #main-text {
+      z-index: 2;
+      font-size: 2.5rem;
+      font-weight: bold;
+      text-shadow:
+        0 0 5px #ff2b2b,
+        0 0 10px #ff2b2b,
+        0 0 20px #ff2b2b;
+      margin-bottom: 30px;
+      text-align: center;
+      user-select: text;
+    }
+
+    /* Textarea simples */
     textarea {
-      width: 90%;
-      max-width: 800px;
-      height: 200px;
+      width: 320px;
+      height: 120px;
+      resize: none;
+      font-size: 1rem;
       padding: 10px;
-      margin-bottom: 20px;
-      background: rgba(255, 0, 0, 0.1);
-      border: 1px solid #ff3333;
       border-radius: 10px;
-      color: #fff;
-      resize: vertical;
-      font-size: 16px;
+      border: 2px solid #ff2b2b;
+      background: #1a0000;
+      color: #ff2b2b;
+      box-shadow:
+        0 0 8px #ff2b2b;
+      outline: none;
+      user-select: text;
+    }
+
+    textarea:disabled {
+      background: #330000;
+      color: #660000;
+      border-color: #660000;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    /* Botões */
+    .btn-container {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
     }
 
     button {
-      background-color: #ff0000;
+      background-color: #ff2b2b;
       border: none;
-      color: white;
-      padding: 10px 20px;
-      margin: 10px;
-      border-radius: 20px;
+      color: black;
+      font-weight: 700;
+      padding: 10px 25px;
+      border-radius: 30px;
       cursor: pointer;
-      transition: 0.3s;
-      font-weight: bold;
-      box-shadow: 0 0 10px #ff0000;
+      font-size: 1rem;
+      box-shadow:
+        0 0 10px #ff2b2b;
+      transition: background-color 0.3s ease;
+      user-select: none;
     }
 
     button:hover {
-      background-color: #cc0000;
-      box-shadow: 0 0 20px #cc0000;
+      background-color: #cc2222;
+      box-shadow:
+        0 0 20px #cc2222;
     }
 
-    #output {
-      margin-top: 30px;
-      width: 90%;
-      max-width: 800px;
-      background: rgba(255, 0, 0, 0.1);
-      border: 1px solid #ff3333;
-      border-radius: 10px;
-      padding: 10px;
-      word-wrap: break-word;
-      min-height: 50px;
-      font-size: 16px;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #ff3333;
-      font-size: 14px;
-      text-shadow: 0 0 8px #ff0000;
-    }
   </style>
 </head>
 <body>
 
-  <h1>fuck by nesquik</h1>
-  <textarea placeholder="Digite algo aqui..."></textarea><br />
-  <button onclick="alert('Você clicou!')">Clique aqui</button>
+  <div class="bubbles" aria-hidden="true"></div>
 
-  <div id="output">Aqui pode aparecer algum resultado se desejar...</div>
+  <div id="main-text">fuck by nesquik, the real devil</div>
 
-  <footer>
-    fuck by nesquik, the real devil
-  </footer>
+  <textarea id="text-input" placeholder="Digite aqui..." disabled></textarea>
+
+  <div class="btn-container">
+    <button id="btn-digitar">Digitar</button>
+    <button id="btn-salvar">Salvar</button>
+  </div>
+
+  <script>
+    // Criar bolhas com propriedades randomizadas
+    const bubblesContainer = document.querySelector('.bubbles');
+    const bubbleCount = 30;
+
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      const size = Math.random() * 30 + 15; // 15px a 45px
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+      bubble.style.left = Math.random() * 100 + 'vw';
+      bubble.style.animationDuration = (7 + Math.random() * 6) + 's';
+      bubble.style.animationDelay = (Math.random() * 10) + 's';
+      bubblesContainer.appendChild(bubble);
+
+      // Remove a bolha depois da animação para não poluir o DOM
+      setTimeout(() => bubble.remove(), (parseFloat(bubble.style.animationDuration) + parseFloat(bubble.style.animationDelay)) * 1000);
+    }
+
+    // Criar bolhas constantemente
+    setInterval(() => {
+      if (bubblesContainer.childElementCount < bubbleCount) {
+        createBubble();
+      }
+    }, 300);
+
+    // Controles textarea e botões
+    const textarea = document.getElementById('text-input');
+    const btnDigitar = document.getElementById('btn-digitar');
+    const btnSalvar = document.getElementById('btn-salvar');
+
+    btnDigitar.addEventListener('click', () => {
+      textarea.disabled = false;
+      textarea.focus();
+    });
+
+    btnSalvar.addEventListener('click', () => {
+      if (textarea.disabled) {
+        alert('Clique em "Digitar" antes de salvar.');
+        return;
+      }
+      const text = textarea.value.trim();
+      if (!text) {
+        alert('Digite algo antes de salvar.');
+        return;
+      }
+
+      // Criar arquivo txt para download
+      const blob = new Blob([text], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'texto_salvo.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  </script>
 
 </body>
 </html>
