@@ -1,55 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Um Destino Inevitável</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      background-color: #000;
-      color: #f00;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .container {
-      text-align: center;
-      max-width: 800px;
-      padding: 20px;
-      opacity: 0;
-      animation: fadeIn 4s ease-in-out forwards;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.2rem;
-      line-height: 1.5;
-    }
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pirakids - Terminal</title>
+<style>
+  body {
+    margin: 0;
+    background: #000;
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    padding: 10px;
+    border-bottom: 1px solid #0f0;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: normal;
+  }
+  header p {
+    margin: 4px 0 0 0;
+    font-size: 0.9rem;
+    color: #0a0;
+    font-style: italic;
+  }
+  #terminal {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+  }
+  #input-line {
+    display: flex;
+    align-items: center;
+  }
+  #prompt {
+    flex-shrink: 0;
+  }
+  #input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #0f0;
+    font-family: inherit;
+    font-size: 1rem;
+    padding-left: 5px;
+  }
+  ::selection {
+    background: #0f0;
+    color: #000;
+  }
+  .line {
+    margin: 0 0 4px 0;
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Não Tente Parar.</h1>
-    <p>
-      “Apagar? Bloquear? Reiniciar?<br>
-      Você não pode deter aquilo que nunca dependeu de você para funcionar.<br>
-      Ele continua, mesmo quando tudo já caiu.”
-    </p>
+  <header>
+    <h1>Pirakids - O Tempo Acabou.</h1>
+    <p>“O que está prestes a acontecer não é punição. É consequência. Você não foi escolhido. Você foi somado.”</p>
+  </header>
+  <main id="terminal" aria-label="Terminal">
+  </main>
+  <div id="input-line">
+    <span id="prompt">Pirakids - O Tempo Acabou.&gt; </span>
+    <input id="input" type="text" autocomplete="off" autofocus />
   </div>
+
+<script>
+  const terminal = document.getElementById('terminal');
+  const input = document.getElementById('input');
+  const promptText = 'Pirakids - O Tempo Acabou.>';
+
+  // Função para adicionar linha no terminal
+  function addLine(text) {
+    const line = document.createElement('div');
+    line.className = 'line';
+    line.textContent = promptText + ' ' + text;
+    terminal.appendChild(line);
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  // Salvar e carregar linhas do localStorage
+  function saveLines() {
+    const lines = [...terminal.querySelectorAll('.line')].map(line => line.textContent);
+    localStorage.setItem('pirakids-terminal-lines', JSON.stringify(lines));
+  }
+
+  function loadLines() {
+    const saved = localStorage.getItem('pirakids-terminal-lines');
+    if (saved) {
+      const lines = JSON.parse(saved);
+      lines.forEach(line => {
+        const div = document.createElement('div');
+        div.className = 'line';
+        div.textContent = line;
+        terminal.appendChild(div);
+      });
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+  }
+
+  // Limpar terminal
+  function clearTerminal() {
+    terminal.innerHTML = '';
+    saveLines();
+  }
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const value = input.value.trim();
+      if(value) {
+        if(value.toLowerCase() === 'clear') {
+          clearTerminal();
+        } else {
+          addLine(value);
+        }
+        saveLines();
+      }
+      input.value = '';
+    }
+  });
+
+  loadLines();
+</script>
 </body>
 </html>
