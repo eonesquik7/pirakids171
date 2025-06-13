@@ -2,10 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>Pirakids - Terminal</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Anton&family=Pirata+One&family=Inconsolata&display=swap');
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 
   body {
     margin: 0;
@@ -26,22 +30,22 @@
     overflow: hidden;
   }
   header {
-    padding: 15px 20px;
+    padding: 15px 10px;
     border-bottom: 2px solid #fff;
     text-align: center;
     user-select: none;
   }
   header h1 {
     margin: 0;
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 900;
     color: #555555; /* cinza escuro */
     font-family: 'Pirata One', cursive;
     text-shadow: 1px 1px 2px #222;
   }
   header p {
-    margin: 2px 0 0 0; /* espaçamento mais próximo entre título e frase */
-    font-size: 1.5rem;
+    margin: 2px 0 0 0; /* espaçamento mais próximo */
+    font-size: 1.2rem;
     color: #555555; /* mesma cor do título */
     font-family: 'Anton', sans-serif;
     font-weight: 700;
@@ -50,7 +54,7 @@
   }
   #terminal {
     flex: 1;
-    padding: 20px 25px;
+    padding: 15px 15px;
     overflow-y: auto;
     white-space: pre-wrap;
     background: rgba(0, 0, 0, 0.85);
@@ -58,9 +62,10 @@
     box-shadow: inset 0 0 15px #ffffff44;
     scrollbar-width: thin;
     scrollbar-color: #fff transparent;
+    font-size: 1rem;
   }
   #terminal::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   #terminal::-webkit-scrollbar-track {
     background: transparent;
@@ -71,7 +76,6 @@
   }
   .line {
     margin: 0 0 6px 0;
-    font-size: 1.1rem;
     color: #eee;
     text-shadow: 0 0 3px #ccc;
   }
@@ -85,10 +89,11 @@
     flex-shrink: 0;
     color: #fff;
     font-weight: 700;
-    padding: 12px 15px;
+    padding: 12px 10px;
     user-select: none;
     text-shadow: 0 0 5px #fff;
     font-family: 'Pirata One', cursive;
+    font-size: 1rem;
   }
   #input {
     flex: 1;
@@ -97,14 +102,36 @@
     outline: none;
     color: #fff;
     font-family: 'Inconsolata', monospace;
-    font-size: 1.2rem;
-    padding: 12px 15px;
+    font-size: 1.1rem;
+    padding: 12px 10px;
     caret-color: #fff;
     text-shadow: 0 0 2px #fff;
   }
   #input::selection {
     background: #fff;
     color: #000;
+  }
+
+  /* Responsivo para celular */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 2.2rem;
+    }
+    header p {
+      font-size: 1rem;
+    }
+    #terminal {
+      font-size: 0.9rem;
+      padding: 10px 12px;
+    }
+    #prompt {
+      font-size: 0.9rem;
+      padding: 10px 8px;
+    }
+    #input {
+      font-size: 1rem;
+      padding: 10px 8px;
+    }
   }
 </style>
 </head>
