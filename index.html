@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <title>fuck by nesquik, the real devil</title>
   <style>
-    /* Fundo preto */
     body, html {
       margin: 0;
-      padding: 0;
+      padding: 0 20px;
       height: 100%;
       background: #000;
       overflow: hidden;
@@ -18,15 +17,17 @@
       align-items: center;
       justify-content: center;
       user-select: none;
+      text-align: center;
+      box-sizing: border-box;
     }
 
-    /* Bolhas vermelhas animadas no fundo */
     .bubbles {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       pointer-events: none;
       overflow: hidden;
       z-index: 0;
+      filter: blur(6px);
     }
 
     .bubble {
@@ -49,24 +50,25 @@
       }
     }
 
-    /* Texto fixo central */
     #main-text {
       z-index: 2;
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: bold;
       text-shadow:
         0 0 5px #ff2b2b,
         0 0 10px #ff2b2b,
         0 0 20px #ff2b2b;
       margin-bottom: 30px;
-      text-align: center;
+      line-height: 1.2;
       user-select: text;
+      max-width: 100%;
+      word-break: break-word;
+      min-height: 4rem;
     }
 
-    /* Textarea simples */
     textarea {
-      width: 320px;
-      height: 120px;
+      width: 480px;
+      height: 180px;
       resize: none;
       font-size: 1rem;
       padding: 10px;
@@ -74,10 +76,10 @@
       border: 2px solid #ff2b2b;
       background: #1a0000;
       color: #ff2b2b;
-      box-shadow:
-        0 0 8px #ff2b2b;
+      box-shadow: 0 0 8px #ff2b2b;
       outline: none;
       user-select: text;
+      z-index: 2;
     }
 
     textarea:disabled {
@@ -88,11 +90,11 @@
       cursor: not-allowed;
     }
 
-    /* Botões */
     .btn-container {
       margin-top: 20px;
       display: flex;
       gap: 20px;
+      z-index: 2;
     }
 
     button {
@@ -104,16 +106,14 @@
       border-radius: 30px;
       cursor: pointer;
       font-size: 1rem;
-      box-shadow:
-        0 0 10px #ff2b2b;
+      box-shadow: 0 0 10px #ff2b2b;
       transition: background-color 0.3s ease;
       user-select: none;
     }
 
     button:hover {
       background-color: #cc2222;
-      box-shadow:
-        0 0 20px #cc2222;
+      box-shadow: 0 0 20px #cc2222;
     }
 
   </style>
@@ -132,7 +132,6 @@
   </div>
 
   <script>
-    // Criar bolhas com propriedades randomizadas
     const bubblesContainer = document.querySelector('.bubbles');
     const bubbleCount = 30;
 
@@ -147,21 +146,34 @@
       bubble.style.animationDelay = (Math.random() * 10) + 's';
       bubblesContainer.appendChild(bubble);
 
-      // Remove a bolha depois da animação para não poluir o DOM
       setTimeout(() => bubble.remove(), (parseFloat(bubble.style.animationDuration) + parseFloat(bubble.style.animationDelay)) * 1000);
     }
 
-    // Criar bolhas constantemente
     setInterval(() => {
       if (bubblesContainer.childElementCount < bubbleCount) {
         createBubble();
       }
     }, 300);
 
-    // Controles textarea e botões
     const textarea = document.getElementById('text-input');
     const btnDigitar = document.getElementById('btn-digitar');
     const btnSalvar = document.getElementById('btn-salvar');
+    const mainText = document.getElementById('main-text');
+
+    // Carrega texto salvo no localStorage, se houver
+    window.onload = () => {
+      const savedText = localStorage.getItem('savedText');
+      if (savedText) {
+        textarea.value = savedText;
+        mainText.textContent = savedText;
+        textarea.disabled = false;
+      }
+    };
+
+    // Atualiza texto fixo conforme digita
+    textarea.addEventListener('input', () => {
+      mainText.textContent = textarea.value || 'fuck by nesquik, the real devil';
+    });
 
     btnDigitar.addEventListener('click', () => {
       textarea.disabled = false;
@@ -178,17 +190,10 @@
         alert('Digite algo antes de salvar.');
         return;
       }
-
-      // Criar arquivo txt para download
-      const blob = new Blob([text], {type: 'text/plain'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'texto_salvo.txt';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      localStorage.setItem('savedText', text);
+      mainText.textContent = text;
+      textarea.disabled = true;
+      alert('Texto salvo no site!');
     });
   </script>
 
