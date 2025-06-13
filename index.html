@@ -50,25 +50,40 @@
       }
     }
 
-    #main-text {
+    #main-title {
       z-index: 2;
-      font-size: 3rem;
-      font-weight: bold;
+      font-size: 3.8rem;
+      font-weight: 900;
+      color: #ff1a1a;
       text-shadow:
-        0 0 5px #ff2b2b,
-        0 0 10px #ff2b2b,
-        0 0 20px #ff2b2b;
-      margin-bottom: 30px;
-      line-height: 1.2;
+        0 0 10px #ff1a1a,
+        0 0 20px #ff1a1a,
+        0 0 30px #ff0000;
+      margin-bottom: 40px;
+      line-height: 1.1;
       user-select: text;
       max-width: 100%;
       word-break: break-word;
-      min-height: 4rem;
+      min-height: 5rem;
+    }
+
+    #main-text {
+      z-index: 2;
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: #ff4c4c;
+      text-shadow:
+        0 0 4px #ff4c4c;
+      margin-bottom: 10px;
+      min-height: 3rem;
+      max-width: 100%;
+      word-break: break-word;
+      user-select: text;
     }
 
     textarea {
       width: 480px;
-      height: 180px;
+      height: 280px;  /* tamanho maior */
       resize: none;
       font-size: 1rem;
       padding: 10px;
@@ -122,7 +137,8 @@
 
   <div class="bubbles" aria-hidden="true"></div>
 
-  <div id="main-text">fuck by nesquik, the real devil</div>
+  <div id="main-title">fuck by nesquik, the real devil</div>
+  <div id="main-text">Aqui vai o texto normal do site.</div>
 
   <textarea id="text-input" placeholder="Digite aqui..." disabled></textarea>
 
@@ -158,6 +174,7 @@
     const textarea = document.getElementById('text-input');
     const btnDigitar = document.getElementById('btn-digitar');
     const btnSalvar = document.getElementById('btn-salvar');
+    const mainTitle = document.getElementById('main-title');
     const mainText = document.getElementById('main-text');
 
     // Carrega texto salvo no localStorage, se houver
@@ -166,14 +183,9 @@
       if (savedText) {
         textarea.value = savedText;
         mainText.textContent = savedText;
-        textarea.disabled = false;
+        textarea.disabled = true;
       }
     };
-
-    // Atualiza texto fixo conforme digita
-    textarea.addEventListener('input', () => {
-      mainText.textContent = textarea.value || 'fuck by nesquik, the real devil';
-    });
 
     btnDigitar.addEventListener('click', () => {
       textarea.disabled = false;
@@ -193,7 +205,6 @@
       localStorage.setItem('savedText', text);
       mainText.textContent = text;
       textarea.disabled = true;
-      alert('Texto salvo no site!');
     });
   </script>
 
