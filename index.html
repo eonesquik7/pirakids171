@@ -1,139 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Pirakids - Terminal</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Pirata+One&family=Inconsolata&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Pirakids - Terminal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Anton&family=Pirata+One&family=Inconsolata&display=swap');
 
-  *, *::before, *::after {
-    box-sizing: border-box;
-  }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
 
-  body {
-    margin: 0;
-    background: radial-gradient(ellipse at center, #000000 0%, #050505 100%);
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        rgba(255,255,255,0.05) 0px,
-        rgba(255,255,255,0.05) 1px,
-        transparent 1px,
-        transparent 3px
-      );
-    color: #fff;
-    font-family: 'Inconsolata', monospace;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-  header {
-    padding: 15px 10px;
-    border-bottom: 2px solid #fff;
-    text-align: center;
-    user-select: none;
-  }
-  header h1 {
-    margin: 0;
-    font-size: 3rem;
-    font-weight: 900;
-    color: #555555; /* cinza escuro */
-    font-family: 'Pirata One', cursive;
-    text-shadow: 1px 1px 2px #222;
-  }
-  header p {
-    margin: 2px 0 0 0; /* espaçamento mais próximo */
-    font-size: 1.2rem;
-    color: #555555; /* mesma cor do título */
-    font-family: 'Anton', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-shadow: none;
-  }
-  #terminal {
-    flex: 1;
-    padding: 15px 15px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    background: rgba(0, 0, 0, 0.85);
-    border-top: 2px solid #fff;
-    box-shadow: inset 0 0 15px #ffffff44;
-    scrollbar-width: thin;
-    scrollbar-color: #fff transparent;
-    font-size: 1rem;
-  }
-  #terminal::-webkit-scrollbar {
-    width: 6px;
-  }
-  #terminal::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  #terminal::-webkit-scrollbar-thumb {
-    background-color: #fff;
-    border-radius: 4px;
-  }
-  .line {
-    margin: 0 0 6px 0;
-    color: #eee;
-    text-shadow: 0 0 3px #ccc;
-  }
-  #input-line {
-    display: flex;
-    align-items: center;
-    border-top: 2px solid #fff;
-    background: #111111;
-  }
-  #prompt {
-    flex-shrink: 0;
-    color: #fff;
-    font-weight: 700;
-    padding: 12px 10px;
-    user-select: none;
-    text-shadow: 0 0 5px #fff;
-    font-family: 'Pirata One', cursive;
-    font-size: 1rem;
-  }
-  #input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-family: 'Inconsolata', monospace;
-    font-size: 1.1rem;
-    padding: 12px 10px;
-    caret-color: #fff;
-    text-shadow: 0 0 2px #fff;
-  }
-  #input::selection {
-    background: #fff;
-    color: #000;
-  }
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at center, #000000 0%, #050505 100%);
+      background-image:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,0.05) 0px,
+          rgba(255,255,255,0.05) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+      color: #fff;
+      font-family: 'Inconsolata', monospace;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-  /* Responsivo para celular */
-  @media (max-width: 600px) {
+    header {
+      padding: 15px 10px;
+      border-bottom: 2px solid #fff;
+      text-align: center;
+      user-select: none;
+    }
+
     header h1 {
-      font-size: 2.2rem;
+      margin: 0;
+      font-size: 3rem;
+      font-weight: 900;
+      color: #555;
+      font-family: 'Pirata One', cursive;
+      text-shadow: 1px 1px 2px #222;
     }
+
     header p {
-      font-size: 1rem;
+      margin: 5px 0 0 0;
+      font-size: 1.2rem;
+      color: #555;
+      font-family: 'Anton', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
     }
+
     #terminal {
-      font-size: 0.9rem;
-      padding: 10px 12px;
-    }
-    #prompt {
-      font-size: 0.9rem;
-      padding: 10px 8px;
-    }
-    #input {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      background: rgba(0, 0, 0, 0.85);
+      border-top: 2px solid #fff;
+      box-shadow: inset 0 0 15px #ffffff44;
       font-size: 1rem;
-      padding: 10px 8px;
     }
-  }
-</style>
+
+    .line {
+      margin: 0 0 6px 0;
+      color: #eee;
+      text-shadow: 0 0 3px #ccc;
+      white-space: pre-wrap;
+    }
+
+    #input-line {
+      display: flex;
+      align-items: flex-start;
+      border-top: 2px solid #fff;
+      background: #111;
+      padding: 8px;
+    }
+
+    #prompt {
+      flex-shrink: 0;
+      color: #fff;
+      font-weight: 700;
+      padding: 10px 10px 0 0;
+      user-select: none;
+      text-shadow: 0 0 5px #fff;
+      font-family: 'Pirata One', cursive;
+      font-size: 1rem;
+    }
+
+    #input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      color: #fff;
+      font-family: 'Inconsolata', monospace;
+      font-size: 1.1rem;
+      padding: 10px;
+      caret-color: #fff;
+      height: 60px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    #input::selection {
+      background: #fff;
+      color: #000;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2.2rem;
+      }
+
+      header p {
+        font-size: 1rem;
+      }
+
+      #terminal {
+        font-size: 0.9rem;
+        padding: 10px 12px;
+      }
+
+      #prompt {
+        font-size: 0.9rem;
+        padding: 10px 8px 0 0;
+      }
+
+      #input {
+        font-size: 1rem;
+        padding: 10px 8px;
+        height: 60px;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -142,62 +147,57 @@
   </header>
   <main id="terminal" aria-label="Terminal"></main>
   <div id="input-line">
-    <span id="prompt">Pirakids - O Tempo Acabou.&gt;</span>
-    <input id="input" type="text" autocomplete="off" autofocus spellcheck="false" />
+    <span id="prompt">Pirakids&gt;</span>
+    <textarea id="input" spellcheck="false" autofocus></textarea>
   </div>
 
-<script>
-  const terminal = document.getElementById('terminal');
-  const input = document.getElementById('input');
+  <script>
+    const terminal = document.getElementById('terminal');
+    const input = document.getElementById('input');
 
-  function addLine(text) {
-    const line = document.createElement('div');
-    line.className = 'line';
-    line.textContent = text;
-    terminal.appendChild(line);
-    terminal.scrollTop = terminal.scrollHeight;
-  }
-
-  function saveLines() {
-    const lines = [...terminal.querySelectorAll('.line')].map(line => line.textContent);
-    localStorage.setItem('pirakids-terminal-lines', JSON.stringify(lines));
-  }
-
-  function loadLines() {
-    const saved = localStorage.getItem('pirakids-terminal-lines');
-    if (saved) {
-      const lines = JSON.parse(saved);
-      lines.forEach(line => {
-        const div = document.createElement('div');
-        div.className = 'line';
-        div.textContent = line;
-        terminal.appendChild(div);
-      });
+    function addLine(text) {
+      const line = document.createElement('div');
+      line.className = 'line';
+      line.textContent = text;
+      terminal.appendChild(line);
       terminal.scrollTop = terminal.scrollHeight;
     }
-  }
 
-  function clearTerminal() {
-    terminal.innerHTML = '';
-    saveLines();
-  }
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      const value = input.value.trim();
-      if(value) {
-        if(value.toLowerCase() === 'clear') {
-          clearTerminal();
-        } else {
-          addLine(value);
-        }
-        saveLines();
-      }
-      input.value = '';
+    function saveLines() {
+      const lines = [...terminal.querySelectorAll('.line')].map(line => line.textContent);
+      localStorage.setItem('pirakids-terminal-lines', JSON.stringify(lines));
     }
-  });
 
-  loadLines();
-</script>
+    function loadLines() {
+      const saved = localStorage.getItem('pirakids-terminal-lines');
+      if (saved) {
+        const lines = JSON.parse(saved);
+        lines.forEach(line => addLine(line));
+      }
+    }
+
+    function clearTerminal() {
+      terminal.innerHTML = '';
+      saveLines();
+    }
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        const value = input.value;
+        if (value.trim()) {
+          if (value.trim().toLowerCase() === 'clear') {
+            clearTerminal();
+          } else {
+            addLine(value);
+          }
+          saveLines();
+        }
+        input.value = '';
+      }
+    });
+
+    loadLines();
+  </script>
 </body>
 </html>
