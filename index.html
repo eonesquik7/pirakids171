@@ -1,65 +1,54 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Remover CPFs Repetidos (Formato ***********)</title>
+  <meta charset="UTF-8" />
+  <title>Extrair Apenas CPFs</title>
   <style>
     body {
       background: #111;
       color: #fff;
       font-family: Arial, sans-serif;
-      padding: 30px;
+      padding: 20px;
     }
     textarea {
       width: 100%;
-      height: 150px;
+      height: 120px;
       font-size: 16px;
       margin-bottom: 15px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #444;
-      color: white;
+      background: #222;
       border: none;
-      cursor: pointer;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      resize: vertical;
     }
     .output {
-      margin-top: 20px;
       background: #222;
       padding: 15px;
       border-radius: 5px;
       white-space: pre-wrap;
+      font-size: 16px;
+      min-height: 50px;
     }
   </style>
 </head>
 <body>
 
-  <h2>Remover CPFs Repetidos (sem pontuação)</h2>
+  <h2>Extrair CPFs (formato ***********)</h2>
 
-  <textarea id="mensagem" placeholder="Digite sua mensagem aqui..."></textarea>
-  <button onclick="removerCPFsRepetidos()">Processar</button>
+  <textarea id="inputTexto" placeholder="Digite ou cole a mensagem aqui..." oninput="extrairCPFs()"></textarea>
 
-  <div class="output" id="resultado"></div>
+  <div class="output" id="saida"></div>
 
   <script>
-    function removerCPFsRepetidos() {
-      const texto = document.getElementById("mensagem").value;
-
-      // CPF como 11 dígitos seguidos
+    function extrairCPFs() {
+      const texto = document.getElementById("inputTexto").value;
+      // Regex para 11 dígitos seguidos (CPF sem pontuação)
       const cpfRegex = /\b\d{11}\b/g;
-      const encontrados = new Set();
 
-      const novoTexto = texto.replace(cpfRegex, (cpf) => {
-        if (encontrados.has(cpf)) {
-          return ''; // Remove CPF repetido
-        } else {
-          encontrados.add(cpf);
-          return cpf; // Mantém o CPF único
-        }
-      });
-
-      document.getElementById("resultado").textContent = novoTexto.trim();
+      const cpfs = texto.match(cpfRegex);
+      // Exibe só os CPFs encontrados, separados por linha
+      document.getElementById("saida").textContent = cpfs ? cpfs.join('\n') : '';
     }
   </script>
 
