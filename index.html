@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Filtrar Endereços de SC (Múltiplos .txt)</title>
+  <title>Filtrar Endereços de SC</title>
   <style>
     body {
       background: #111;
@@ -10,7 +10,7 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    input, .output {
+    input, .output, button {
       margin-top: 15px;
       padding: 10px;
       background: #222;
@@ -24,46 +24,62 @@
       white-space: pre-wrap;
       min-height: 200px;
     }
+    button {
+      cursor: pointer;
+      background: #333;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #444;
+    }
   </style>
 </head>
 <body>
 
-<h2>Filtrar linhas com endereços de SC de múltiplos .txt</h2>
+<h2>Filtrar linhas com endereços de SC (Santa Catarina)</h2>
 
 <input type="file" accept=".txt" multiple onchange="lerArquivos(event)" />
 <div class="output" id="resultado"></div>
+<button id="baixarBtn" onclick="baixarTXT()" style="display:none;">Baixar Resultado (.txt)</button>
 
 <script>
+let conteudoFinal = "";
+
 function lerArquivos(event) {
   const arquivos = Array.from(event.target.files);
   const resultadosSC = [];
+  let lidos = 0;
 
   if (arquivos.length === 0) {
     document.getElementById("resultado").textContent = "Nenhum arquivo selecionado.";
     return;
   }
 
-  let lidos = 0;
-
   arquivos.forEach(arquivo => {
     const leitor = new FileReader();
     leitor.onload = function(e) {
-      const conteudo = e.target.result;
-      const linhas = conteudo.split('\n');
-
-      const linhasSC = linhas.filter(l => l.toUpperCase().includes('/SC') || l.toUpperCase().includes('- SC') || l.toUpperCase().endsWith(' SC'));
-
-      resultadosSC.push(...linhasSC);
+      const linhas = e.target.result.split('\n');
+      const sc = linhas.filter(l => l.toUpperCase().includes('/SC') || l.toUpperCase().includes('- SC') || l.toUpperCase().endsWith(' SC'));
+      resultadosSC.push(...sc);
       lidos++;
 
       if (lidos === arquivos.length) {
         const unicos = [...new Set(resultadosSC)];
-        document.getElementById("resultado").textContent = 
-          unicos.length ? unicos.join('\n') : "Nenhuma linha com SC encontrada.";
+        conteudoFinal = unicos.join('\n');
+        document.getElementById("resultado").textContent = conteudoFinal || "Nenhuma linha com SC encontrada.";
+        document.getElementById("baixarBtn").style.display = conteudoFinal ? 'block' : 'none';
       }
     };
     leitor.readAsText(arquivo);
   });
+}
+
+function baixarTXT() {
+  const blob = new Blob([conteudoFinal], { type: "text/plain;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "enderecos_SC.txt";
+  link.click();
 }
 </script>
 
