@@ -1,64 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Extrair linha com CPF</title>
-  <style>
-    body {
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    textarea {
-      width: 100%;
-      height: 150px;
-      font-size: 16px;
-      margin-bottom: 15px;
-      background: #222;
-      border: none;
-      color: #fff;
-      padding: 10px;
-      border-radius: 5px;
-      resize: vertical;
-      white-space: pre-wrap;
-    }
-    .output {
-      background: #222;
-      padding: 15px;
-      border-radius: 5px;
-      white-space: pre-wrap;
-      font-size: 18px;
-      min-height: 30px;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Detectar CPFs Repetidos por Linha</title>
+<style>
+  body {
+    background: #111;
+    color: #eee;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  textarea {
+    width: 100%;
+    height: 200px;
+    font-size: 16px;
+    padding: 10px;
+    background: #222;
+    color: #eee;
+    border: none;
+    border-radius: 6px;
+    resize: vertical;
+    margin-bottom: 15px;
+    white-space: pre-wrap;
+  }
+  .output {
+    background: #222;
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 16px;
+    min-height: 50px;
+    white-space: pre-wrap;
+  }
+</style>
 </head>
 <body>
 
-  <h2>Mostrar só a linha com "- CPF: 00000000000"</h2>
+<h2>Detectar CPFs Repetidos por Linha</h2>
 
-  <textarea id="inputTexto" placeholder="Digite qualquer mensagem..." oninput="filtrarCPF()"></textarea>
+<textarea id="inputTexto" placeholder="Cole 1 CPF por linha..." oninput="verificarRepetidos()"></textarea>
 
-  <div class="output" id="saida"></div>
+<div class="output" id="saida"></div>
 
-  <script>
-    function filtrarCPF() {
-      const texto = document.getElementById("inputTexto").value;
-      // RegExp para encontrar a linha que contenha '- CPF: ' seguido de 11 dígitos
-      // A flag 'm' para multiline, pra poder buscar linha por linha
-      const regex = /^.*- CPF: \d{11}.*$/gm;
+<script>
+function verificarRepetidos() {
+  const texto = document.getElementById("inputTexto").value;
+  const linhas = texto.split('\n').map(l => l.trim()).filter(l => l !== '');
 
-      const resultados = texto.match(regex);
-
-      if (resultados && resultados.length > 0) {
-        // Se encontrar várias linhas assim, mostra todas, separadas por linha
-        document.getElementById("saida").textContent = resultados.join('\n');
-      } else {
-        document.getElementById("saida").textContent = ''; // nada encontrado
-      }
+  const mapa = {};
+  linhas.forEach((cpf, idx) => {
+    if (!mapa[cpf]) {
+      mapa[cpf] = [];
     }
-  </script>
+    mapa[cpf].push(idx + 1); // armazenar número da linha (1-based)
+  });
+
+  let resultado = '';
+
+  for (const cpf in mapa) {
+    if (mapa[cpf].length > 1) {
+      resultado += `CPF ${cpf} repetido nas linhas: ${mapa[cpf].join(', ')}\n`;
+    }
+  }
+
+  if (resultado === '') {
+    resultado = 'Nenhum CPF repetido encontrado.';
+  }
+
+  document.getElementById("saida").textContent = resultado;
+}
+</script>
 
 </body>
 </html>
