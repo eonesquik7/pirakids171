@@ -1,62 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Mostrar CPFs Únicos</title>
-<style>
-  body {
-    background: #111;
-    color: #eee;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  textarea {
-    width: 100%;
-    height: 200px;
-    font-size: 16px;
-    padding: 10px;
-    background: #222;
-    color: #eee;
-    border: none;
-    border-radius: 6px;
-    resize: vertical;
-    margin-bottom: 15px;
-    white-space: pre-wrap;
-  }
-  .output {
-    background: #222;
-    padding: 15px;
-    border-radius: 6px;
-    font-size: 16px;
-    min-height: 50px;
-    white-space: pre-wrap;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Filtrar Endereços de SC (Múltiplos .txt)</title>
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input, .output {
+      margin-top: 15px;
+      padding: 10px;
+      background: #222;
+      color: #eee;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 15px;
+    }
+    .output {
+      white-space: pre-wrap;
+      min-height: 200px;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Exibir apenas CPFs (números) únicos</h2>
+<h2>Filtrar linhas com endereços de SC de múltiplos .txt</h2>
 
-<textarea id="inputTexto" placeholder="Cole um CPF ou número por linha..." oninput="mostrarUnicos()"></textarea>
-
-<div class="output" id="saida"></div>
+<input type="file" accept=".txt" multiple onchange="lerArquivos(event)" />
+<div class="output" id="resultado"></div>
 
 <script>
-function mostrarUnicos() {
-  const texto = document.getElementById("inputTexto").value;
-  // Pega só linhas com números puros
-  const linhas = texto.split('\n').map(l => l.trim()).filter(l => /^\d+$/.test(l));
+function lerArquivos(event) {
+  const arquivos = Array.from(event.target.files);
+  const resultadosSC = [];
 
-  // Remove duplicados com Set
-  const unicos = [...new Set(linhas)];
-
-  if(unicos.length === 0){
-    document.getElementById("saida").textContent = "Nenhum número válido encontrado.";
+  if (arquivos.length === 0) {
+    document.getElementById("resultado").textContent = "Nenhum arquivo selecionado.";
     return;
   }
 
-  // Exibe 1 CPF por linha
-  document.getElementById("saida").textContent = unicos.join('\n');
+  let lidos = 0;
+
+  arquivos.forEach(arquivo => {
+    const leitor = new FileReader();
+    leitor.onload = function(e) {
+      const conteudo = e.target.result;
+      const linhas = conteudo.split('\n');
+
+      const linhasSC = linhas.filter(l => l.toUpperCase().includes('/SC') || l.toUpperCase().includes('- SC') || l.toUpperCase().endsWith(' SC'));
+
+      resultadosSC.push(...linhasSC);
+      lidos++;
+
+      if (lidos === arquivos.length) {
+        const unicos = [...new Set(resultadosSC)];
+        document.getElementById("resultado").textContent = 
+          unicos.length ? unicos.join('\n') : "Nenhuma linha com SC encontrada.";
+      }
+    };
+    leitor.readAsText(arquivo);
+  });
 }
 </script>
 
