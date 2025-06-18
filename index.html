@@ -1,203 +1,184 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Pirakids - Terminal</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Anton&family=Pirata+One&family=Inconsolata&display=swap');
-
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: radial-gradient(ellipse at center, #000000 0%, #050505 100%);
-      background-image:
-        repeating-linear-gradient(
-          0deg,
-          rgba(255,255,255,0.05) 0px,
-          rgba(255,255,255,0.05) 1px,
-          transparent 1px,
-          transparent 3px
-        );
-      color: #fff;
-      font-family: 'Inconsolata', monospace;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    header {
-      padding: 15px 10px;
-      border-bottom: 2px solid #fff;
-      text-align: center;
-      user-select: none;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 3rem;
-      font-weight: 900;
-      color: #555;
-      font-family: 'Pirata One', cursive;
-      text-shadow: 1px 1px 2px #222;
-    }
-
-    header p {
-      margin: 5px 0 0 0;
-      font-size: 1.2rem;
-      color: #555;
-      font-family: 'Anton', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    #terminal {
-      flex: 1;
-      padding: 15px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      background: rgba(0, 0, 0, 0.85);
-      border-top: 2px solid #fff;
-      box-shadow: inset 0 0 15px #ffffff44;
-      font-size: 1rem;
-    }
-
-    .line {
-      margin: 0 0 6px 0;
-      color: #eee;
-      text-shadow: 0 0 3px #ccc;
-      white-space: pre-wrap;
-    }
-
-    #input-line {
-      display: flex;
-      align-items: flex-start;
-      border-top: 2px solid #fff;
-      background: #111;
-      padding: 8px;
-    }
-
-    #prompt {
-      flex-shrink: 0;
-      color: #fff;
-      font-weight: 700;
-      padding: 10px 10px 0 0;
-      user-select: none;
-      text-shadow: 0 0 5px #fff;
-      font-family: 'Pirata One', cursive;
-      font-size: 1rem;
-    }
-
-    #input {
-      flex: 1;
-      background: transparent;
-      border: none;
-      outline: none;
-      resize: none;
-      color: #fff;
-      font-family: 'Inconsolata', monospace;
-      font-size: 1.1rem;
-      padding: 10px;
-      caret-color: #fff;
-      height: 60px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
-
-    #input::selection {
-      background: #fff;
-      color: #000;
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 2.2rem;
-      }
-
-      header p {
-        font-size: 1rem;
-      }
-
-      #terminal {
-        font-size: 0.9rem;
-        padding: 10px 12px;
-      }
-
-      #prompt {
-        font-size: 0.9rem;
-        padding: 10px 8px 0 0;
-      }
-
-      #input {
-        font-size: 1rem;
-        padding: 10px 8px;
-        height: 60px;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Gerador de Senhas Únicas com Codinomes Aleatórios</title>
+<style>
+  body {
+    background-color: #121212;
+    color: #00ffcc;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  h1 {
+    color: #00ffcc;
+  }
+  input, button {
+    padding: 10px;
+    margin: 5px 10px 15px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  input[type="number"] {
+    width: 100px;
+  }
+  button {
+    background-color: #00ffcc;
+    color: #000;
+    cursor: pointer;
+  }
+  textarea {
+    width: 100%;
+    height: 400px;
+    background-color: #1e1e1e;
+    color: #00ffcc;
+    font-family: monospace;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    resize: none;
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Pirakids - O Tempo Acabou.</h1>
-    <p>“O que está prestes a acontecer não é punição. É consequência. Você não foi escolhido. Você foi somado.”</p>
-  </header>
-  <main id="terminal" aria-label="Terminal"></main>
-  <div id="input-line">
-    <span id="prompt">Pirakids&gt;</span>
-    <textarea id="input" spellcheck="false" autofocus></textarea>
-  </div>
+<h1>Gerador de Senhas Únicas com Codinomes Aleatórios</h1>
 
-  <script>
-    const terminal = document.getElementById('terminal');
-    const input = document.getElementById('input');
+<label for="quantidade">Quantidade de senhas:</label>
+<input type="number" id="quantidade" value="20" min="1" /><br/>
 
-    function addLine(text) {
-      const line = document.createElement('div');
-      line.className = 'line';
-      line.textContent = text;
-      terminal.appendChild(line);
-      terminal.scrollTop = terminal.scrollHeight;
+<label for="tamanho">Tamanho da senha (mínimo 6):</label>
+<input type="number" id="tamanho" value="16" min="6" max="64" /><br/>
+
+<button onclick="gerarSenhas()">Gerar Senhas</button>
+<button onclick="salvarSenhas()">Salvar Senhas</button>
+
+<textarea id="resultado" readonly placeholder="As senhas geradas aparecerão aqui..."></textarea>
+
+<script>
+  const codinomes = ['marlin', 'marlon', 'marlitto'];
+
+  const letrasMinusculas = 'abcdefghijklmnopqrstuvwxyz';
+  const letrasMaiusculas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numeros = '0123456789';
+  const simbolos = '!@#$%&*()-_=+[]{}<>?';
+  const caracteres = letrasMinusculas + letrasMaiusculas + numeros + simbolos;
+
+  const leetMap = {
+    'a': '4',
+    'e': '3',
+    'i': '1',
+    'o': '0',
+    't': '7',
+    'l': '1',
+    's': '5',
+    'r': '2',
+    'n': '9'
+  };
+
+  function transformarLeet(texto) {
+    let resultado = '';
+    for (let char of texto) {
+      const lowerChar = char.toLowerCase();
+      if (leetMap[lowerChar]) {
+        resultado += Math.random() > 0.5 ? leetMap[lowerChar] : char;
+      } else {
+        resultado += char;
+      }
+    }
+    return resultado;
+  }
+
+  function gerarSenhaNormal(tamanho) {
+    let senha = '';
+    for (let i = 0; i < tamanho; i++) {
+      senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return senha;
+  }
+
+  function gerarSenhaComCodinome(tamanho, codinome) {
+    const codinomeLeet = transformarLeet(codinome);
+    const restante = tamanho - codinomeLeet.length;
+    if (restante < 0) return codinomeLeet;
+
+    const metade1 = Math.floor(restante / 2);
+    const metade2 = restante - metade1;
+
+    let parte1 = '';
+    let parte2 = '';
+    for (let i = 0; i < metade1; i++) {
+      parte1 += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    for (let i = 0; i < metade2; i++) {
+      parte2 += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
     }
 
-    function saveLines() {
-      const lines = [...terminal.querySelectorAll('.line')].map(line => line.textContent);
-      localStorage.setItem('pirakids-terminal-lines', JSON.stringify(lines));
-    }
+    return parte1 + codinomeLeet + parte2;
+  }
 
-    function loadLines() {
-      const saved = localStorage.getItem('pirakids-terminal-lines');
-      if (saved) {
-        const lines = JSON.parse(saved);
-        lines.forEach(line => addLine(line));
+  function gerarSenhas() {
+    const qtd = parseInt(document.getElementById('quantidade').value);
+    const tamanho = parseInt(document.getElementById('tamanho').value);
+    const resultado = document.getElementById('resultado');
+
+    if (tamanho < 6) {
+      resultado.value = 'O tamanho mínimo da senha é 6.';
+      return;
+    }
+    if (qtd < 1) {
+      resultado.value = 'Digite uma quantidade válida (mínimo 1).';
+      return;
+    }
+    if (qtd > 10000) {
+      if (!confirm('Você está gerando mais de 10.000 senhas, isso pode travar seu navegador. Continuar?')) {
+        return;
       }
     }
 
-    function clearTerminal() {
-      terminal.innerHTML = '';
-      saveLines();
-    }
+    const senhasSet = new Set();
+    let senhas = '';
 
-    input.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        const value = input.value;
-        if (value.trim()) {
-          if (value.trim().toLowerCase() === 'clear') {
-            clearTerminal();
-          } else {
-            addLine(value);
-          }
-          saveLines();
+    // A cada 11 senhas, 10 normais e 1 com codinome na posição múltipla de 11 (ex: 11, 22, 33)
+    for (let i = 1; i <= qtd; i++) {
+      let senha;
+      let tentativas = 0;
+      do {
+        if (i % 11 === 0) {
+          // senha com codinome
+          const codinome = codinomes[Math.floor(Math.random() * codinomes.length)];
+          senha = gerarSenhaComCodinome(tamanho, codinome);
+        } else {
+          // senha normal
+          senha = gerarSenhaNormal(tamanho);
         }
-        input.value = '';
-      }
-    });
+        tentativas++;
+        if (tentativas > 1000) {
+          break;
+        }
+      } while (senhasSet.has(senha));
+      senhasSet.add(senha);
+      senhas += senha + '\n';
+    }
 
-    loadLines();
-  </script>
+    resultado.value = senhas;
+  }
+
+  function salvarSenhas() {
+    const texto = document.getElementById('resultado').value;
+    if (!texto.trim()) {
+      alert('Gere as senhas primeiro!');
+      return;
+    }
+    const blob = new Blob([texto], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'senhas.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
 </body>
 </html>
