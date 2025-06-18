@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>Detectar CPFs Repetidos por Linha</title>
+<title>Detectar números repetidos por linha</title>
 <style>
   body {
     background: #111;
@@ -35,35 +35,36 @@
 </head>
 <body>
 
-<h2>Detectar CPFs Repetidos por Linha</h2>
+<h2>Detectar números repetidos por linha</h2>
 
-<textarea id="inputTexto" placeholder="Cole 1 CPF por linha..." oninput="verificarRepetidos()"></textarea>
+<textarea id="inputTexto" placeholder="Cole um número por linha..." oninput="verificarRepetidos()"></textarea>
 
 <div class="output" id="saida"></div>
 
 <script>
 function verificarRepetidos() {
   const texto = document.getElementById("inputTexto").value;
-  const linhas = texto.split('\n').map(l => l.trim()).filter(l => l !== '');
+  // Pega linhas que contenham só números (qualquer tamanho)
+  const linhas = texto.split('\n').map(l => l.trim()).filter(l => /^\d+$/.test(l));
 
   const mapa = {};
-  linhas.forEach((cpf, idx) => {
-    if (!mapa[cpf]) {
-      mapa[cpf] = [];
+  linhas.forEach((num, idx) => {
+    if (!mapa[num]) {
+      mapa[num] = [];
     }
-    mapa[cpf].push(idx + 1); // armazenar número da linha (1-based)
+    mapa[num].push(idx + 1); // guarda o número da linha (1-based)
   });
 
   let resultado = '';
 
-  for (const cpf in mapa) {
-    if (mapa[cpf].length > 1) {
-      resultado += `CPF ${cpf} repetido nas linhas: ${mapa[cpf].join(', ')}\n`;
+  for (const num in mapa) {
+    if (mapa[num].length > 1) {
+      resultado += `Número ${num} repetido nas linhas: ${mapa[num].join(', ')}\n`;
     }
   }
 
   if (resultado === '') {
-    resultado = 'Nenhum CPF repetido encontrado.';
+    resultado = 'Nenhum número repetido encontrado.';
   }
 
   document.getElementById("saida").textContent = resultado;
