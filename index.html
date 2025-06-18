@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Extrair Apenas CPFs</title>
+  <title>Extrair linha com CPF</title>
   <style>
     body {
       background: #111;
@@ -12,7 +12,7 @@
     }
     textarea {
       width: 100%;
-      height: 120px;
+      height: 150px;
       font-size: 16px;
       margin-bottom: 15px;
       background: #222;
@@ -21,34 +21,42 @@
       padding: 10px;
       border-radius: 5px;
       resize: vertical;
+      white-space: pre-wrap;
     }
     .output {
       background: #222;
       padding: 15px;
       border-radius: 5px;
       white-space: pre-wrap;
-      font-size: 16px;
-      min-height: 50px;
+      font-size: 18px;
+      min-height: 30px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <h2>Extrair CPFs (formato ***********)</h2>
+  <h2>Mostrar só a linha com "- CPF: 00000000000"</h2>
 
-  <textarea id="inputTexto" placeholder="Digite ou cole a mensagem aqui..." oninput="extrairCPFs()"></textarea>
+  <textarea id="inputTexto" placeholder="Digite qualquer mensagem..." oninput="filtrarCPF()"></textarea>
 
   <div class="output" id="saida"></div>
 
   <script>
-    function extrairCPFs() {
+    function filtrarCPF() {
       const texto = document.getElementById("inputTexto").value;
-      // Regex para 11 dígitos seguidos (CPF sem pontuação)
-      const cpfRegex = /\b\d{11}\b/g;
+      // RegExp para encontrar a linha que contenha '- CPF: ' seguido de 11 dígitos
+      // A flag 'm' para multiline, pra poder buscar linha por linha
+      const regex = /^.*- CPF: \d{11}.*$/gm;
 
-      const cpfs = texto.match(cpfRegex);
-      // Exibe só os CPFs encontrados, separados por linha
-      document.getElementById("saida").textContent = cpfs ? cpfs.join('\n') : '';
+      const resultados = texto.match(regex);
+
+      if (resultados && resultados.length > 0) {
+        // Se encontrar várias linhas assim, mostra todas, separadas por linha
+        document.getElementById("saida").textContent = resultados.join('\n');
+      } else {
+        document.getElementById("saida").textContent = ''; // nada encontrado
+      }
     }
   </script>
 
