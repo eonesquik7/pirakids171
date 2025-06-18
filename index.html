@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Filtrar Endereços de SC</title>
+  <title>Filtrar por Estado SC</title>
   <style>
     body {
       background: #111;
@@ -27,7 +27,6 @@
     button {
       cursor: pointer;
       background: #333;
-      transition: 0.2s;
     }
     button:hover {
       background: #444;
@@ -36,7 +35,7 @@
 </head>
 <body>
 
-<h2>Filtrar linhas com endereços de SC (Santa Catarina)</h2>
+<h2>Filtrar Linhas do Estado de Santa Catarina (SC)</h2>
 
 <input type="file" accept=".txt" multiple onchange="lerArquivos(event)" />
 <div class="output" id="resultado"></div>
@@ -44,6 +43,13 @@
 
 <script>
 let conteudoFinal = "";
+
+function ehEnderecoDeSC(linha) {
+  // Considera SC apenas se estiver claramente no final como UF (ex: "- SC" ou "/SC" no final da parte do endereço)
+  const partes = linha.split("-");
+  const ultimaParte = partes[partes.length - 1] || "";
+  return /\bSC\b/.test(ultimaParte.trim());
+}
 
 function lerArquivos(event) {
   const arquivos = Array.from(event.target.files);
@@ -59,14 +65,14 @@ function lerArquivos(event) {
     const leitor = new FileReader();
     leitor.onload = function(e) {
       const linhas = e.target.result.split('\n');
-      const sc = linhas.filter(l => l.toUpperCase().includes('/SC') || l.toUpperCase().includes('- SC') || l.toUpperCase().endsWith(' SC'));
+      const sc = linhas.filter(l => ehEnderecoDeSC(l));
       resultadosSC.push(...sc);
       lidos++;
 
       if (lidos === arquivos.length) {
         const unicos = [...new Set(resultadosSC)];
         conteudoFinal = unicos.join('\n');
-        document.getElementById("resultado").textContent = conteudoFinal || "Nenhuma linha com SC encontrada.";
+        document.getElementById("resultado").textContent = conteudoFinal || "Nenhuma linha com endereço de SC encontrada.";
         document.getElementById("baixarBtn").style.display = conteudoFinal ? 'block' : 'none';
       }
     };
