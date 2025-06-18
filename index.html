@@ -1,134 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Gerador de Senhas com Codinomes</title>
+  <meta charset="UTF-8">
+  <title>Verificador de CPFs Repetidos</title>
   <style>
     body {
-      background-color: #121212;
-      color: #00ffcc;
+      background-color: #111;
+      color: #fff;
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    h1 {
-      color: #00ffcc;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px 10px 15px 0;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-    input[type="number"] {
-      width: 100px;
-    }
-    button {
-      background-color: #00ffcc;
-      color: #000;
-      cursor: pointer;
-    }
     textarea {
       width: 100%;
-      height: 400px;
-      background-color: #1e1e1e;
-      color: #00ffcc;
-      font-family: monospace;
+      height: 150px;
+      margin-bottom: 10px;
       font-size: 16px;
-      padding: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #444;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .output {
+      margin-top: 20px;
+      white-space: pre-wrap;
+      background: #222;
+      padding: 15px;
       border-radius: 5px;
-      resize: none;
     }
   </style>
 </head>
 <body>
-  <h1>Gerador de Senhas com Codinomes</h1>
 
-  <label for="quantidade">Quantidade de senhas:</label>
-  <input type="number" id="quantidade" value="20" min="1" /><br/>
-
-  <button onclick="gerarSenhas()">Gerar Senhas</button>
-  <button onclick="salvarSenhas()">Salvar Senhas</button>
-
-  <textarea id="resultado" readonly placeholder="As senhas geradas aparecerão aqui..."></textarea>
+  <h2>Reescritor de Mensagens - Remove CPFs Repetidos</h2>
+  
+  <textarea id="input" placeholder="Digite a mensagem aqui..."></textarea>
+  <button onclick="processarMensagem()">Reescrever</button>
+  
+  <div class="output" id="output"></div>
 
   <script>
-    const codinomes = ['marlin', 'marlon', 'marlitto'];
-    const letras = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numeros = '0123456789';
-    const simbolos = '!@#$%&*()-_=+[]{}<>?';
-    const caracteres = letras + numeros + simbolos;
+    function processarMensagem() {
+      const textoOriginal = document.getElementById("input").value;
 
-    function transformarAleatorioMaiusculas(texto) {
-      return [...texto].map(c => Math.random() < 0.5 ? c.toUpperCase() : c.toLowerCase()).join('');
-    }
+      // Expressão para encontrar CPFs válidos (com pontos e traço)
+      const cpfRegex = /\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g;
 
-    function tamanhoAleatorio(min = 6, max = 20) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function gerarSenhaNormal(tamanho) {
-      let senha = '';
-      for (let i = 0; i < tamanho; i++) {
-        senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-      }
-      return senha;
-    }
-
-    function gerarSenhaComCodinome(tamanho, codinome) {
-      const codTransformado = transformarAleatorioMaiusculas(codinome);
-      const restante = tamanho - codTransformado.length;
-      if (restante <= 0) return codTransformado.slice(0, tamanho);
-
-      const metade = Math.floor(restante / 2);
-      const parte1 = gerarSenhaNormal(metade);
-      const parte2 = gerarSenhaNormal(restante - metade);
-      return parte1 + codTransformado + parte2;
-    }
-
-    function gerarSenhas() {
-      const qtd = parseInt(document.getElementById('quantidade').value);
-      const resultado = document.getElementById('resultado');
-      const senhasSet = new Set();
-      let senhas = '';
-      let contadorNormais = 0;
-
-      while (senhasSet.size < qtd) {
-        const tamanho = tamanhoAleatorio(6, 20);
-        let senha;
-
-        if (contadorNormais >= 9) {
-          const codinome = codinomes[Math.floor(Math.random() * codinomes.length)];
-          senha = gerarSenhaComCodinome(tamanho, codinome);
-          contadorNormais = 0;
+      // Armazena quais CPFs já foram encontrados
+      const cpfsUnicos = new Set();
+      
+      // Função que substitui CPFs repetidos por vazio
+      const resultado = textoOriginal.replace(cpfRegex, (cpf) => {
+        if (cpfsUnicos.has(cpf)) {
+          return ''; // Remove CPF duplicado
         } else {
-          senha = gerarSenhaNormal(tamanho);
-          contadorNormais++;
+          cpfsUnicos.add(cpf);
+          return cpf; // Mantém o primeiro
         }
+      });
 
-        if (!senhasSet.has(senha)) {
-          senhasSet.add(senha);
-          senhas += senha + '\n';
-        }
-      }
-
-      resultado.value = senhas;
-    }
-
-    function salvarSenhas() {
-      const texto = document.getElementById('resultado').value;
-      if (!texto.trim()) {
-        alert('Gere as senhas primeiro!');
-        return;
-      }
-      const blob = new Blob([texto], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'senhas.txt';
-      a.click();
-      URL.revokeObjectURL(url);
+      document.getElementById("output").textContent = resultado.trim();
     }
   </script>
+
 </body>
 </html>
