@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>Detectar números repetidos por linha</title>
+<title>Mostrar CPFs Únicos</title>
 <style>
   body {
     background: #111;
@@ -35,39 +35,28 @@
 </head>
 <body>
 
-<h2>Detectar números repetidos por linha</h2>
+<h2>Exibir apenas CPFs (números) únicos</h2>
 
-<textarea id="inputTexto" placeholder="Cole um número por linha..." oninput="verificarRepetidos()"></textarea>
+<textarea id="inputTexto" placeholder="Cole um CPF ou número por linha..." oninput="mostrarUnicos()"></textarea>
 
 <div class="output" id="saida"></div>
 
 <script>
-function verificarRepetidos() {
+function mostrarUnicos() {
   const texto = document.getElementById("inputTexto").value;
-  // Pega linhas que contenham só números (qualquer tamanho)
+  // Pega só linhas com números puros
   const linhas = texto.split('\n').map(l => l.trim()).filter(l => /^\d+$/.test(l));
 
-  const mapa = {};
-  linhas.forEach((num, idx) => {
-    if (!mapa[num]) {
-      mapa[num] = [];
-    }
-    mapa[num].push(idx + 1); // guarda o número da linha (1-based)
-  });
+  // Remove duplicados com Set
+  const unicos = [...new Set(linhas)];
 
-  let resultado = '';
-
-  for (const num in mapa) {
-    if (mapa[num].length > 1) {
-      resultado += `Número ${num} repetido nas linhas: ${mapa[num].join(', ')}\n`;
-    }
+  if(unicos.length === 0){
+    document.getElementById("saida").textContent = "Nenhum número válido encontrado.";
+    return;
   }
 
-  if (resultado === '') {
-    resultado = 'Nenhum número repetido encontrado.';
-  }
-
-  document.getElementById("saida").textContent = resultado;
+  // Exibe 1 CPF por linha
+  document.getElementById("saida").textContent = unicos.join('\n');
 }
 </script>
 
