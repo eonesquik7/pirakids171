@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Filtrar por Estado SC</title>
+  <title>Verificar SC nos Arquivos</title>
   <style>
     body {
       background: #111;
@@ -10,82 +10,63 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    input, .output, button {
+    input, button, .output {
       margin-top: 15px;
       padding: 10px;
-      background: #222;
-      color: #eee;
       border: none;
       border-radius: 6px;
-      width: 100%;
+      background: #222;
+      color: #eee;
       font-size: 15px;
+      width: 100%;
     }
     .output {
       white-space: pre-wrap;
       min-height: 200px;
     }
-    button {
-      cursor: pointer;
-      background: #333;
-    }
     button:hover {
-      background: #444;
+      background: #333;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-<h2>Filtrar Linhas do Estado de Santa Catarina (SC)</h2>
+<h2>Arquivos que Contêm Endereços de SC</h2>
 
-<input type="file" accept=".txt" multiple onchange="lerArquivos(event)" />
-<div class="output" id="resultado"></div>
-<button id="baixarBtn" onclick="baixarTXT()" style="display:none;">Baixar Resultado (.txt)</button>
+<input type="file" multiple accept=".txt" onchange="verificarSC(event)" />
+<div class="output" id="saida"></div>
 
 <script>
-let conteudoFinal = "";
-
-function ehEnderecoDeSC(linha) {
-  // Considera SC apenas se estiver claramente no final como UF (ex: "- SC" ou "/SC" no final da parte do endereço)
+function ehSC(linha) {
   const partes = linha.split("-");
-  const ultimaParte = partes[partes.length - 1] || "";
-  return /\bSC\b/.test(ultimaParte.trim());
+  const ultima = partes[partes.length - 1] || "";
+  return /\bSC\b/.test(ultima.trim());
 }
 
-function lerArquivos(event) {
+function verificarSC(event) {
   const arquivos = Array.from(event.target.files);
-  const resultadosSC = [];
-  let lidos = 0;
+  const saida = document.getElementById("saida");
+  saida.textContent = "Verificando...\n";
 
-  if (arquivos.length === 0) {
-    document.getElementById("resultado").textContent = "Nenhum arquivo selecionado.";
-    return;
-  }
+  let arquivosComSC = [];
 
   arquivos.forEach(arquivo => {
     const leitor = new FileReader();
     leitor.onload = function(e) {
       const linhas = e.target.result.split('\n');
-      const sc = linhas.filter(l => ehEnderecoDeSC(l));
-      resultadosSC.push(...sc);
-      lidos++;
+      const linhasSC = linhas.filter(ehSC);
 
-      if (lidos === arquivos.length) {
-        const unicos = [...new Set(resultadosSC)];
-        conteudoFinal = unicos.join('\n');
-        document.getElementById("resultado").textContent = conteudoFinal || "Nenhuma linha com endereço de SC encontrada.";
-        document.getElementById("baixarBtn").style.display = conteudoFinal ? 'block' : 'none';
+      if (linhasSC.length > 0) {
+        arquivosComSC.push(`📄 ${arquivo.name}:\n${linhasSC.join('\n')}\n`);
+      }
+
+      if (arquivosComSC.length > 0 || arquivos.length === arquivosComSC.length) {
+        saida.textContent = arquivosComSC.join('\n') || "Nenhum arquivo contém endereço com SC.";
       }
     };
     leitor.readAsText(arquivo);
   });
-}
-
-function baixarTXT() {
-  const blob = new Blob([conteudoFinal], { type: "text/plain;charset=utf-8" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "enderecos_SC.txt";
-  link.click();
 }
 </script>
 
