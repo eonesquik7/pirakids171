@@ -2,67 +2,64 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Verificador de CPFs Repetidos</title>
+  <title>Remover CPFs Repetidos (Formato ***********)</title>
   <style>
     body {
-      background-color: #111;
+      background: #111;
       color: #fff;
       font-family: Arial, sans-serif;
-      padding: 20px;
+      padding: 30px;
     }
     textarea {
       width: 100%;
       height: 150px;
-      margin-bottom: 10px;
       font-size: 16px;
+      margin-bottom: 15px;
     }
     button {
       padding: 10px 20px;
       font-size: 16px;
-      background: #444;
+      background-color: #444;
       color: white;
       border: none;
       cursor: pointer;
     }
     .output {
       margin-top: 20px;
-      white-space: pre-wrap;
       background: #222;
       padding: 15px;
       border-radius: 5px;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
 
-  <h2>Reescritor de Mensagens - Remove CPFs Repetidos</h2>
-  
-  <textarea id="input" placeholder="Digite a mensagem aqui..."></textarea>
-  <button onclick="processarMensagem()">Reescrever</button>
-  
-  <div class="output" id="output"></div>
+  <h2>Remover CPFs Repetidos (sem pontuação)</h2>
+
+  <textarea id="mensagem" placeholder="Digite sua mensagem aqui..."></textarea>
+  <button onclick="removerCPFsRepetidos()">Processar</button>
+
+  <div class="output" id="resultado"></div>
 
   <script>
-    function processarMensagem() {
-      const textoOriginal = document.getElementById("input").value;
+    function removerCPFsRepetidos() {
+      const texto = document.getElementById("mensagem").value;
 
-      // Expressão para encontrar CPFs válidos (com pontos e traço)
-      const cpfRegex = /\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/g;
+      // CPF como 11 dígitos seguidos
+      const cpfRegex = /\b\d{11}\b/g;
+      const encontrados = new Set();
 
-      // Armazena quais CPFs já foram encontrados
-      const cpfsUnicos = new Set();
-      
-      // Função que substitui CPFs repetidos por vazio
-      const resultado = textoOriginal.replace(cpfRegex, (cpf) => {
-        if (cpfsUnicos.has(cpf)) {
-          return ''; // Remove CPF duplicado
+      const novoTexto = texto.replace(cpfRegex, (cpf) => {
+        if (encontrados.has(cpf)) {
+          return ''; // Remove CPF repetido
         } else {
-          cpfsUnicos.add(cpf);
-          return cpf; // Mantém o primeiro
+          encontrados.add(cpf);
+          return cpf; // Mantém o CPF único
         }
       });
 
-      document.getElementById("output").textContent = resultado.trim();
+      document.getElementById("resultado").textContent = novoTexto.trim();
     }
   </script>
 
